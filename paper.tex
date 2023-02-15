@@ -1,0 +1,85 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+%\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+%    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Deploying Alternative User Environments on Alps}
+
+\author{
+\IEEEauthorblockN{Jonathan Coles}
+    \IEEEauthorblockA{
+        \textit{CSCS}\\
+        Zurich, Switzerland \\
+        jonathan.coles@cscs.ch
+    }
+\and
+\IEEEauthorblockN{Ben Cumming}
+    \IEEEauthorblockA{
+        \textit{CSCS}\\
+        Zurich, Switzerland \\
+        bcumming@cscs.ch
+    }
+\and
+\IEEEauthorblockN{Theofilos-Ioannis Manitaras}
+    \IEEEauthorblockA{
+        \textit{CSCS}\\
+        Lugano, Switzerland \\
+        theofilos.manitaras@cscs.ch
+    }
+\and
+\IEEEauthorblockN{Jean-Guillaume Piccinali}
+    \IEEEauthorblockA{
+        \textit{CSCS}\\
+        Lugano, Switzerland \\
+        jeanguillaume.piccinali@cscs.ch
+    }
+\and
+\IEEEauthorblockN{Simon Pintarelli}
+    \IEEEauthorblockA{
+        \textit{CSCS}\\
+        Zurich, Switzerland \\
+        simon.pintarelli@cscs.ch
+    }
+\and
+\IEEEauthorblockN{Harmen Stoppels}
+    \IEEEauthorblockA{
+        \textit{Stoppels Consulting/LLNL}\\
+        Zurich, Switzerland \\
+        harmen@stoppels.ch
+    }
+}
+
+\maketitle
+
+\begin{abstract}
+\input{abstract.tex}
+\end{abstract}
+
+\begin{IEEEkeywords}
+CPE, squashfs, slurm, spack
+\end{IEEEkeywords}
+
+\section{Introduction}
+\input{introduction.tex}
+
+\section{Spack Stacks}
+\input{spack-stacks.tex}
+
+\section{Deployment}
+\input{deployment.tex}
+
+\section{Results and performance}
+\input{results.tex}
+
+%*************************************************
+\bibliographystyle{abbrv}
+\bibliography{paper}
+%*************************************************
+
+\end{document}

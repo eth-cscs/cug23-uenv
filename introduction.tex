@@ -1,0 +1,20 @@
+The CSCS User Lab provides a scientific computing services to a diverse domains and use cases, each requiring different programming languages, libraries and tools.
+Currently, the programming environment is based on the Cray Programming Environment (CPE), which provides a very wide range of tools including compilers, scientific libraries, communication libraries, and tools.
+The CPE continues to evolve and expand in response to changing user requirements and node-types.
+CSCS provides additional software built using the CPE, all deployed in a common module environment.
+
+There are some drawbacks to this approach of providing a large, one-size-fits-all environment, that make it difficult to support as the number of use cases and hardware architectures provided on a HPC system scales out: 
+\begin{itemize}
+    \item The CPE is complicated, so that it is not practical to test many of its configurations;
+    \item No use-case or domain will use more than a small subset of the features provided by the CPE;
+    \item The CPE released on a quarterly cycle, so the lead time between identifying an issue and a fix available and tested on site can be expected to be in the order of 3-6 months;
+\end{itemize}
+By striking a balance between long term stability and providing the latest versions and tools, it does not satisfy use cases that require either.
+
+CSCS is deploying isolated clusters (vClusters) on the HPE Cray EX system called Alps, to provide services to a wider range of user domains, each with their own software, security, reliability and scaling requirements.
+The vClusters can be customized for the target use cases, as an alternative to providing one large system with a "one size fits all" programming environment, storage and job scheduler.
+This gives CSCS the opportunity to customize the programming environment for vClusters; specifically by providing the smallest possible set of compilers, libraries and tools optimized for the cluster's requirements, node architecture and the Slingshot 11 interconnect.
+
+In this paper we will describe a method for defining, building and deploying alternative programming environments alongside the CPE on HPE Cray EX systems.
+We provide compact, testable, optimized software environments based on a descriptive recipe that can be updated independently of the CPE release cycle.
+The environments are deployed as squashfs images, that users can mount using a SLURM plugin and command line utilities.

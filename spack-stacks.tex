@@ -1,0 +1,24 @@
+To build programming environments, CSCS developed a tool that takes as input a descriptive YAML recipe of the compilers and software packages in the environment, generates a set of Spack~\cite{gamblin:sc15} environment descriptions, and builds the environment using Makefiles.
+Reproducable builds are achieved by fixing the versions of both Spack and the software packages, and rolling releases that provide the most up to date packages and configurations can be created by targeting a branch of Spack (such as the develop branch), and letting Spack pick the package versions.
+
+The tool, named [sstool](github.com/eth-cscs/sstool), is a Python application that takes generates a set of Spack environments, and Makefiles to build them from a recipe.
+Environments are built in the following high level workflow:
+\begin{enumerate}
+    \item Build a user-specified version of gcc as a bootstrap compiler.
+    \item Build the compiler toolchains (currently GCC, NVHPC and LLVM are supported):
+    \begin{itemize}
+        \item each compiler toolchain is built in a separate environment, using the bootstrap compiler
+    \end{itemize}
+    \item Package environments: build "programming environments", each with a unique:
+    \begin{itemize}
+        \item Compiler, MPI configuration and GPU configuration
+        \item List of packages with their Spack specs.
+    \end{itemize}
+\end{enumerate}
+
+Open source MPI distributions -- OpenMPI, MVAPICH3 and MPICH -- are actively developing support for Slingshot 11 with libfabric.
+However, at the time of writing the only MPI with robust Slingshot 11 support is the Cray-MPICH bundled with the CPE.
+The paper will explain how to extract, patch and repackage the Cray-MPICH from the CPE RPMs, and install it using Spack with variants that enable GPU-aware MPI for NVIDIA and AMD GPU targets.
+
+Optional configurations can be provided for Spack build caches to reduce build times.
+The programming environment can be used as Spack upstream for users, and the tool also allows fine-grained control over module file generation, to provide an optional module environment.

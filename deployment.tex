@@ -1,0 +1,13 @@
+Each software stack is a compressed squashfs image of a directory containing the software, Spack configuration, modules and meta-data.
+The squashfs artifacts associated with a programming environment can be versioned, and mounted at the same location using command line utilities or SLURM plugins.
+This significantly simplifies testing and deployment of stacks in CI pipelines compared to the current approach of building software stacks on a shared file system with subdirectories for different clusters, where providing multiple versions of a software stack requires creating a directory with a different name.
+
+Other benefits of using a squashfs for images include:
+\begin{itemize}
+    \item Squashfs images are cached in memory so time to configure and build software is significantly faster than if the tools are on a shared filesystem;
+    \item Multiple users on the same node can load different environments on the same mount point.
+\end{itemize}
+
+We developed open-source SLURM plugin and command line utilities for mounting squashfs images and configuring the environment, whose implementation will be described in the paper.
+
+

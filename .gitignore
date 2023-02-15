@@ -1,0 +1,6 @@
+bibup
+paper.bbl
+paper.pdf
+*.log
+*.blg
+*.aux
