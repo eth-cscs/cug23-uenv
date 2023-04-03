@@ -1,12 +1,25 @@
 \documentclass[conference]{IEEEtran}
-\usepackage{cite}
-\usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
-\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{cite}
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyhdr}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
 \usepackage{textcomp}
+\usepackage{tikz}
+\usepackage{url}
 \usepackage{xcolor}
+\usepackage{xspace}
+
+\usetikzlibrary{pgfplots.groupplots}
+
+\newcommand{\crayex}{HPE Cray EX\xspace} % standardize name for Cray EX platform
+\newcommand{\todo}[1]{\textbf{\textcolor{blue}{TODO: #1}}} % add a comment to the article
+
 %\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
 %    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
 \begin{document}
 
 \title{Deploying Alternative User Environments on Alps}
