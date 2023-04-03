@@ -11,10 +11,34 @@ There are some drawbacks to this approach of providing a large, one-size-fits-al
 \end{itemize}
 By striking a balance between long term stability and providing the latest versions and tools, it does not satisfy use cases that require either.
 
-CSCS is deploying isolated clusters (vClusters) on the HPE Cray EX system called Alps, to provide services to a wider range of user domains, each with their own software, security, reliability and scaling requirements.
+\todo{Image showing the layers.}
+
+\todo{Clearly set out the requirements}
+\begin{enumerate}
+    \item long term stability -- the same software configuration can be maintained for longer
+    \begin{itemize}
+        \item requirement: reproducable builds
+        \item requirement: concise, unambiguous recipes
+        \item requirement: minimise system requirements to only the bare minimum (no CPE)
+    \end{itemize}
+    \item rolling releases and fast fixes -- be able to rebuild and reconfigure at any point
+    \item provide use-case or application specific environments (only provide the required minimum)
+    \begin{itemize}
+        \item requirement: versioning of environments
+        \item requirement: fast deployment
+    \end{itemize}
+    \item deliver a satisfying user experience
+    \begin{itemize}
+        \item fast configure and build times
+        \item compatibility with module, spack, python venv workflows.
+    \end{itemize}
+\end{enumerate}
+
+CSCS is deploying isolated clusters (vClusters) on the \crayex system called Alps, to provide services to a wider range of user domains, each with their own software, security, reliability and scaling requirements.
 The vClusters can be customized for the target use cases, as an alternative to providing one large system with a "one size fits all" programming environment, storage and job scheduler.
 This gives CSCS the opportunity to customize the programming environment for vClusters; specifically by providing the smallest possible set of compilers, libraries and tools optimized for the cluster's requirements, node architecture and the Slingshot 11 interconnect.
 
-In this paper we will describe a method for defining, building and deploying alternative programming environments alongside the CPE on HPE Cray EX systems.
+In this paper we will describe a method for defining, building and deploying alternative programming environments alongside the CPE on \crayex systems.
 We provide compact, testable, optimized software environments based on a descriptive recipe that can be updated independently of the CPE release cycle.
 The environments are deployed as squashfs images, that users can mount using a SLURM plugin and command line utilities.
+
