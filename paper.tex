@@ -5,6 +5,15 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
+
+\newcommand{\assign}[1]{\textbf{\textcolor{blue!20!red}{todo #1}}} % add a comment to the article
+\newcommand{\hilight}[1]{\textbf{\textcolor{blue!20!red}{#1}}} % add a comment to the article
+\newcommand{\tocite}[0]{\textbf{\textcolor{blue!20!red}{[??]}}} % mark missing citation
+\newcommand{\sect}[1]{Section~\ref{#1}\xspace}  % consistent references to sections
+\newcommand{\tbl}[1]{Table~\ref{#1}\xspace}  % consistent references to tables
+\newcommand{\fig}[1]{Fig.~\ref{#1}\xspace}   % consistent references to figures
+\newcommand{\eq}[1]{(\ref{#1})\xspace}   % consistent references to equations
+
 %\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
 %    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}

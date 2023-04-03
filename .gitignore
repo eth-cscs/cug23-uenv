@@ -1,6 +1,11 @@
+paper.pdf
+
+# latex artifacts
 bibup
 paper.bbl
-paper.pdf
 *.log
 *.blg
 *.aux
+
+# vim swap files
+*.swp
