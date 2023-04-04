@@ -1,17 +1,73 @@
-Present benchmarks that demonstrate the following aspects of PE performance.
+This section presents benchmarks and tests that demonstrate 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Deployment productivity}
-Benchmark the time to build and deploy a new stack in 30 minutes, and how build caches can reduce that to 5 minutes;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\assign{Ben}
+
+Benchmark the time to build and deploy a stack from scratch vs. with a build cache.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Developer productivity}
-squashfs deployment reduces configuration and compilation times compared to serving the same stack on a shared filesystem;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\assign{Ben}
+
+Squashfs deployment reduces configuration and compilation times compared to serving the same stack on a shared filesystem;
+
+Benchmark configuration time and build time with the same stack stored in different locations:
+\begin{itemize}
+    \item mounted with squashfs-run
+    \item in memory, i.e. \lstinline|/dev/shm|
+    \item on scratch.
+\end{itemize}
+
+For the following:
+\begin{itemize}
+    \item simple hello world
+    \item medium complexity application (Arbor)
+    \item complex application, e.g. DLA-F
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Overheads}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\assign{Ben}
+
 Quantify the memory overheads and affect on job startup time of mounting squashfs images on compute nodes at the start of SLURM jobs;
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Benchmarks and Applications}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\assign{JG (SPH-EXA), Antonk}
+
 Microbenchmarks and application benchmarks that demonstrate equivalent performance to applications compiled with CPE on the same system.
 
+\todo{pick a couple of applications/micro-benchmarks to evaluate.}
+
+benchmarks:
+\begin{itemize}
+    \item OSU benchmarks \assign{Ben Theo}
+    \item SPH-EXA \assign{JG}
+    \item \dots other?
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Tools}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\assign{JG}
+
+\begin{itemize}
+    \item demonstrate DDT
+    \item demonstrate a profiler?
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future work}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 We will discuss collaboration with HPE to provide Cray-MPICH and other HPE software packages via spack stacks, and how we plan to deliver software for the large Grace-Hopper scale out in the second half of 2023 at CSCS.

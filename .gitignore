@@ -6,6 +6,7 @@ paper.bbl
 *.log
 *.blg
 *.aux
+*.out
 
 # vim swap files
 *.swp

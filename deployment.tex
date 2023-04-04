@@ -1,3 +1,9 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Squashfs artifacts}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\assign{Ben}
+
 Each software stack is a compressed squashfs image of a directory containing the software, Spack configuration, modules and meta-data.
 The squashfs artifacts associated with a programming environment can be versioned, and mounted at the same location using command line utilities or SLURM plugins.
 This significantly simplifies testing and deployment of stacks in CI pipelines compared to the current approach of building software stacks on a shared file system with subdirectories for different clusters, where providing multiple versions of a software stack requires creating a directory with a different name.
@@ -8,6 +14,56 @@ Other benefits of using a squashfs for images include:
     \item Multiple users on the same node can load different environments on the same mount point.
 \end{itemize}
 
-We developed open-source SLURM plugin and command line utilities for mounting squashfs images and configuring the environment, whose implementation will be described in the paper.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{CLI Utilities}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\assign{Simon and Ben}
+
+We developed command line utilities for mounting squashfs images and configuring the environment.
+
+\begin{itemize}
+    \item squashfs-mount implementation
+    \item link to GitHub repository
+    \item example of how it is used
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{SLURM Integration}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\assign{Simon and Jonathan}
+
+\begin{itemize}
+    \item the slurm plugin workflow
+    \item plugin implementation
+    \item installing the plugin
+    \begin{itemize}
+        \item provide any HPE XE-system specific details and workarounds
+    \end{itemize}
+    \item examples of using the plugin
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{CI/CD}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\assign{Theofilos and Ben}
+
+Describe the workflow:
+\begin{itemize}
+    \item recipes are stored in \href{https://github.com/eth-cscs/alps-spack-stacks}{github repository}.
+    \item CI/CD external service is used
+    \item "build" phase
+    \item "test" phase
+    \item deployed to JFrog artifactory
+\end{itemize}
+
+Demonstrate pulling and running an image manually from JFrog.
+
+The workflow is under development, with the following steps to be completed
+\begin{itemize}
+    \item promote images to a ``production'' repository
+    \item a CLI tool for listing and pulling available images.
+\end{itemize}
 
