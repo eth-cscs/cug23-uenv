@@ -1,23 +1,37 @@
 \assign{Ben}
 
 The CSCS User Lab provides a scientific computing services to a diverse domains and use cases, each requiring different programming languages, libraries and tools.
-Currently, the programming environment is based on the Cray Programming Environment (CPE), which provides a very wide range of tools including compilers, scientific libraries, communication libraries, and tools.
-The CPE continues to evolve and expand in response to changing user requirements and node-types.
-CSCS provides additional software built using the CPE, all deployed in a common module environment.
+All users of CSCS' production system Piz Daint (Cray-XC50) are presented with the same environment -- a set of pre-loaded TCL modules -- that can be changed to meet each user's requirements using the familiar module interface.
+The modules are provided by the Cray Programming Environment (CPE), with additional software built and maintained by CSCS using building blocks provided by the CPE \tocite{EB CUG paper}.
+
+The CPE provides a very wide range of software -- including compilers, scientific libraries, communication libraries, debuggers and profiling tools -- all optimised for the node and network architecture of the system.
+The CPE continues to evolve and expand in response to changing requirements, for example adding software packages for ML/AI, with quarterly releases to address bugs, improve performance and add features.
 
 There are some drawbacks to this approach of providing a large, one-size-fits-all environment, that make it difficult to support as the number of use cases and hardware architectures provided on a HPC system scales out:
 \begin{itemize}
-    \item The CPE is complicated, so that it is not practical to test many of its configurations;
-    \item No use-case or domain will use more than a small subset of the features provided by the CPE;
+    \item The CPE is complicated, with many modules/components that can be configured together, so that it is not practical to test many reasonable configurations;
+    \item No single use-case or domain will use more than a small subset of the features provided by the CPE;
     \item The CPE released on a quarterly cycle, so the lead time between identifying an issue and a fix available and tested on site can be expected to be in the order of 3-6 months;
 \end{itemize}
-By striking a balance between long term stability and providing the latest versions and tools, it does not satisfy use cases that require either.
+We argue that by striking a balance between long term stability and providing up-to date software versions, it can struggle to satisfy use cases that require either.
 
-\todo{Image showing the layers.}
+HPC service providers that deploy platforms on HPE-Cray clusters provide
+
+\begin{figure}[htp!]
+    \begin{center}
+        \includegraphics[width=0.3\textwidth]{./images/stack-old.png}
+    \end{center}
+    \caption{
+        The "standard" HPE-EX software stack, with the Cray OS, drivers, CPE and some site software in the system image, site-provided software installed on a shared file system, and software installed by users that depends can depend on different software layers underneath.
+        The red arrows indicate where changes on one layer, can have a knock on effect on other software layers, requireing rebuilds or reconfiguration when they are changed.
+    }
+    \label{fig:stack-old}
+\end{figure}
 
 \todo{Clearly set out the requirements}
+
 \begin{enumerate}
-    \item long term stability -- the same software configuration can be maintained for longer
+    \item long term stability -- software stack configuration can be maintained for longer
     \begin{itemize}
         \item requirement: reproducable builds
         \item requirement: concise, unambiguous recipes
