@@ -1,0 +1,75 @@
+├── bin
+│   ├── cray_spawn_server
+│   ├── mpic++ -> mpicxx
+│   ├── mpicc
+│   ├── mpichversion
+│   ├── mpicxx
+│   ├── mpif77 -> mpifort
+│   ├── mpif90 -> mpifort
+│   └── mpifort
+├── include
+│   ├── cray_version.h
+│   ├── mpi_base.mod
+│   ├── mpi_c_interface_cdesc.mod
+│   ├── mpi_c_interface_glue.mod
+│   ├── mpi_c_interface.mod
+│   ├── mpi_c_interface_nobuf.mod
+│   ├── mpi_c_interface_types.mod
+│   ├── mpi_constants.mod
+│   ├── mpi_f08_callbacks.mod
+│   ├── mpi_f08_compile_constants.mod
+│   ├── mpi_f08_link_constants.mod
+│   ├── mpi_f08.mod
+│   ├── mpi_f08_types.mod
+│   ├── mpif.h
+│   ├── mpi.h
+│   ├── mpi.mod
+│   ├── mpiof.h
+│   ├── mpio.h
+│   ├── mpi_sizeofs.mod
+│   ├── pmi2.h
+│   ├── pmi_cray_ext.h
+│   ├── pmi_cray.h
+│   ├── pmi.h
+│   ├── pmi_version.h
+│   └── pmpi_f08.mod
+└── lib
+    ├── libfmpich.so -> libmpifort_gnu_91.so
+    ├── libmpi.a -> libmpi_gnu_91.a
+    ├── libmpich.a -> libmpi_gnu_91.a
+    ├── libmpichf90.a -> libmpifort_gnu_91.a
+    ├── libmpichf90.so -> libmpifort_gnu_91.so
+    ├── libmpich.so -> libmpi_gnu_91.so
+    ├── libmpifort.a -> libmpifort_gnu_91.a
+    ├── libmpifort_gnu_91.a
+    ├── libmpifort_gnu_91.so -> libmpifort_gnu_91.so.12.0.0
+    ├── libmpifort_gnu_91.so.12 -> libmpifort_gnu_91.so.12.0.0
+    ├── libmpifort_gnu_91.so.12.0.0
+    ├── libmpifort.so -> libmpifort_gnu_91.so
+    ├── libmpi_gnu_91.a
+    ├── libmpi_gnu_91.so -> libmpi_gnu_91.so.12.0.0
+    ├── libmpi_gnu_91.so.12 -> libmpi_gnu_91.so.12.0.0
+    ├── libmpi_gnu_91.so.12.0.0
+    ├── libmpi_gtl_cuda.a
+    ├── libmpi_gtl_cuda.so -> libmpi_gtl_cuda.so.0.0.0
+    ├── libmpi_gtl_cuda.so.0 -> libmpi_gtl_cuda.so.0.0.0
+    ├── libmpi_gtl_cuda.so.0.0.0
+    ├── libmpi_gtl_hsa.a
+    ├── libmpi_gtl_hsa.so -> libmpi_gtl_hsa.so.0.0.0
+    ├── libmpi_gtl_hsa.so.0 -> libmpi_gtl_hsa.so.0.0.0
+    ├── libmpi_gtl_hsa.so.0.0.0
+    ├── libmpi.so -> libmpi_gnu_91.so
+    ├── libmpl.so -> libmpi_gnu_91.so
+    ├── libopa.so -> libmpi_gnu_91.so
+    ├── libpmi2.a
+    ├── libpmi2.so -> libpmi2.so.0.6.0
+    ├── libpmi2.so.0 -> libpmi2.so.0.6.0
+    ├── libpmi2.so.0.6.0
+    ├── libpmi.a -> libpmi2.a
+    ├── libpmi.so -> libpmi.so.0.6.0
+    ├── libpmi.so.0 -> libpmi.so.0.6.0
+    ├── libpmi.so.0.6.0
+    ├── libtvmpich.a
+    ├── libtvmpich.so -> libtvmpich.so.12.0.0
+    ├── libtvmpich.so.12 -> libtvmpich.so.12.0.0
+    └── libtvmpich.so.12.0.0
