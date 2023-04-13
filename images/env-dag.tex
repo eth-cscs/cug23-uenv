@@ -1,0 +1,32 @@
+\begin{tikzpicture}[node distance=1cm and 2.75cm,
+            nodes={draw, rectangle, rounded corners, minimum height=0.5cm, minimum width=2.5cm, fill=blue!10, inner sep=0.3cm},
+            arrows={-Stealth}]
+    % Nodes
+    \node[fill=yellow!20] (bootstrap) {bootstrap};
+    \node[below=of bootstrap] (gcc) {gcc};
+    \node[right=of gcc] (nvhpc) {nvhpc};
+    \node[fill=green!15, below=of gcc] (gcc-env) {gcc-env};
+    \node[fill=green!15, right=of gcc-env] (openacc-env) {openacc-env};
+
+    % Edges
+    \draw (bootstrap)
+        edge node[midway, fill=white,rectangle,fill=red!5, draw=red, inner sep=0.1cm, minimum height=0.3cm, minimum width=1 cm]
+        {\scriptsize gcc@11\%gcc@7.5}
+        (gcc);
+    \draw (gcc) 
+        edge node[midway, fill=white,rectangle,fill=red!5, draw=red, inner sep=0.1cm, minimum height=0.3cm, minimum width=1 cm]
+        {\scriptsize gcc@11\%gcc@11}
+        (nvhpc);
+    \draw (gcc) 
+        edge node[midway, fill=white,rectangle,fill=red!5, draw=red, inner sep=0.1cm, minimum height=0.3cm, minimum width=1 cm]
+        {\scriptsize gcc@11\%gcc@11}
+        (gcc-env);
+    \draw (gcc) 
+        edge node[midway, fill=white,rectangle,fill=red!5, draw=red, inner sep=0.1cm, minimum height=0.3cm, minimum width=1 cm]
+        {\scriptsize gcc@11\%gcc@11}
+        (openacc-env);
+    \draw (nvhpc) 
+        edge node[midway, fill=white,rectangle,fill=red!5, draw=red, inner sep=0.1cm, minimum height=0.3cm, minimum width=1 cm]
+        {\scriptsize nvhpc@22.7\%gcc@11}
+        (openacc-env);
+\end{tikzpicture}

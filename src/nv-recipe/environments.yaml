@@ -1,0 +1,33 @@
+prgenv-nvidia:
+  compiler:
+    - toolchain: gcc
+      spec: gcc@11
+    - toolchain: llvm
+      spec: nvhpc
+  unify: true
+  mpi:
+    spec: cray-mpich@8.1.18.4
+    gpu: cuda
+  specs:
+  - osu-micro-benchmarks@5.9%nvhpc
+  - cuda@11.8%gcc
+  variants:
+  - cuda_arch=80
+  - +mpi
+  - +cuda
+prgenv-gcc-env:
+  compiler:
+    - toolchain: gcc
+      spec: gcc@11
+  unify: true
+  mpi:
+    spec: cray-mpich@8.1.18.4
+    gpu: cuda
+  specs:
+  - cuda@11.8
+  - osu-micro-benchmarks@5.9
+  - openblas@0.3.21
+  variants:
+  - cuda_arch=80
+  - +mpi
+  - +cuda

@@ -28,6 +28,21 @@ HPC service providers that deploy platforms on HPE-Cray clusters provide
     \label{fig:stack-old}
 \end{figure}
 
+\begin{figure}[htp!]
+    \begin{center}
+        %\includegraphics[width=0.3\textwidth]{./images/stack-old.png}
+        \todo{image of reduced complexity}
+    \end{center}
+    \caption{
+        The Alps software stack, with the programming environment moved out of the base image.
+        Multiple programming environments can be deployed on top of this architecture, including the CPE and alternative PEs discussed in~\sect{sec:spack-stacks} that are mounted at runtime in a new mount namespace by users.
+    }
+    \label{fig:stack-old}
+\end{figure}
+
+The base image is updated less frequently than CPE, so the frequency of rebuilds will be lower than if we built our stack on top of CPE, and the number of system dependencies that could require intervention are fewer.
+Furthermore, by providing bespoke environments that contain only the requirements of use case or workflow, we reduce complexity of testing and maintaining PEs.
+
 \todo{Clearly set out the requirements}
 
 \begin{enumerate}
