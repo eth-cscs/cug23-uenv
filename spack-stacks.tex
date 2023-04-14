@@ -215,7 +215,7 @@ As opposed to the CPE, which provides the \lst{CC}, \lst{cc} and \lst{ftn} binar
 By default, these wrappers use environment variables set by CPE modules to select the compiler and link architecture-specific libraries.
 Each of the wrappers is parameterised on three parameters \lst{@CC@}, \lst{@@PREFIX@@} and \lst{@@GTL_LIBRARY@@}, which are later set by \spack to:
 \begin{itemize}
-    \item hard code the full path to the wrapped compiler;
+    \item hard code the full path to the wrapped compiler
     \item set paths \lst{prefix}, \lst{includedir}, to the cray-mpich \spack installation path;
     \item explicitly link \lst{-lmpi_gtl_cuda} \lst{-lmpi_gtl_hsa} when \craympich is built with the \lst{+cuda} or \lst{+rocm} variants respectively.
     % \item \begin{itemize}
