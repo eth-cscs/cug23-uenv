@@ -271,3 +271,8 @@ The most effective way to reduce build times is to cache built packages.
 \spack provides \href{https://spack.readthedocs.io/en/latest/binary_caches.html}{build caches}, which facilitate pushing and pulling pre-built packages to S3 buckets or a file system.
 \stackinator recipes can include optional \lst{mirrors.yaml} file and a private key, to enable build caches.
 Providing the location of a build cache with \lst{mirrors.yaml} will enable pulling packages from the cache, and if a key is provided \stackinator will also push all packages to the build cache as they are built.
+
+
+%%% Local Variables:
+%%% TeX-master: "paper"
+%%% End:
