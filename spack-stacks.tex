@@ -72,7 +72,7 @@ A set of ``cluster configurations'' for each of the vClusters on Alps is maintai
 \stackinator follows the familiar configure-build-install workflow used to install software.
 It provides a CLI tool \lstinline{stack-config}, that takes a generic recipe that can be built on any (vCluster, mount point) combination, and generates a build path that contains a Makefile, \spack environment descriptions, and a copy of \spack used to build the stack.
 
-If the recipe that describes the example environment in~\fig{fig:env-dag} is in the path \lstinline{~/recipes/nvidia}, \lstinline{stack-config} can be used to generated a build configuration with the following command:
+If the recipe that describes the example environment in~\fig{fig:env-dag} is in the path \lstinline{~/recipes/nvidia}, \lstinline{stack-config} can be used to generate a build configuration with the following command:
 \begin{lstlisting}
 > stack-config -r ~/recipes/nvidia \
              -b /dev/shm/nvidia-build \
