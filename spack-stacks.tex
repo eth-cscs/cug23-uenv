@@ -53,7 +53,7 @@ For the example stack there are five environments, illustrated in~\fig{fig:env-d
 \end{figure}
 
 The Spack stack requires external packages installed on the base node image, that implement architecture-specific features and support, and can vary between vClusters and over time.
-For example, the location of libfabric moves every time the installed version of libfabric is upgraded. 
+For example, the location of libfabric moves every time the installed version of libfabric is upgraded.
 A set of ``cluster configurations'' for each of the vClusters on Alps is maintained separately from the recipes in the \stackinator tool:
 \begin{itemize}
     \item A \spack \lst{compilers.yaml} file that specifies the default GCC compiler tool chain on the vCluster (GCC 7.5 at the time of writing), used to bootstrap the \spack stack build.
@@ -181,18 +181,18 @@ In order to provide \craympich, we develop a process for repackaging the compile
 % Name        : cray-pmi-6.1.9
 % Name        : cray-pmi-devel-6.1.9
 
-\assign{Simon: proof read and fix up, as you are more familiar with the process.}
-Expand the following RPMs from the CPE distribution:
+Expand the following RPMs from the CPE distribution of the following packages:
 \begin{enumerate}
-    \item \lst{cray-mpich-8.1.18-gnu91-0-4.sles15sp3.x86_64.rpm}
+    \item \lst{cray-mpich-8.1.18-gnu91}
     \begin{itemize}
-        \item For the NVIDIA HPC SDK use \lst{cray-mpich-8.1.18-nvidia207-0-4.sles15sp3.x86_64.rpm}.
+        \item For the NVIDIA HPC SDK use \lst{cray-mpich-8.1.18-nvidia207}.
     \end{itemize}
-    \item \lst{cray-mpich-8.1.18-gtl-0-4.sles15sp3.x86_64.rpm}
+    \item \lst{cray-mpich-8.1.18-gtl}
     \begin{itemize}
         \item The GTL (GPU Transport Layer) libraries that implement GPU-aware communication for NVIDIA and AMD GPUs.
     \end{itemize}
-    \item \lst{cray-pmi-[version].rpm}
+    % from cpe-23.02 there is also cray-mpi-devel
+    \item \lst{cray-pmi-[version]}
 \end{enumerate}
 
 We can't provide a single binary distribution for all compilers, because the Fortran modules in the \lst{include} path are compiler specific.
@@ -218,10 +218,9 @@ Each of the wrappers is parameterised on three parameters \lst{@CC@}, \lst{@@PRE
     \item hard code the full path to the wrapped compiler;
     \item set paths \lst{prefix}, \lst{includedir}, to the cray-mpich \spack installation path;
     \item explicitly link \lst{-lmpi_gtl_cuda} \lst{-lmpi_gtl_hsa} when \craympich is built with the \lst{+cuda} or \lst{+rocm} variants respectively.
-    \begin{itemize}
-        %\item this fixes the common runtime error ``MPIDI\_CRAY\_init: GPU\_SUPPORT\_ENABLED'' is requested, but GTL library is not linked.
-        \item hello world
-    \end{itemize}
+    % \item \begin{itemize}
+    %     %\item this fixes the common runtime error ``MPIDI\_CRAY\_init: GPU\_SUPPORT\_ENABLED'' is requested, but GTL library is not linked.
+    % \end{itemize}
 \end{itemize}
 
 
