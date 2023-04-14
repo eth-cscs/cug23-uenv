@@ -1,75 +1,64 @@
-\assign{Ben}
+CSCS is deploying isolated clusters (vClusters) on the \crayex system Alps, to provide services to a wider range of user domains, each with their own software, security, reliability and scaling requirements.
+The vClusters can be customized for the target use cases, as an alternative to providing one large system with a ``one size fits all'' programming environment, storage and job scheduler configuration.
 
-The CSCS User Lab provides a scientific computing services to a diverse domains and use cases, each requiring different programming languages, libraries and tools.
-All users of CSCS' production system Piz Daint (Cray-XC50) are presented with the same environment -- a set of pre-loaded TCL modules -- that can be changed to meet each user's requirements using the familiar module interface.
-The modules are provided by the Cray Programming Environment (CPE), with additional software built and maintained by CSCS using building blocks provided by the CPE \tocite{EB CUG paper}.
+CSCS aims to reduce the complexity of the software installed on each cluster by providing use case-specific user environments on vClusters; specifically by providing the smallest possible set of compilers, libraries and tools optimized for each use case's requirements, node architecture and the Slingshot 11 interconnect.
+An obvious use case for the environments is single purpose clusters, for example for the weather service's production cluster.
+Alternatively, the multiple use-case specific environments can be provided on general-purpose HPC clusters, and loaded according to the user's needs.
 
-The CPE provides a very wide range of software -- including compilers, scientific libraries, communication libraries, debuggers and profiling tools -- all optimised for the node and network architecture of the system.
-The CPE continues to evolve and expand in response to changing requirements, for example adding software packages for ML/AI, with quarterly releases to address bugs, improve performance and add features.
+This is at odds with the widely-adopted approach to providing software on \crayex systems, namely installing the Cray Programming Environment (CPE), and building use-case specific software not provided by CPE on a shared file system, as illustrated in~\fig{fig:stacks}(a).
+To date CSCS has provided such a one-size-fits-all environment, similarly to other HPC sites, using the EasyBuild to to provide additional software built and maintained by CSCS~\cite{forai:cug16}.
 
-There are some drawbacks to this approach of providing a large, one-size-fits-all environment, that make it difficult to support as the number of use cases and hardware architectures provided on a HPC system scales out:
-\begin{itemize}
-    \item The CPE is complicated, with many modules/components that can be configured together, so that it is not practical to test many reasonable configurations;
-    \item No single use-case or domain will use more than a small subset of the features provided by the CPE;
-    \item The CPE released on a quarterly cycle, so the lead time between identifying an issue and a fix available and tested on site can be expected to be in the order of 3-6 months;
-\end{itemize}
-We argue that by striking a balance between long term stability and providing up-to date software versions, it can struggle to satisfy use cases that require either.
 
-HPC service providers that deploy platforms on HPE-Cray clusters provide
-
-\begin{figure}[htp!]
+\begin{figure*}[htp!]
     \begin{center}
-        \includegraphics[width=0.3\textwidth]{./images/stack-old.png}
+        \includegraphics[width=0.35\textwidth]{./images/stack-old.png}
+        \hspace{2.5cm}
+        \includegraphics[width=0.35\textwidth]{./images/stack-new.png}
+        \\
+        \textbf{(a)} \hspace{9cm} \textbf{(b)}\\
     \end{center}
     \caption{
+        \textbf{(a)}:
         The "standard" HPE-EX software stack, with the Cray OS, drivers, CPE and some site software in the system image, site-provided software installed on a shared file system, and software installed by users that depends can depend on different software layers underneath.
-        The red arrows indicate where changes on one layer, can have a knock on effect on other software layers, requireing rebuilds or reconfiguration when they are changed.
-    }
-    \label{fig:stack-old}
-\end{figure}
-
-\begin{figure}[htp!]
-    \begin{center}
-        %\includegraphics[width=0.3\textwidth]{./images/stack-old.png}
-        \todo{image of reduced complexity}
-    \end{center}
-    \caption{
+        The red arrows indicate where changes on one layer, can have a knock on effect on other software layers, requireing rebuilds or reconfiguration when they are changed.\\
+        \textbf{(b)}:
         The Alps software stack, with the programming environment moved out of the base image.
         Multiple programming environments can be deployed on top of this architecture, including the CPE and alternative PEs discussed in~\sect{sec:spack-stacks} that are mounted at runtime in a new mount namespace by users.
     }
-    \label{fig:stack-old}
-\end{figure}
+    \label{fig:stacks}
+\end{figure*}
 
-The base image is updated less frequently than CPE, so the frequency of rebuilds will be lower than if we built our stack on top of CPE, and the number of system dependencies that could require intervention are fewer.
-Furthermore, by providing bespoke environments that contain only the requirements of use case or workflow, we reduce complexity of testing and maintaining PEs.
+The CPE provides a very wide range of software -- including compilers, scientific libraries, communication libraries, debuggers and profiling tools -- all optimised for the node and network architecture of the system.
+The CPE continues to evolve and expand in response to changing requirements, for example adding software packages for ML/AI, with quarterly releases to address bugs, improve performance and add features.
+As such, while CPE a good general purpose environment for users, using it as a layer in HPC software stacks it is at odds with our aim of reducing the complexity of stacks.
+\begin{itemize}
+    \item No single use-case or domain will use more than a small subset of the features provided by the CPE;
+    \item The CPE released on a quarterly cycle, so the lead time between identifying an issue and a fix available and tested on site can be expected to be in the order of 3-6 months;
+\end{itemize}
+By striking a balance between long term stability and providing up-to date software versions, it can't satisfy use cases that require either.
 
-\todo{Clearly set out the requirements}
+The work presented in this paper utilizes \spack and SquashFS images to build and deploy software stacks on top of a simplified base image that provides only the neccessarily vendor-specific libraries, e.g. libfabric, see~\fig{fig:stacks}.
+Such a base image is updated less frequently than CPE, so the frequency of rebuilds will be lower than if we built our stack on top of CPE, and the number of system dependencies that could require intervention are fewer.
 
-\begin{enumerate}
-    \item long term stability -- software stack configuration can be maintained for longer
-    \begin{itemize}
-        \item requirement: reproducable builds
-        \item requirement: concise, unambiguous recipes
-        \item requirement: minimise system requirements to only the bare minimum (no CPE)
-    \end{itemize}
-    \item rolling releases and fast fixes -- be able to rebuild and reconfigure at any point
-    \item provide use-case or application specific environments (only provide the required minimum)
-    \begin{itemize}
-        \item requirement: versioning of environments
-        \item requirement: fast deployment
-    \end{itemize}
-    \item deliver a satisfying user experience
-    \begin{itemize}
-        \item fast configure and build times
-        \item compatibility with module, spack, python venv workflows.
-    \end{itemize}
-\end{enumerate}
+The result is compact, testable, reproducable and optimized software environments based on a descriptive recipe that can be updated independently of the CPE release cycle.
 
-CSCS is deploying isolated clusters (vClusters) on the \crayex system called Alps, to provide services to a wider range of user domains, each with their own software, security, reliability and scaling requirements.
-The vClusters can be customized for the target use cases, as an alternative to providing one large system with a "one size fits all" programming environment, storage and job scheduler.
-This gives CSCS the opportunity to customize the programming environment for vClusters; specifically by providing the smallest possible set of compilers, libraries and tools optimized for the cluster's requirements, node architecture and the Slingshot 11 interconnect.
-
-In this paper we will describe a method for defining, building and deploying alternative programming environments alongside the CPE on \crayex systems.
-We provide compact, testable, optimized software environments based on a descriptive recipe that can be updated independently of the CPE release cycle.
-The environments are deployed as squashfs images, that users can mount using a SLURM plugin and command line utilities.
+%\begin{enumerate}
+%    \item long term stability -- software stack configuration can be maintained for longer
+%    \begin{itemize}
+%        \item requirement: reproducable builds
+%        \item requirement: concise descriptive  recipes
+%        \item requirement: minimise system requirements to only the bare minimum (no CPE)
+%    \end{itemize}
+%    \item rolling releases and fast fixes -- be able to rebuild and reconfigure at any point
+%    \item provide use-case or application specific environments (only provide the required minimum)
+%    \begin{itemize}
+%        \item requirement: versioning of environments
+%        \item requirement: fast deployment
+%    \end{itemize}
+%    \item deliver a satisfying user experience
+%    \begin{itemize}
+%        \item building and configuring software is fast and consistent (not dependent on file system performance).
+%        \item compatibility with module, spack, python venv workflows.
+%    \end{itemize}
+%\end{enumerate}
 
