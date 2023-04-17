@@ -213,9 +213,10 @@ Extract headers, binaries and libraries from the RPMs, and gather them in a dire
 As opposed to the CPE, which provides the \lst{CC}, \lst{cc} and \lst{ftn} binary compiler wrappers, our package uses the MPI compiler wrapper scripts that are installed in locations like \lst{/opt/cray/pe/mpich/8.1.21/ofi/gnu/9.1/bin}.
 
 By default, these wrappers use environment variables set by CPE modules to select the compiler and link architecture-specific libraries.
-Each of the wrappers is parameterised on three parameters \lst{@CC@}, \lst{@@PREFIX@@} and \lst{@@GTL_LIBRARY@@}, which are later set by \spack to:
+We modify each of the wrappers by parameterizing them on three parameters -- \lst{@CC@}, \lst{@@PREFIX@@} and \lst{@@GTL_LIBRARY@@} --
+that are set by \spack when they are installed:
 \begin{itemize}
-    \item hard code the full path to the wrapped compiler
+    \item hard code the full path to the wrapped compiler;
     \item set paths \lst{prefix}, \lst{includedir}, to the cray-mpich \spack installation path;
     \item explicitly link \lst{-lmpi_gtl_cuda} \lst{-lmpi_gtl_hsa} when \craympich is built with the \lst{+cuda} or \lst{+rocm} variants respectively.
     % \item \begin{itemize}
