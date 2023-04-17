@@ -6,7 +6,7 @@ An obvious use case for the environments is single purpose clusters, for example
 Alternatively, the multiple use-case specific environments can be provided on general-purpose HPC clusters, and loaded according to the user's needs.
 
 This is at odds with the widely-adopted approach to providing software on \crayex systems, namely installing the Cray Programming Environment (CPE), and building use-case specific software not provided by CPE on a shared file system, as illustrated in~\fig{fig:stacks}(a).
-To date CSCS has provided such a one-size-fits-all environment, similarly to other HPC sites, using the EasyBuild to to provide additional software built and maintained by CSCS~\cite{forai:cug16}.
+To date CSCS has provided such a one-size-fits-all environment, similarly to other HPC sites, using EasyBuild to provide additional software built and maintained by CSCS~\cite{forai:cug16}.
 
 
 \begin{figure*}[htp!]
@@ -30,17 +30,17 @@ To date CSCS has provided such a one-size-fits-all environment, similarly to oth
 
 The CPE provides a very wide range of software -- including compilers, scientific libraries, communication libraries, debuggers and profiling tools -- all optimised for the node and network architecture of the system.
 The CPE continues to evolve and expand in response to changing requirements, for example adding software packages for ML/AI, with quarterly releases to address bugs, improve performance and add features.
-As such, while CPE a good general purpose environment for users, using it as a layer in HPC software stacks it is at odds with our aim of reducing the complexity of stacks.
+As such, while CPE is a good general purpose environment for users, using it as a layer in HPC software stacks is at odds with our aim of reducing the complexity of software stacks~:
 \begin{itemize}
     \item No single use-case or domain will use more than a small subset of the features provided by the CPE;
-    \item The CPE released on a quarterly cycle, so the lead time between identifying an issue and a fix available and tested on site can be expected to be in the order of 3-6 months;
+    \item The CPEs are released on a quarterly cycle, so the lead time between identifying an issue and a fix available and tested on site can be expected to be in the order of 3-6 months;
 \end{itemize}
 By striking a balance between long term stability and providing up-to date software versions, it can't satisfy use cases that require either.
 
 The work presented in this paper utilizes \spack and SquashFS images to build and deploy software stacks on top of a simplified base image that provides only the neccessarily vendor-specific libraries, e.g. libfabric, see~\fig{fig:stacks}.
 Such a base image is updated less frequently than CPE, so the frequency of rebuilds will be lower than if we built our stack on top of CPE, and the number of system dependencies that could require intervention are fewer.
 
-The result is compact, testable, reproducable and optimized software environments based on a descriptive recipe that can be updated independently of the CPE release cycle.
+The result is compact, testable, reproducible and optimized software environments based on a descriptive recipe that can be updated independently of the CPE release cycle.
 
 %\begin{enumerate}
 %    \item long term stability -- software stack configuration can be maintained for longer
