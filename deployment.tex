@@ -42,7 +42,7 @@ Clean up of the mount point and software stack is therefore performed automatica
 The plugin is freely available to the public\footnote{https://github.com/eth-cscs/slurm-uenv-mount}.
 
 We have designed the plugin to be as transparent to a user's workflow as possible.
-This reduces work for users and system administrators, as the plugin and squashfs-based software stack concept can easily be integrated into existingsystems and workflows.
+This reduces work for users and system administrators, as the plugin and squashfs-based software stack concept can easily be integrated into existing systems and workflows.
 In particular, the plugin works with squashfs-mount to detect which software stacks (and their mount points) are active.
 These are taken as default values to the plugin which will make them available on the head and compute nodes.
 A different stack can be specified as a command-line option to any of the SLURM submission commands (e.g., sbatch or srun).
