@@ -2,7 +2,23 @@
 \subsection{Squashfs artifacts}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\assign{Ben}
+The simplest way to deploy aoftware stack is to copy them to a path on a shared file system, for example if the site-policy is to install \lst{/apps/stacks/<env-name>}, the process for building a climate software stack \lst{climate-23.3} would be:
+\begin{enumerate}
+    \item configure the software stack with mount point \lst{/apps/stacks/climate-23.3}, and build in \lst{/dev/shm/build/climate-23.3}
+    \begin{itemize}
+        \item build in memory to reduce the build time compared to building on the shared file system.
+    \end{itemize}
+    \item copy \lst{/dev/shm/build/climate-23.3/store/*} to the location in \lst{/apps}.
+\end{enumerate}
+
+The downsides of this approach are that
+\begin{itemize}
+    \item depends on file system performance -- GPFS and LUSTRE file systems are not designed for the type of file access (many small files being opend and closed).
+    \item requires a large amount of storage
+    \item upgrading the version of requires changing the path in all scripts etc.
+    \item directory structure gets complicated
+    \item if we want to let users build their own stacks, they can't build in \lst{/apps}.
+\end{itemize}
 
 Each software stack is a compressed squashfs image of a directory containing the software, Spack configuration, modules and meta-data.
 The squashfs artifacts associated with a programming environment can be versioned, and mounted at the same location using command line utilities or SLURM plugins.
@@ -18,14 +34,15 @@ Other benefits of using a squashfs for images include:
 \subsection{CLI Utilities}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\assign{Simon and Ben}
+\assign{Harmen}
 
-We developed command line utilities for mounting squashfs images and configuring the environment.
+Discuss the command line utility for mounting squashfs images \lst{squashfs-mount}.
 
 \begin{itemize}
     \item squashfs-mount implementation
-    \item link to GitHub repository
     \item example of how it is used
+    \item link to GitHub repository
+    \item RPMs are provided ready to install on Cray EX.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
