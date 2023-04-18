@@ -62,7 +62,7 @@ benchmarks:
 \label{fig:gpu-A100-best}
 \begin{axis} [
     ybar, bar width = 3pt, symbolic x coords={1,2,3,4,6,8,9,12,16},
-    xtick = data, grid=major, legend pos=outer north east,
+    xtick = data, grid=major, % legend pos=outer north east,
     xlabel=Number of NVIDIA A100 gpus, ylabel={Iteration throughput per min},
     title={SPH-EXA Weak Scaling (higher is better)},
 ]
@@ -92,9 +92,7 @@ benchmarks:
     ybar, bar width = 3pt,    
     x = 0.4cm, % space between bars
     symbolic x coords={1,2,3,4,5,6,7,8,10,12,14,16,20,24,28,32,40,48,56},
-    xtick = data, 
-    grid=major,
-    legend pos=outer north east,
+    xtick = data, grid=major, % legend pos=outer north east,
     xlabel=Number of AMD MI200 gpus,
     ylabel={Iteration throughput per min},
     title={SPH-EXA Weak Scaling (higher is better)},
