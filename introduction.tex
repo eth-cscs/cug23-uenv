@@ -20,7 +20,7 @@ To date CSCS has provided such a one-size-fits-all environment, similarly to oth
     \caption{
         \textbf{(a)}:
         The "standard" HPE-EX software stack, with the Cray OS, drivers, CPE and some site software in the system image, site-provided software installed on a shared file system, and software installed by users that depends can depend on different software layers underneath.
-        The red arrows indicate where changes on one layer, can have a knock on effect on other software layers, requireing rebuilds or reconfiguration when they are changed.\\
+        The red arrows indicate where changes on one layer, can have a knock on effect on other software layers, requireing rebuilds or reconfiguration when they are changed.\newline
         \textbf{(b)}:
         The Alps software stack, with the programming environment moved out of the base image.
         Multiple programming environments can be deployed on top of this architecture, including the CPE and alternative PEs discussed in~\sect{sec:spack-stacks} that are mounted at runtime in a new mount namespace by users.
