@@ -66,6 +66,7 @@ The results show that the squashfs-based executables delivers competitive perfor
 \begin{tikzpicture}[scale=0.45]
 \label{fig:gpu-A100-best}
 \begin{axis} [
+    ymin = 0,
     ybar, bar width = 3pt, symbolic x coords={1,2,3,4,6,8,9,12,16},
     xtick = data, grid=major, % legend pos=outer north east,
     xlabel=Number of NVIDIA A100 gpus, ylabel={Iteration throughput per min},
@@ -87,6 +88,7 @@ The results show that the squashfs-based executables delivers competitive perfor
 \begin{tikzpicture}[scale=0.45]
 \label{fig:gpu-MI200-best}
 \begin{axis} [
+    ymin = 0,
     ybar, bar width = 3pt,    
     x = 0.4cm, % space between bars
     symbolic x coords={1,2,3,4,5,6,7,8,10,12,14,16,20,24,28,32,40,48,56},
