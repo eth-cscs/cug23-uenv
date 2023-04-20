@@ -2,7 +2,20 @@
 \subsection{Squashfs artifacts}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\assign{Ben}
+Software stacks can be deployed by copying them to a path on a shared file system, for example if the site-policy is to install \lst{/apps/stacks/<env-name>}, the process for building a climate software stack \lst{climate-23.3} would be:
+\begin{enumerate}
+    \item Configure the build with \lst{stack-config} with mount point \lst{/apps/stacks/climate-23.3}, and build in \lst{/dev/shm/build/climate-23.3}.
+        Note that we still build in memory to reduce the build time compared to building in place on the shared file system.
+    \item Once built, copy \lst{/dev/shm/build/climate-23.3/store/*} to \lst{/apps/stacks/climate-23.3}.
+\end{enumerate}
+
+There are some downsides to the approach of installing software stacks in shared file systems, namely:
+\begin{itemize}
+    \item The user-experience is affected by file system performance -- configuration and compilation access many small files which are not well-suited to GPFS and LUSTRE.
+    \item High memory overheads - a software stack with CUDA and NVHPC SDK can use between 30-40 GB of storage.
+    \item Upgrading the version of requires changing the path in all scripts etc.
+    \item if we want to let users build their own stacks, they can't build in \lst{/apps}.
+\end{itemize}
 
 Each software stack is a compressed squashfs image of a directory containing the software, Spack configuration, modules and meta-data.
 The squashfs artifacts associated with a programming environment can be versioned, and mounted at the same location using command line utilities or SLURM plugins.
@@ -18,14 +31,15 @@ Other benefits of using a squashfs for images include:
 \subsection{CLI Utilities}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\assign{Simon and Ben}
+\assign{Harmen}
 
-We developed command line utilities for mounting squashfs images and configuring the environment.
+Discuss the command line utility for mounting squashfs images \lst{squashfs-mount}.
 
 \begin{itemize}
     \item squashfs-mount implementation
-    \item link to GitHub repository
     \item example of how it is used
+    \item link to GitHub repository
+    \item RPMs are provided ready to install on Cray EX.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -34,7 +48,6 @@ We developed command line utilities for mounting squashfs images and configuring
 
 \assign{Simon and Jonathan}
 
-At CSCS, we employ the SLURM job scheduler.
 For a software stack to be available when a job runs, the stack must be mounted in the namespace of the process executing the submission script on the head node and a command launched on the compute nodes.
 To accomplish this we developed a SLURM plugin that will mount a software stack based upon the same namespace mechanism used by the command line utilities discussed earlier.
 As the mount point is not globally visible, nodes can be run multiple jobs with different stacks, either from the same user or different users.
@@ -60,14 +73,10 @@ Running on the login node:
 A SLURM submission script:
 \lstinputlisting[language=bash]{src/plugin-examples/change-env.sh}
 
+\todo{cover the following}
 \begin{itemize}
-    \item the slurm plugin workflow
-    \item plugin implementation
     \item installing the plugin
-    \begin{itemize}
-        \item provide any HPE XE-system specific details and workarounds
-    \end{itemize}
-    \item examples of using the plugin
+    \item provide any HPE XE-system specific details and workarounds
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
