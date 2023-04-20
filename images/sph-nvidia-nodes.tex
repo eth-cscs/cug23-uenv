@@ -3,12 +3,13 @@
             ymin = 0, ymax = 25,
             ybar, bar width = 16pt, symbolic x coords={1,2,3,4},
             xtick = data, grid=major, % legend pos=outer north east,
-            xlabel=Nodes, ylabel={Iterations per minute},
+            xlabel=NVIDIA A100 Nodes,
+            ylabel={Iterations per minute},
         ]
-            \addplot[fill=green!60] table[x=nodes, y=CPE_its_sec] {./data/sphexa/tbl/results-a100.tbl};
+            \addplot[fill=green!60] table[x=nodes, y=cpe_its_per_min] {./data/sphexa/tbl/results-a100.tbl};
             \addlegendentry{cpe/22.12}
 
-            \addplot[fill=orange!60] table[x=nodes, y=UENV_its_sec] {./data/sphexa/tbl/results-a100.tbl};
+            \addplot[fill=orange!60] table[x=nodes, y=uenv_its_per_min] {./data/sphexa/tbl/results-a100.tbl};
             \addlegendentry{uenv/22.12}
         \end{axis}
     \end{tikzpicture}

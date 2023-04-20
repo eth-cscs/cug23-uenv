@@ -54,7 +54,7 @@ Micro-benchmarks and application benchmarks that demonstrate equivalent performa
 
 The SPH-EXA\footnote{\url{https://github.com/unibas-dmi-hpc/SPH-EXA}} project is a multidisciplinary effort that looks to scale the Smoothed Particle Hydrodynamics (SPH) method to enable exascale hydrodynamics simulations for the fields of Cosmology and Astrophysics. 
 Figure \ref{fig:gpu-A100-best} shows the performance obtained for the MPI+OpenMP+CUDA and MPI+OpenMP+HIP codes executing the Sedov--Taylor\footnote{\url{https://doi.org/10.48550/arxiv.2202.02840}} blast wave explosion test case with $400^3$ particles per gpu and $40$ time-steps.
-The results show that the squashfs-based executables delivers competitive performance with that of the cpe based CPU executables on both NVIDIA A100 and AMD MI200 gpus.
+The results show that the squashfs-based executables delivers competitive performance with that of the cpe based CPU executables on both NVIDIA A100 and AMD MI250x gpus.
 
 \begin{figure*}[htp!]
     \begin{center}
