@@ -1,0 +1,16 @@
+\begin{tikzpicture}[scale=1]
+    \begin{axis} [
+        ymin = 0, ymax = 6.5,
+        ybar, bar width = 8pt,
+        %x = 0.4cm, % space between bars
+        symbolic x coords={1,2,3,4,5,6,7},
+        xtick = data, grid=major, % legend pos=outer north east,
+        xlabel=Nodes,
+        ylabel={Iteration per minute},
+    ]
+        \addplot[fill=green!60] table[x=nodes, y=cpe_its_sec] {./data/sphexa/tbl/results-mi250.tbl};
+        \addlegendentry{cpe/22.12}
+        \addplot[fill=orange!60] table[x=nodes, y=uenv_its_sec] {./data/sphexa/tbl/results-mi250.tbl};
+        \addlegendentry{uenv/22.12}
+    \end{axis}
+\end{tikzpicture}

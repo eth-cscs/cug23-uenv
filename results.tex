@@ -57,12 +57,18 @@ Figure \ref{fig:gpu-A100-best} shows the performance obtained for the MPI+OpenMP
 The results show that the squashfs-based executables delivers competitive performance with that of the cpe based CPU executables on both NVIDIA A100 and AMD MI200 gpus.
 
 \begin{figure*}[htp!]
-    \input{images/sph-nvidia.tex}
-    \hfill
-    \input{images/sph-amd.tex}
+    \begin{center}
+        \input{images/sph-nvidia-nodes.tex}
+        \hfill
+        \input{images/sph-amd-nodes.tex}
+        \newline
+        \textbf{(a)}
+        \hspace{7cm}
+        \textbf{(b)}
+    \end{center}
 
-    \caption{hello world}
-    \label{fig:gpu-MI200-best}
+    \caption{Weak scaling results on A100 and Mi250x GPU nodes for SPH-EXA (higher is better).}
+    \label{fig:shp-weak}
 \end{figure*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
