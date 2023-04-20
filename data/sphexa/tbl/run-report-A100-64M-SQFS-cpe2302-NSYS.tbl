@@ -1,0 +1,5 @@
+num-tasks num-tasks-per-node num-cpus-per-task system environment jid cn ntasks nsteps ncubeside np np-per-mpi elapsed mpich libcudart H2D-MB-max D2H-MB-max D2D-MB-max it-throughput-per-min
+   4    4 16 "clariden-uenv:nvgpu" "builtin"    2714    1    4   10    633  254840104   63710026      46.32 812416 11889  15781.5   8635.8  16819.4   13.0
+   8    4 16 "clariden-uenv:nvgpu" "builtin"    2713    2    8   10    798  510082399   63760299      41.70 812416 11889  18631.5   6592.5  16844.6   14.4
+  12    4 16 "clariden-uenv:nvgpu" "builtin"    2712    3   12   10    914  766060875   63838406      46.26 812416 11889  30833.5   8808.4  16878.5   13.0
+  16    4 16 "clariden-uenv:nvgpu" "builtin"    2711    4   16   10   1006 1021147343   63821708      48.48 812416 11889  30849.4   7201.0  16898.2   12.4

@@ -46,14 +46,30 @@ Quantify the memory overheads and affect on job startup time of mounting squashf
 
 Micro-benchmarks and application benchmarks that demonstrate equivalent performance to applications compiled with CPE on the same system.
 
-\todo{pick a couple of applications/micro-benchmarks to evaluate.}
+\noindent\textbf{MicroBenchmark: OSU}
 
-benchmarks:
-\begin{itemize}
-    \item OSU benchmarks \assign{Ben Theo}
-    \item SPH-EXA \assign{JG}
-    \item \dots other?
-\end{itemize}
+\todo{Ben and Theo}
+
+\noindent\textbf{Application Benchmark: SPH-EXA}
+
+The SPH-EXA\footnote{\url{https://github.com/unibas-dmi-hpc/SPH-EXA}} project is a multidisciplinary effort that looks to scale the Smoothed Particle Hydrodynamics (SPH) method to enable exascale hydrodynamics simulations for the fields of Cosmology and Astrophysics. 
+Figure \ref{fig:gpu-A100-best} shows the performance obtained for the MPI+OpenMP+CUDA and MPI+OpenMP+HIP codes executing the Sedov--Taylor\footnote{\url{https://doi.org/10.48550/arxiv.2202.02840}} blast wave explosion test case with $400^3$ particles per gpu and $40$ time-steps.
+The results show that the squashfs-based executables delivers competitive performance with that of the cpe based CPU executables on both NVIDIA A100 and AMD MI200 gpus.
+
+\begin{figure*}[htp!]
+    \begin{center}
+        \input{images/sph-nvidia-nodes.tex}
+        \hfill
+        \input{images/sph-amd-nodes.tex}
+        \newline
+        \textbf{(a)}
+        \hspace{7cm}
+        \textbf{(b)}
+    \end{center}
+
+    \caption{Weak scaling results on A100 and Mi250x GPU nodes for SPH-EXA (higher is better).}
+    \label{fig:shp-weak}
+\end{figure*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Tools}
@@ -65,6 +81,27 @@ benchmarks:
     \item demonstrate DDT
     \item demonstrate a profiler?
 \end{itemize}
+
+\subsubsection{Performance tools}
+
+\begin{table}[htp!]
+    \centering
+    \pgfplotstabletypeset[
+        precision=0,
+        every head row/.style={before row=\toprule,after row=\midrule},
+        col sep=space, columns={num-tasks, H2D-MB-max, D2H-MB-max, D2D-MB-max},
+        columns/num-tasks/.style={column name=A100},
+        columns/H2D-MB-max/.style={column name=H2D},
+        columns/D2H-MB-max/.style={column name=D2H},
+        columns/D2D-MB-max/.style={column name=D2D},
+    ]
+        {./data/sphexa/tbl/run-report-A100-64M-SQFS-cpe2302-NSYS.tbl}
+    \caption{hello world}
+    \label{table:nsys-A100}
+\end{table}
+
+Table \ref{table:nsys-A100} shows the amount of CUDA memory copies (in MB) reported by NVIDIA performance tool (Nsight Systems) for the Sedov--Taylor test case.
+The transfer sizes (in MB) for Host to Device (H2D), Device to Host (D2H) and Device to Device (D2D) for simulations with uenv and without uenv (cpe only) are equal, demonstrating that the performance tool can be used in both scenarios.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future work}

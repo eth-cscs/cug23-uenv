@@ -1,0 +1,18 @@
+    \begin{tikzpicture}[scale=0.8]
+        \begin{axis} [
+            ymin = 0,
+            ybar, bar width = 6pt, symbolic x coords={1,2,3,4,6,8,9,12,16},
+            xtick = data, grid=major, % legend pos=outer north east,
+            xlabel=Number of NVIDIA A100 gpus, ylabel={Iteration throughput per min},
+            title={SPH-EXA Weak Scaling (higher is better)},
+        ]
+            \addplot[fill=green!60] table[x=num_tasks, y=it_throughput_per_min] {./data/sphexa/tbl/run-report-A100-64M-CPE-cpe2212.tbl};
+            \addlegendentry{cpe/22.12}
+
+            %\addplot[fill=green] table[x=num_tasks, y=it_throughput_per_min] {./data/sphexa/tbl/run-report-A100-64M-SQFS-cpe2208.tbl};
+            %\addlegendentry{uenv/22.08}
+
+            \addplot[fill=orange!60] table[x=num_tasks, y=it_throughput_per_min] {./data/sphexa/tbl/run-report-A100-64M-SQFS-cpe2212.tbl};
+            \addlegendentry{uenv/22.12}
+        \end{axis}
+    \end{tikzpicture}

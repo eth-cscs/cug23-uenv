@@ -1,0 +1,17 @@
+\begin{tikzpicture}[scale=0.8]
+    \begin{axis} [
+        ymin = 0,
+        ybar, bar width = 3pt,
+        x = 0.4cm, % space between bars
+        symbolic x coords={1,2,3,4,5,6,7,8,10,12,14,16,20,24,28,32,40,48,56},
+        xtick = data, grid=major, % legend pos=outer north east,
+        xlabel=Number of AMD MI200 gpus,
+        ylabel={Iteration throughput per min},
+        title={SPH-EXA Weak Scaling (higher is better)},
+    ]
+        \addplot[fill=green!60] table[x=num_tasks, y=it_throughput_per_min] {./data/sphexa/tbl/run-report-MI200-64M-CPE-cpe2212.tbl};
+        \addlegendentry{cpe/22.12}
+        \addplot[fill=orange!60] table[x=num_tasks, y=it_throughput_per_min] {./data/sphexa/tbl/run-report-MI200-64M-SQFS-cpe2212.tbl};
+        \addlegendentry{uenv/22.12}
+    \end{axis}
+\end{tikzpicture}
