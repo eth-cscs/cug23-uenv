@@ -4,15 +4,38 @@ This section presents benchmarks and tests that demonstrate
 \subsection{Deployment productivity}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\assign{Ben}
+This benchmark tests the impact of optimisations to reduce build time of spack stacks described in~\sect{sec:faster-builds}, namely building in memory and caching previously-built packages.
 
-Benchmark the time to build and deploy a stack from scratch vs. with a build cache.
+For this demonstration, we built a software stack that has all of the dependencies required to develop Arbor~\cite{paper:arbor2019,software:arbor}, a Neuroscience application written in C++ and Python.
+Arbor has a extensive list of dependencies, including C++ libraries, Python and Python packages.
+
+We time the time taken to run make on a clean build, which includes the time taken to bootstrap Spack, concretise and build all of the packages and generate the compressed SquashFS image in four different scenarios:
+\begin{itemize}
+    \item \textbf{scratch}: Build on an HPE Cray ClusterStor E1000 Scratch file system.
+    \item \textbf{memory}: Build in \lst{/dev/shm}, i.e. \emph{in memory}.
+    \item \textbf{cache}: Build in \lst{/dev/shm} using a Spack build cache that has all of the packages 
+    \item \textbf{partial}: Build in \lst{/dev/shm} using a Spack build cache where the version of Python in the recipe is changed to a version that is not in the cache.
+\end{itemize}
+Scenario 2 quantifies the effect of building in memory, and scenarios 3 and 4 illustrate the additional benefits of using build caches.
+
+\begin{figure}[htp!]
+    \begin{center}
+        \input{images/image-build.tex}
+    \end{center}
+    \caption{The effect of building in memory and using Spack build caches on the time to build a complete Spack stack.}
+    \label{fig:image-build}
+\end{figure}
+
+\fig{fig:image-build} shows that building the image on Scratch takes 45 minutes, which is reduced to 26 minutes when building in memory -- a significant 1.7$\times$ reduction in build time.
+Less than 3 minutes are required when all packages are available in a build cache, and less than 10 minutes to build the full stack when the version of Python in the recipe changed, which required rebuilding over 30 packages, including Python, py-numpy and py-mpi4py, which are non-trivial to build.
+
+The \emph{partial} reflects the most common scenario, because the typical CI/CD and image development process requires rebuilding an image with small changes, so that only some of the packages need to be rebuilt between runs.
+Furthermore, the bootstrap and compiler toolchains are typically identical between different images -- e.g. once GCC 11.3.0 has been built for one stack, it can be reused without change in another.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Developer productivity}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\assign{Ben}
 
 Squashfs deployment reduces configuration and compilation times compared to serving the same stack on a shared filesystem;
 
