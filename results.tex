@@ -97,12 +97,29 @@ The results show that the squashfs-based executables delivers competitive perfor
         columns/D2D-MB-max/.style={column name=D2D},
     ]
         {./data/sphexa/tbl/run-report-A100-64M-SQFS-cpe2302-NSYS.tbl}
-    \caption{hello world}
+    \caption{CUDA memcpy}
     \label{table:nsys-A100}
 \end{table}
 
 Table \ref{table:nsys-A100} shows the amount of CUDA memory copies (in MB) reported by NVIDIA performance tool (Nsight Systems) for the Sedov--Taylor test case.
 The transfer sizes (in MB) for Host to Device (H2D), Device to Host (D2H) and Device to Device (D2D) for simulations with uenv and without uenv (cpe only) are equal, demonstrating that the performance tool can be used in both scenarios.
+
+\begin{table}[htp!]
+    \centering
+    \pgfplotstabletypeset[
+        precision=2,
+        every head row/.style={before row=\toprule,after row=\midrule},
+        col sep=space, columns={cn, pctmpi_cpe1, pctmpi_cpe2, pctmpi_uenv1, pctmpi_uenv2},
+        columns/pctmpi_cpe1/.style={column name=$\% CPE_{try1}$},
+        columns/pctmpi_cpe2/.style={column name=$\% CPE_{try2}$},
+        columns/pctmpi_uenv1/.style={column name=$\% UENV_{try1}$},
+        columns/pctmpi_uenv2/.style={column name=$\% UENV_{try2}$},
+    ]
+        {./data/sphexa/mpi/amdepyc_7a53-mpi.tbl}
+    \caption{MPI $\%$, AMD 7A53 cpu}
+    \label{table:mpi}
+\end{table}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future work}
