@@ -1,42 +1,96 @@
-This section presents benchmarks and tests that demonstrate 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Deployment productivity}
+\subsection{Efficient Deployment}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\assign{Ben}
+This benchmark tests the impact of optimisations to reduce build time of spack stacks described in~\sect{sec:faster-builds}, namely building in memory and caching previously-built packages.
 
-Benchmark the time to build and deploy a stack from scratch vs. with a build cache.
+For this demonstration, we built a software stack that has all of the dependencies required to develop Arbor~\cite{paper:arbor2019,software:arbor}, a Neuroscience application written in C++ and Python.
+Arbor has a extensive list of dependencies, including C++ libraries, Python and Python packages.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Developer productivity}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\assign{Ben}
-
-Squashfs deployment reduces configuration and compilation times compared to serving the same stack on a shared filesystem;
-
-Benchmark configuration time and build time with the same stack stored in different locations:
+We time the time taken to run make on a clean build, which includes the time taken to bootstrap Spack, concretise and build all of the packages and generate the compressed SquashFS image in four different scenarios:
 \begin{itemize}
-    \item mounted with squashfs-run
-    \item in memory, i.e. \lstinline|/dev/shm|
-    \item on scratch.
+    \item \textbf{scratch}: Build on an HPE Cray ClusterStor E1000 Scratch file system.
+    \item \textbf{memory}: Build in \lst{/dev/shm}, i.e. \emph{in memory}.
+    \item \textbf{cache}: Build in \lst{/dev/shm} using a Spack build cache that has all of the packages 
+    \item \textbf{partial}: Build in \lst{/dev/shm} using a Spack build cache where the version of Python in the recipe is changed to a version that is not in the cache.
 \end{itemize}
+Scenario 2 quantifies the effect of building in memory, and scenarios 3 and 4 illustrate the additional benefits of using build caches.
 
-For the following:
-\begin{itemize}
-    \item simple hello world
-    \item medium complexity application (Arbor)
-    \item complex application, e.g. DLA-F
-\end{itemize}
+\begin{figure}[htp!]
+    \begin{center}
+        \input{images/image-build.tex}
+    \end{center}
+    \caption{The effect of building in memory and using Spack build caches on the time to build a complete Spack stack.}
+    \label{fig:image-build}
+\end{figure}
+
+\fig{fig:image-build} shows that building the image on Scratch takes 45 minutes, which is reduced to 26 minutes when building in memory -- a significant 1.7$\times$ reduction in build time.
+Less than 3 minutes are required when all packages are available in a build cache, and less than 10 minutes to build the full stack when the version of Python in the recipe changed, which required rebuilding over 30 packages, including Python, py-numpy and py-mpi4py, which are non-trivial to build.
+
+The \emph{partial} reflects the most common scenario, because the typical CI/CD and image development process requires rebuilding an image with small changes, so that only some of the packages need to be rebuilt between runs.
+Furthermore, the bootstrap and compiler toolchains are typically identical between different images -- e.g. once GCC 11.3.0 has been built for one stack, it can be reused without change in another.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Overheads}
+\subsection{Developer Productivity}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\assign{Ben}
+We now test whether using compilers and libraries installed via SquashFS has any impact on the time taken to configure applications on the command line, which has a direct impact on developer productivity.
+In these tests we will use the Arbor programming environment used in the previous tests -- where the environment is installed in three different ways:
+\begin{enumerate}
+    \item \textbf{squashfs}: a SquashFS image mounted at \lst{/user-environment}.
+    \item \textbf{scratch}: installed on the Scratch file system.
+    \item \textbf{memory}: stored in \lst{/dev/shm} and mounted at \lst{/user-environment} with Bubblewrap.
+\end{enumerate}
 
-Quantify the memory overheads and affect on job startup time of mounting squashfs images on compute nodes at the start of SLURM jobs;
+First, we look at the time required to compile a single ``hello world'' C and C++ files using the GNU compiler provided by the stack:
+
+\noindent\texttt{hello.c}:
+\lstinputlisting[language=c++]{src/hello.c}
+\noindent\texttt{hello.cpp}:
+\lstinputlisting[language=c++]{src/hello.cpp}
+
+As illustrated in~\tbl{tbl:hello-world-compile}, the compilation times are within 1\% when the compiler toolchain is in memory or mounted via SquashFS, and between 4-11\% slower when the toolchain is installed on the Scratch filesystem.
+\begin{table}[hp!]
+    \begin{center}
+        \begin{tabular}{l | l l l}
+                & squashfs & scratch & memory \\
+                \hline
+            C   &  31.1 &  34.7 ($+ 11\%$) &  31.2 ($ < 1 \%$) \\
+            C++ & 266   & 276   ($+3.8\%$) & 264   ($ < 1 \%$) \\
+        \end{tabular}
+    \end{center}
+    \caption{The time taken (in ms) to compile simple hello world C and C++ files using the programming stack installed in different locations.}
+    \label{tbl:hello-world-compile}
+\end{table}
+    
+A more involved example is to build Arbor using the stack developed above.
+This is broken into two steps:
+\begin{enumerate}
+    \item \textbf{configure}: run CMake to configure a build with MPI and Python enabled, and use generated build files for Ninja: \lst{CC=mpicc CXX=mpic++ cmake ../arbor -DARB_WITH_MPI=on -DARB_WITH_PYTHON=on -G Ninja}.
+    \item \textbf{build}: run Ninja to build Arbor.
+\end{enumerate}
+
+To isolate the file system overheads of accessing the stack, the Arbor source code and build path are in \lst{/dev/shm}.
+The results in~\tbl{tbl:arbor-compile} show that the SquashFS mount and in memory are equivalent, which there is a performance penalty of between 8-23\% on Scratch.
+
+\begin{table}[hp!]
+    \begin{center}
+        \begin{tabular}{l | l l l}
+                        & squashfs & scratch & memory \\
+                \hline
+            configure   & 2.52    & 3.09 ($+23\%$)  & 2.53 ($<1\%$) \\
+            build       & 33.9    & 36.7 ($+8\%$)   & 33.8 ($<1\%$) \\
+        \end{tabular}
+    \end{center}
+    \caption{The time taken (in s) to configure and build Arbor.}
+    \label{tbl:arbor-compile}
+\end{table}
+
+
+We note the tests in this section were run when the file system was not in heavy use, and smaller differences were observed when tested on a flash-based Lustre store, so the performance gains of using SquashFS are modest.
+However, in our experience performance of workloads that access many files in a SquashFS stack is very consistent, regardless of load on the system, and when the SquashFS image itself is stored in Scratch.
+On the other hand, compilation and configuration times vary greatly for software stacks installed on Lustre or GPFS filesystems -- when the file system is under heavy load compilation can be much slower.
+As such, SquashFS is both faster and more consistent and predictable than installing software on shared file systems, improving the quality of the user experience on our systems.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Benchmarks and Applications}
@@ -119,7 +173,6 @@ The transfer sizes (in MB) for Host to Device (H2D), Device to Host (D2H) and De
     \caption{MPI $\%$, AMD 7A53 cpu}
     \label{table:mpi}
 \end{table}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future work}

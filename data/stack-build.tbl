@@ -1,0 +1,5 @@
+run     id  time-s time-m   speedup
+Scratch 1   2714   45:14       1.00
+RAM     2   1566   26:06       1.74
+Cache   3    145    2:25      18.72
+Partial 4    487    8:07       5.57

@@ -1,0 +1,24 @@
+\begin{tikzpicture}[scale=1]
+    \begin{axis} [
+        ymin = 0, ymax=3000,
+        ybar, bar width = 18pt,
+        %symbolic x coords={1,2,3,4},
+        grid=major,
+        xtick = {1,2,3,4},
+        xticklabels = {scratch, memory, cache, partial},
+        ylabel={build time (s)},
+        nodes near coords,
+        nodes near coords style={fill=white},
+    ]
+        \addplot[fill=orange!30] table[x=id, y=time-s] {./data/stack-build.tbl};
+        \draw[line width=2pt, ->] (axis cs:2,1866) -- (axis cs:2,2714);
+        \draw[line width=2pt, ->] (axis cs:3,1566) -- (axis cs:3,445);
+        \draw[line width=2pt, ->] (axis cs:4,1566) -- (axis cs:4,787);
+        \node[fill=white] () at (axis cs:2,2200) {\bfseries 1.7x};
+        \node[fill=white] () at (axis cs:3,1000) {\bfseries 10.8x};
+        \node[fill=white] () at (axis cs:4,1200) {\bfseries 3.2x};
+
+        %\draw (s1_t.center) -- (s1_b.center);
+    \end{axis}
+\end{tikzpicture}
+
