@@ -1,0 +1,6 @@
+num_tasks num_tasks_per_node num_cpus_per_task system environment jid cn ntasks nsteps ncubeside np np_per_mpi elapsed mpich libcudart it_throughput_per_min
+   4    4 16 "clariden:amdgpu" "PrgEnv-gnu"    4081    1    4    5    481  111980168   27995042     188.38 812111 -1   1.593
+   8    4 16 "clariden:amdgpu" "PrgEnv-gnu"    4080    2    8    5    606  223648543   27956067     187.84 812111 -1   1.597
+  16    4 16 "clariden:amdgpu" "PrgEnv-gnu"    4079    4   16    5    764  447697125   27981070     182.28 812111 -1   1.646
+  32    4 16 "clariden:amdgpu" "PrgEnv-gnu"    4078    8   32    5    963  895841344   27995042     197.85 812111 -1   1.516
+  48    4 16 "clariden:amdgpu" "PrgEnv-gnu"    4077   12   48    5   1102 1341919727   27956660     195.48 812111 -1   1.535

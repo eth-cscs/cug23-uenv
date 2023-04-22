@@ -121,9 +121,20 @@ The results show that the squashfs-based executables delivers competitive perfor
         \hspace{7cm}
         \textbf{(b)}
     \end{center}
-
     \caption{Weak scaling results on A100 and Mi250x GPU nodes for SPH-EXA (higher is better).}
     \label{fig:sph-weak}
+\end{figure*}
+
+Figure \ref{fig:sph-weak-cpu} shows the performance obtained for the MPI+OpenMP version of the code with $400^3$ particles per compute node.
+
+\begin{figure*}[htp!]
+    \begin{center}
+        \input{images/sph-amdcpu-nodes.tex}
+        \hfill
+        % \textbf{(a)}
+    \end{center}
+    \caption{Weak scaling results on AMD CPU nodes for SPH-EXA (higher is better).}
+    \label{fig:sph-weak-cpu}
 \end{figure*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
