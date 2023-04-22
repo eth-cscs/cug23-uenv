@@ -1,0 +1,17 @@
+\begin{tikzpicture}[scale=1]
+    \begin{axis} [
+        ymin = 0, % ymax = 6.5,
+        ybar, bar width = 8pt,
+        %x = 0.4cm, % space between bars
+        symbolic x coords={1,2,4,8,12},
+        xtick = data, grid=major, legend pos=outer north east,
+        xlabel=AMD EPYC\_7A53 CPU Nodes,
+        ylabel={Iterations per minute},
+    ]
+        \addplot[fill=green!60] table[x=cn, y=it_throughput_per_min] {./data/sphexa/cpu/notool-cpe2212-cpe.tbl};
+        \addlegendentry{cpe/22.12}
+        %
+        \addplot[fill=orange!60] table[x=cn, y=it_throughput_per_min] {./data/sphexa/cpu/notool-cpe2212-uenv.tbl};
+        \addlegendentry{uenv/22.12}
+    \end{axis}
+\end{tikzpicture}
