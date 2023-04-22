@@ -107,8 +107,9 @@ Micro-benchmarks and application benchmarks that demonstrate equivalent performa
 \noindent\textbf{Application Benchmark: SPH-EXA}
 
 The SPH-EXA\footnote{\url{https://github.com/unibas-dmi-hpc/SPH-EXA}} project is a multidisciplinary effort that looks to scale the Smoothed Particle Hydrodynamics (SPH) method to enable exascale hydrodynamics simulations for the fields of Cosmology and Astrophysics. 
-Figure \ref{fig:gpu-A100-best} shows the performance obtained for the MPI+OpenMP+CUDA and MPI+OpenMP+HIP codes executing the Sedov--Taylor\footnote{\url{https://doi.org/10.48550/arxiv.2202.02840}} blast wave explosion test case with $400^3$ particles per gpu and $40$ time-steps.
-The results show that the squashfs-based executables delivers competitive performance with that of the cpe based CPU executables on both NVIDIA A100 and AMD MI200 gpus.
+This section focuses on comparing the behavior of the code built with and without the stackinator tool. For this, we constructed two base images: one for NVIDIA GPUs and one for AMD GPUs. The compiler and libraries included in these images were based on cpe/22.12, specifically cray-mpich/8.1.21, in addition to gcc/11.x and either cuda/11.8 or hip/5.2. Next, we mounted the images to access the compiler and libraries for building our MPI+OpenMP+CUDA and MPI+OpenMP+HIP versions of the code. Finally, we executed the executables and compared the results with those of the same code built with the Cray Programming Environment.
+Figure \ref{fig:sph-weak} shows the performance obtained for the codes executing the Sedov--Taylor\footnote{\url{https://doi.org/10.48550/arxiv.2202.02840}} blast wave explosion test case with $400^3$ particles per gpu and $40$ time-steps.
+The results show that the squashfs-based executables delivers competitive performance with that of the cpe based executables on both NVIDIA A100 and AMD MI250x gpus.
 
 \begin{figure*}[htp!]
     \begin{center}
@@ -122,7 +123,7 @@ The results show that the squashfs-based executables delivers competitive perfor
     \end{center}
 
     \caption{Weak scaling results on A100 and Mi250x GPU nodes for SPH-EXA (higher is better).}
-    \label{fig:shp-weak}
+    \label{fig:sph-weak}
 \end{figure*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -149,13 +150,29 @@ The results show that the squashfs-based executables delivers competitive perfor
         columns/D2H-MB-max/.style={column name=D2H},
         columns/D2D-MB-max/.style={column name=D2D},
     ]
-        {./data/sphexa/tbl/run-report-A100-64M-SQFS-cpe2302-NSYS.tbl}
-    \caption{xxx}
+        {./data/sphexa/gpu/run-report-A100-64M-SQFS-cpe2302-NSYS.tbl}
+    \caption{CUDA memcpy}
     \label{table:nsys-A100}
 \end{table}
 
 Table \ref{table:nsys-A100} shows the amount of CUDA memory copies (in MB) reported by NVIDIA performance tool (Nsight Systems) for the Sedov--Taylor test case.
 The transfer sizes (in MB) for Host to Device (H2D), Device to Host (D2H) and Device to Device (D2D) for simulations with uenv and without uenv (cpe only) are equal, demonstrating that the performance tool can be used in both scenarios.
+
+\begin{table}[htp!]
+    \centering
+    \pgfplotstabletypeset[
+        precision=2,
+        every head row/.style={before row=\toprule,after row=\midrule},
+        col sep=space, columns={cn, pctmpi_cpe1, pctmpi_cpe2, pctmpi_uenv1, pctmpi_uenv2},
+        columns/pctmpi_cpe1/.style={column name=$\% CPE_{try1}$},
+        columns/pctmpi_cpe2/.style={column name=$\% CPE_{try2}$},
+        columns/pctmpi_uenv1/.style={column name=$\% UENV_{try1}$},
+        columns/pctmpi_uenv2/.style={column name=$\% UENV_{try2}$},
+    ]
+        {./data/sphexa/mpi/amdepyc_7a53-mpi.tbl}
+    \caption{MPI $\%$, AMD 7A53 cpu}
+    \label{table:mpi}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future work}
