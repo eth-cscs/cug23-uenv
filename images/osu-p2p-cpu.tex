@@ -1,0 +1,25 @@
+    \begin{tikzpicture}[scale=1]
+        \begin{loglogaxis} [
+            xmin = 1, xmax = 4194304,
+            ymax = 40000,
+            ymin = 0.1,
+            height=0.3\textwidth,
+            width=0.45\textwidth,
+            ytick={0.1,1,10,100,1000,10000},
+            yticklabels={0.1,1,10,100,1000,10000},
+            xtick={1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192, 16384,  32768,  65536,  131072, 262144, 524288, 1048576, 2097152, 4194304},
+            xticklabels={1,2,4,8,16,32,64,128,256,512,1k,2k,4k,8k,16k,32k,64k,128k,256k,512k,1M,2M,4M},
+            x tick label style={rotate=60,anchor=east},
+            axis line style=very thick,
+            ylabel=Bandwidth (MB/s),
+            xlabel=Message Size,
+            legend style = {at={(0.95,0.05)}, anchor=south east},
+            grid=major
+        ]
+            \addplot[color=green!70!black,mark=*,thick] table[x=bytes, y=cpe-cpu-bw] {./data/osu/p2p.tbl};
+            \addlegendentry{cpe/cpu}
+            \addplot[color=orange,mark=x,very thick] table[x=bytes, y=sq-cpu-bw] {./data/osu/p2p.tbl};
+            \addlegendentry{uenv/cpu}
+        \end{loglogaxis}
+    \end{tikzpicture}
+

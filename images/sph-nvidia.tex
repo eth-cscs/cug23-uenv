@@ -9,9 +9,6 @@
             \addplot[fill=green!60] table[x=num_tasks, y=it_throughput_per_min] {./data/sphexa/tbl/run-report-A100-64M-CPE-cpe2212.tbl};
             \addlegendentry{cpe/22.12}
 
-            %\addplot[fill=green] table[x=num_tasks, y=it_throughput_per_min] {./data/sphexa/tbl/run-report-A100-64M-SQFS-cpe2208.tbl};
-            %\addlegendentry{uenv/22.08}
-
             \addplot[fill=orange!60] table[x=num_tasks, y=it_throughput_per_min] {./data/sphexa/tbl/run-report-A100-64M-SQFS-cpe2212.tbl};
             \addlegendentry{uenv/22.12}
         \end{axis}
