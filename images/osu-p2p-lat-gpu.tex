@@ -15,7 +15,7 @@
             legend style = {at={(0.05,0.95)}, anchor=north west},
             grid=major
         ]
-            \addplot[color=green!40!black,mark=*, very thick]
+            \addplot[color=green!40!black,mark=square*,mark options={fill=white}, very thick]
                 table[x=bytes, y=cpe-gpu-lat] {./data/osu/p2p.tbl};
             \addlegendentry{cpe/gpu}
             \addplot[color=orange!90!black,mark=*,mark options={fill=white}, very thick]
