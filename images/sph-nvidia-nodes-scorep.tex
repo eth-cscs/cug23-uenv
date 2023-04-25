@@ -1,0 +1,27 @@
+\begin{tikzpicture}[
+    /pgfplots/every axis/.style={
+    ybar stacked, bar width=4pt, x=0.4cm, % space between bars
+    ymax=100,
+    legend pos=outer north east,
+    xlabel=Nodes, xtick=data,
+    ylabel={Runtime percentage}, 
+    symbolic x coords={1,1.1, 2,2.1, 4,4.1, 8,8.1, 12,12.1},
+    % legend style = {at={(0.5, 0.5)}, anchor=center},
+    },
+]
+
+\begin{axis}[bar shift=-6pt]
+    \addplot table[x=cn, y=usr_cpe] {data/sphexa/scorep/results-A100.tbl};
+    \addplot table[x=cn, y=omp_cpe] {data/sphexa/scorep/results-A100.tbl};
+    \addplot table[x=cn, y=mpi_cpe] {data/sphexa/scorep/results-A100.tbl};
+    \addplot table[x=cn, y=com_cpe] {data/sphexa/scorep/results-A100.tbl};
+\end{axis}
+
+\begin{axis}[bar shift=0pt,hide axis]
+    \addplot+[] table[x=cn, y=usr_uenv] {data/sphexa/scorep/results-A100.tbl};
+    \addplot+[] table[x=cn, y=omp_uenv] {data/sphexa/scorep/results-A100.tbl};
+    \addplot+[] table[x=cn, y=mpi_uenv] {data/sphexa/scorep/results-A100.tbl};
+    \addplot+[] table[x=cn, y=com_uenv] {data/sphexa/scorep/results-A100.tbl};
+    \legend{{\% USR: cpe, uenv}, {\% OMP: cpe, uenv}, {\% MPI: cpe, uenv}, {\% COM: cpe, uenv}}
+\end{axis}
+\end{tikzpicture}
