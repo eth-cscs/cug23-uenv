@@ -1,0 +1,12 @@
+export LOCAL_RANK=$SLURM_LOCALID
+export GLOBAL_RANK=$SLURM_PROCID
+
+export GPUS=(3 2 1 0)
+export NUMA_NODE=$LOCAL_RANK
+export CUDA_VISIBLE_DEVICES=${GPUS[$NUMA_NODE]}
+
+export MPICH_GPU_SUPPORT_ENABLED=1
+
+numactl --cpunodebind=$NUMA_NODE \
+	--membind=$NUMA_NODE \
+	$exe
