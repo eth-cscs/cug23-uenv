@@ -1,0 +1,26 @@
+    \begin{tikzpicture}[scale=1]
+        \begin{loglogaxis} [
+            height=6cm, width=8.5cm,
+            xmin = 1, xmax = 4194304,
+            ymax = 200, ymin=1,
+            ytick={1,10,100},
+            yticklabels={1,10,100},
+            xtick={1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192, 16384,  32768,  65536,  131072, 262144, 524288, 1048576, 2097152, 4194304},
+            xticklabels={1,2,4,8,16,32,64,128,256,512,1k,2k,4k,8k,16k,32k,64k,128k,256k,512k,1M,2M,4M},
+            x tick label style={rotate=60,anchor=east},
+            axis line style=very thick,
+            ylabel=Latency ($\mu$s),
+            xlabel=Message Size,
+            title=\large \bf osu\_latency Rome,
+            legend style = {at={(0.05,0.95)}, anchor=north west},
+            grid=major
+        ]
+            \addplot[color=green!40!black,mark=*, very thick]
+                table[x=bytes, y=cpe-cpu-lat] {./data/osu/p2p.tbl};
+            \addlegendentry{cpe/cpu}
+            \addplot[color=orange!90!black,mark=*,mark options={fill=white}, very thick]
+                table[x=bytes, y=sq-cpu-lat] {./data/osu/p2p.tbl};
+            \addlegendentry{uenv/cpu}
+
+        \end{loglogaxis}
+    \end{tikzpicture}

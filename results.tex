@@ -96,13 +96,27 @@ As such, SquashFS is both faster and more consistent and predictable than instal
 \subsection{Benchmarks and Applications}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\assign{JG (SPH-EXA), Antonk}
-
 Micro-benchmarks and application benchmarks that demonstrate equivalent performance to applications compiled with CPE on the same system.
 
 \noindent\textbf{MicroBenchmark: OSU}
 
-\todo{Ben and Theo}
+\begin{figure*}[htp!]
+    \begin{center}
+        \input{images/osu-p2p-bw-gpu.tex}
+        \hfill
+        \input{images/osu-p2p-bw-cpu.tex}
+        \newline
+        \input{images/osu-p2p-lat-gpu.tex}
+        \hfill
+        \input{images/osu-p2p-lat-cpu.tex}
+        \newline
+        \input{images/osu-a2a-lat-gpu.tex}
+        \hfill
+        \input{images/osu-a2a-lat-cpu.tex}
+    \end{center}
+    \caption{OSU point-to-point bandwidth benchmark for device-device (top) and host-host (bottom) transfers using cray-mpich installed as part of a spack stack (uenv) and CPE.}
+    \label{fig:osu}
+\end{figure*}
 
 \noindent\textbf{Application Benchmark: SPH-EXA}
 
