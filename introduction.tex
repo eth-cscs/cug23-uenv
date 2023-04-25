@@ -1,8 +1,8 @@
 CSCS is deploying isolated clusters (vClusters) on the \crayex system Alps, to provide services to a wider range of user domains, each with their own software, security, reliability and scaling requirements.
 The vClusters can be customized for the target use cases, as an alternative to providing one large system with a ``one size fits all'' programming environment, storage and job scheduler configuration.
 
-CSCS aims to reduce the complexity of the software installed on each cluster by providing use case-specific user environments on vClusters; specifically by providing the smallest possible set of compilers, libraries and tools optimized for each use case's requirements, node architecture and the Slingshot 11 interconnect.
-An obvious use case for the environments is single purpose clusters, for example for the weather service's production cluster.
+CSCS aims to reduce the complexity of the software installed on each cluster by providing use case-specific user environments; specifically by providing the smallest possible set of compilers, libraries and tools optimized for each use case's requirements, node architecture and the Slingshot 11 interconnect.
+An obvious use case for the environments is single purpose clusters, for example for the Swiss weather service's production cluster.
 Alternatively, the multiple use-case specific environments can be provided on general-purpose HPC clusters, and loaded according to the user's needs.
 
 This is at odds with the widely-adopted approach to providing software on \crayex systems, namely installing the Cray Programming Environment (CPE), and building use-case specific software not provided by CPE on a shared file system, as illustrated in~\fig{fig:stacks}(a).
@@ -33,12 +33,12 @@ The CPE continues to evolve and expand in response to changing requirements, for
 As such, while CPE is a good general purpose environment for users, using it as a layer in HPC software stacks is at odds with our aim of reducing the complexity of software stacks~:
 \begin{itemize}
     \item No single use-case or domain will use more than a small subset of the features provided by the CPE;
-    \item The CPEs are released on a quarterly cycle, so the lead time between identifying an issue and a fix available and tested on site can be expected to be in the order of 3-6 months;
+    \item Due to the CPE's quarterly cycle, the lead time between identifying an issue and a fix available and tested on site can be expected to be in the order of 3-6 months;
 \end{itemize}
-By striking a balance between long term stability and providing up-to date software versions, it can't satisfy use cases that require either.
+By striking a balance between long term stability and providing up-to date software versions, CPE can't fully satisfy use cases that require either.
 
-The work presented in this paper utilizes \spack and SquashFS images to build and deploy software stacks on top of a simplified base image that provides only the neccessarily vendor-specific libraries, e.g. libfabric, see~\fig{fig:stacks}.
-Such a base image is updated less frequently than CPE, so the frequency of rebuilds will be lower than if we built our stack on top of CPE, and the number of system dependencies that could require intervention are fewer.
+The work presented in this paper utilizes \spack and SquashFS images to build and deploy software stacks on top of a simplified base image that provides only the neccessarily vendor-specific libraries, for example libfabric, as illustrated in \fig{fig:stacks}(b).
+Such a base image is updated less frequently than CPE, so software stacks have to be rebuilt less frequently than if for stacks that depend on CPE, with fewer system dependencies that could require intervention.
 
 The result is compact, testable, reproducible and optimized software environments based on a descriptive recipe that can be updated independently of the CPE release cycle.
 
