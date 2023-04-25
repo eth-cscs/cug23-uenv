@@ -1,7 +1,7 @@
-We developed a workflow and tooling for building use-case-specific PE stacks, on top of a base node image with CrayOS and core dependencies such as libfabric and Slurm, without CPE installed.
+This section introduces a workflow and tooling for building use-case-specific PE stacks on top of a base node image with CrayOS and core dependencies such as libfabric and Slurm, that does not require the CPE.
 
-The main tool is \href{https://github.com/eth-cscs/stackinator}{\stackinator}, which uses \spack~\cite{gamblin:sc15} to build complete PEs in a directory, which can then be deployed as SquashFS images or as directories on a shared file system.
-\stackinator is an open-source Python application, that is \emph{opinionated}\footnote{minimal changes are required to generate stacks for other systems -- a version that generates stacks for AWS Gravitron 3 clusters was created in a hackathon.}, in the sense that it:
+The main tool is \href{https://github.com/eth-cscs/stackinator}{\stackinator}, which uses \spack~\cite{gamblin:sc15} to build a complete PE stack in a directory, which can then be deployed as SquashFS images or as directories on a shared file system.
+\stackinator is an open-source Python application, that is \emph{opinionated}\footnote{minimal changes are required to generate stacks for other systems -- a version that generates stacks for AWS Gravitron 3 clusters was created in a hackathon.} for targeting the vClusters on Alps, in the sense that it:
 \begin{itemize}
     \item makes design decisions that focus on reproducability and performance tuning for the target SlingShot 11 network and node architectures available on Alps;
     \item provides limited configuration options for compilers -- the tool configures the full compiler spec according to CSCS best practices;
@@ -14,7 +14,8 @@ The following sections describe the workflow, from recipe to squashfs-images, an
 \subsection{Stack Specification}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The discussion of the \spack recipes motivated will be motivated by an example stack for development on Cray EX EX235n nodes, with NVIDIA A100 GPUs and AMD Zen3 Epyc CPUs. The stack supports development of GPU-aware MPI applications with both GCC and CUDA, and applications with NVIDIA HPC SDK with OpenACC, and is a stripped down version of a software stack that CSCS provides to the Swiss National Weather Service (MeteoSwiss) on Alps, specifically:
+The discussion of the \spack recipes motivated will be motivated by an example stack for development on Cray EX EX235n nodes, with NVIDIA A100 GPUs and AMD Zen3 Epyc CPUs.
+The stack supports development of GPU-aware MPI applications with both GCC and CUDA, and applications with NVIDIA HPC SDK with OpenACC, and is a stripped down version of a software stack that CSCS provides to the Swiss National Weather Service (MeteoSwiss) on Alps, specifically:
 \begin{itemize}
     \item A GCC 11.3 compiler tool chain.
     \item An NVHPC 22.7 compiler tool chain.
@@ -22,15 +23,17 @@ The discussion of the \spack recipes motivated will be motivated by an example s
     \item An NVHPC programming environment \lst{openac-env} with CUDA-aware \craympich, OSU Benchmarks and CUDA 11.8.
 \end{itemize}
 
-Spack stacks are generated from a descriptive YAML file recipe, composed of the following:
+\stackinator stacks are generated from a descriptive YAML file recipe, composed of the following:
 \begin{itemize}
     \item  \lstinline{config.yaml}:
         \lstinputlisting[language=yaml]{src/nv-recipe/config.yaml}
-        Used to specify where the image will be installed/mounted (the CSCS default is \emph{/user-environment}), the version of \spack and optional configuration for a \spack build cache. Reproducible builds use a fixed version/commit of \spack, and rolling releases use the \lst{develop} branch of \spack.
-    \item \lstinline{compilers.yaml} describes the compiler tool chains:
+        Used to specify where the image will be installed/mounted (the CSCS default is \emph{/user-environment}), the version of \spack and optional configuration for a \spack build cache. Reproducible builds use a version tag, release branch of a specific commit of \spack. A rolling release can be configured by using the \lst{develop} branch of \spack, which will build with the most up to date \spack recipes.
+    \item \lstinline{compilers.yaml} describes the compiler tool chains that will be provided by the stack:
         \lstinputlisting[language=yaml]{src/nv-recipe/compilers.yaml}
-        The bootstrap and GCC tool chains are mandatory, and it is allowed to specify more than one version of GCC.
-        The LLVM tool chain is optional, with support for installing multiple versions of the NVIDIA HPC-SDK and LLVM/Clang.
+        The bootstrap version of GCC is built using the system compiler (GCC 7.5 at the time of writing) is not provided as a module or part of the Spack upstream presented to users, instead it is used to build the subsequent GCC compiler toolchains.
+        This step is required to ensure that GCC is built using a compiler that can generate instructions optimised for the target Zen2 and Zen3 micro-architecture CPUs.
+        It is also mandatory to specify at least one version of GCC, in this case GCC 11.3 which is the highest version that is compatible with CUDA 11.
+        The LLVM tool chains are optional, with support for installing multiple versions of the NVIDIA HPC-SDK and LLVM/Clang.
     \item \lst{environment.yaml} describes the software packages;
         \lstinputlisting[language=yaml]{src/nv-recipe/environments.yaml}
         The software packages are configured as environments, each with built using the compiler tool chains built previously, and configured with a (optional) single implementation of \craympich, that can optionally be configured for CUDA or ROCM support.
@@ -70,16 +73,16 @@ A set of ``cluster configurations'' for each of the vClusters on Alps is maintai
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \stackinator follows the familiar configure-build-install workflow used to install software.
-It provides a CLI tool \lstinline{stack-config}, that takes a generic recipe that can be built on any (vCluster, mount point) combination, and generates a build path that contains a Makefile, \spack environment descriptions, and a copy of \spack used to build the stack.
+It provides a CLI tool \emph{stack-config}, that takes a generic recipe that can be built on any (vCluster, mount point) combination, and generates a build path that contains a Makefile, \spack environment descriptions, and a copy of \spack used to build the stack.
 
-If the recipe that describes the example environment in~\fig{fig:env-dag} is in the path \lstinline{~/recipes/nvidia}, \lstinline{stack-config} can be used to generate a build configuration with the following command:
+If the recipe that describes the example environment in~\fig{fig:env-dag} is in the path \lstinline{~/recipes/nvidia}, the following \emph{stack-config} command can be used to generate a build configuration:
 \begin{lstlisting}
 > stack-config -r ~/recipes/nvidia \
              -b /dev/shm/nvidia-build \
              -s hohgant
 \end{lstlisting}
 where the generated build path is in \lstinline{/dev/shm/nvidia-build} and the build is configured for the vCluster Hohgant.
-A simplified version of the build directory structure is illustrated in~\fig{fig:build-tree}.
+A simplified version of the generated build directory structure is illustrated in~\fig{fig:build-tree}.
 
 \begin{figure}[htp!]
     \input{src/build-path.tex}
@@ -89,24 +92,24 @@ A simplified version of the build directory structure is illustrated in~\fig{fig
 
 The environment is built using the top-level Makefile, which executes the following steps:
 \begin{enumerate}
-    \item (*) configure build cache
+    \item (optional) Configure the build cache
     \item Call \lst{compilers/Makefile}:
     \begin{enumerate}
-        \item Concretize bootstrap
-        \item build bootstrap
-        \item concretize GCC
-        \item build GCC
-        \item concretize LLVM (NVHPC)
-        \item build LLVM (NVHPC)
+        \item Concretize bootstrap.
+        \item Build bootstrap.
+        \item Concretize GCC.
+        \item Build GCC.
+        \item Concretize LLVM (NVHPC).
+        \item Build LLVM (NVHPC).
     \end{enumerate}
-    \item call \lst{environments/Makefile}:
+    \item Call \lst{environments/Makefile}:
     \begin{enumerate}
-        \item concretize gcc-env and nvhpc-env concurrently
-        \item build gcc-env and nvhpc-env concurrently
+        \item Concretize gcc-env and nvhpc-env \emph{concurrently}
+        \item Build gcc-env and nvhpc-env\emph{concurrently}
     \end{enumerate}
-    \item generate \lst{store/config}
-    \item (*) generate \lst{store/modules}
-    \item generate SquashFS image of \lst{store}
+    \item Generate \lst{store/config}.
+    \item (optional) generate \lst{store/modules}.
+    \item Generate SquashFS image of \lst{store}.
 \end{enumerate}
 
 The \lstinline{compilers.yaml}, \lstinline{packages.yaml} and \lstinline{Makefile} for each of the \spack environments are generated in the Makefile using \spack. The commands used generate the respective files required to build the "gcc-env" are summarised:
@@ -181,36 +184,34 @@ In order to provide \craympich, we develop a process for repackaging the compile
 % Name        : cray-pmi-6.1.9
 % Name        : cray-pmi-devel-6.1.9
 
-Expand the following RPMs from the CPE distribution of the following packages:
+The first step is to create a single directory tree that contains only the required files by extracting them from different RPMs in the CPE distribution downloaded from HPE as illustrated in~\fig{fig:mpich-tree}.
+
+\begin{figure}[htp!]
+    \input{src/cray-mpich-tree-nosym.txt}
+    \caption{The directory containing cray-mpich and its dependencies. Note that for brevity symlinked library files are removed, and wildcards are used to describe headers.}
+    \label{fig:mpich-tree}
+\end{figure}
+
+For example, the cray-mpich 8.1.24 packages contains files cherry-picked from the following RPMS in the distribution in CPE 23.3:
 \begin{enumerate}
-    \item \lst{cray-mpich-8.1.18-gnu91}
-    \begin{itemize}
-        \item For the NVIDIA HPC SDK use \lst{cray-mpich-8.1.18-nvidia207}.
-    \end{itemize}
+    \item \lst{cray-mpich-8.1.24-gnu91} for GCC  and \lst{cray-mpich-8.1.24-nvidia207} for NVHPC.
     \item \lst{cray-mpich-8.1.18-gtl}
     \begin{itemize}
         \item The GTL (GPU Transport Layer) libraries that implement GPU-aware communication for NVIDIA and AMD GPUs.
     \end{itemize}
-    % from cpe-23.02 there is also cray-mpi-devel
-    \item \lst{cray-pmi-[version]}
+    \item \lst{cray-pmi-6.1.9}
+    \item \lst{cray-pmi-devel-6.1.9}
 \end{enumerate}
+Note that the specific set of RPMs can change from release to release, so the process of extracting the files from RPMs has not been automated.
+It takes a developer an hour to perform the packaging by hand for each new CPE release.
 
-We can't provide a single binary distribution for all compilers, because the Fortran modules in the \lst{include} path are compiler specific.
-
-Extract headers, binaries and libraries from the RPMs, and gather them in a directory with structure illustrated in~\fig{fig:mpich-tree}.
-
-\begin{figure}[htp!]
-    \input{src/cray-mpich-tree-nosym.txt}
-    \caption{ Note that for brevity symlinked library files are removed, and wildcards are used to describe headers.}
-    \label{fig:mpich-tree}
-\end{figure}
-
+Separate GCC and NVHPC binary distributions are created because It is not possible to provide a single binary distribution of each cray-mpich version for all compilers, because the Fortran modules in the \lst{include} path are compiler specific.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \noindent\textbf{Step 2: Patch MPI wrappers}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-As opposed to the CPE, which provides the \lst{CC}, \lst{cc} and \lst{ftn} binary compiler wrappers, our package uses the MPI compiler wrapper scripts that are installed in locations like \lst{/opt/cray/pe/mpich/8.1.21/ofi/gnu/9.1/bin}.
+As opposed to the CPE, which provides the \lst{CC}, \lst{cc} and \lst{ftn} binary compiler wrappers, the Spack package uses the MPI compiler wrapper scripts \lst{mpicc}, \lst{mpicxx} and \lst{mpifort} that are normally installed in locations like \lst{/opt/cray/pe/mpich/8.1.24/ofi/gnu/9.1/bin}.
 
 By default, these wrappers use environment variables set by CPE modules to select the compiler and link architecture-specific libraries.
 We modify each of the wrappers by parameterizing them on three parameters -- \lst{@CC@}, \lst{@@PREFIX@@} and \lst{@@GTL_LIBRARY@@} --
@@ -219,20 +220,18 @@ that are set by \spack when they are installed:
     \item hard code the full path to the wrapped compiler;
     \item set paths \lst{prefix}, \lst{includedir}, to the cray-mpich \spack installation path;
     \item explicitly link \lst{-lmpi_gtl_cuda} \lst{-lmpi_gtl_hsa} when \craympich is built with the \lst{+cuda} or \lst{+rocm} variants respectively.
-    % \item \begin{itemize}
-    %     %\item this fixes the common runtime error ``MPIDI\_CRAY\_init: GPU\_SUPPORT\_ENABLED'' is requested, but GTL library is not linked.
-    % \end{itemize}
+    \begin{itemize}
+          \item this fixes the common runtime error ``MPIDI\_CRAY\_init: GPU\_SUPPORT\_ENABLED'' is requested, but GTL library is not linked.
+    \end{itemize}
 \end{itemize}
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\noindent\textbf{Step 3: Create patch binary \spack package}
+\noindent\textbf{Step 3: Create a \spack package}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The tar balls are stored in a \href{https://jfrog.com/artifactory/}{JFrog Artifactory} -- a self-hosted artifact store accessible only on the CSCS network.
-The \spack package directly downloads from the artifactory, so it can only be run on CSCS systems.
-
-\href{https://github.com/eth-cscs/stackinator/blob/master/stackinator/repo/packages/cray-mpich/package.py}{\lst{/stackinator/repo/packages/cray-mpich/package.py}}
+The tar balls are stored in a \href{https://jfrog.com/artifactory/}{JFrog Artifactory} -- a self-hosted artifact store accessible only on the CSCS network that can only be accessed on CSCS systems.
+A custom \spack package that installs cray-mpich from the tar balls is distributed with \stackinator\footnote{See \lst{stackinator/repos} in the repository \url{https://github.com/eth-cscs/stackinator}.}, but can only be run on Alps due to this restriction.
+To use this process at another site, one would have to create the tar balls, and update the \spack package accordingly.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Efficient Stack Builds}
@@ -243,6 +242,7 @@ Using Spack to build a full software stack -- with multiple compilers, libraries
 A simple stack based on GCC that provides Python, \craympich and CUDA, will take in the order of half an hour to build, and environments for the ROCM GPU stack take over two hours to build from scratch on a 64-core Epyc CPU.
 
 It is important to reduce build times where possible, so that maintainers of stacks can iterate and test combinations of packages, and for timely execution of CI/CD pipelines for deploying stacks.
+This section will document the three strategies that \stackinator uses to achieve this.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \noindent\textbf{Parallelise the build}
@@ -252,15 +252,17 @@ As illustrated in~\fig{fig:env-dag}, building a \spack stack involves building a
 In turn, installing an environment builds individual packages, which have their own DAG of dependencies.
 
 The Makefiles generated by the \stackinator define the dependencies between environments -- facilitating the concurrent concretization and installation of independent environments. The Makefile used to build each environment is generated using the
-\href{https://spack.readthedocs.io/en/latest/environments.html#generating-depfiles-from-environments}{dependency file generation} feature of \spack, make it possible to build multiple packages in parallel.
+\href{https://spack.readthedocs.io/en/latest/environments.html#generating-depfiles-from-environments}{dependency file generation}
+feature of \spack, which can build multiple packages in parallel.
 A single jobserver is used to parallelise the concurrent environment and package builds.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \noindent\textbf{Perform builds in memory}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The \stackinator tool supports building software stacks for installation at mount points where the build process does not have write permissions, e.g. the default \lst{/user-environment} path is read-only.
-The tool uses \href{https://github.com/containers/bubblewrap}{bubblewrap} to mount the build path.
+The \stackinator tool supports building software stacks for installation at mount points where the build process does not have write permissions.
+For example, on Alps the default mount point is \lst{/user-environment}, which is read-only.
+The Makefiles uses \href{https://github.com/containers/bubblewrap}{bubblewrap} to wrap all calls to \spack to mount the build path.
 This can be used to optimise build times by creating the build path in memory, for example in \lst{/dev/shm/$USER/$PROJECTNAME}, so that all of the dependencies are built and stored in memory.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
