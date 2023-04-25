@@ -162,7 +162,7 @@ Next, we mounted the images to access the compiler and libraries for building ou
         \input{images/sph-amd-nodes.tex}
         \input{images/sph-amdcpu-nodes.tex}
     \end{center}
-    \caption{Weak scaling results on A100 and Mi250x GPU nodes for SPH-EXA (higher is better).}
+    \caption{Weak scaling results on A100 and Mi250x GPU and AMD CPU nodes for SPH-EXA (higher is better).}
     \label{fig:sph-weak}
 \end{figure}
 
@@ -206,19 +206,17 @@ The results show that the squashfs-based executables delivers competitive perfor
 Table \ref{table:nsys-A100} shows the amount of CUDA memory copies (in MB) for the Sedov--Taylor test case.
 The performance data was collected with the NVIDIA {Nsight Systems\footnote{\url{https://developer.nvidia.com/nsight-systems}}}  tool.
 The transfer sizes (in MB) for Host to Device (H2D), Device to Host (D2H) and Device to Device (D2D) for simulations with uenv and without uenv (cpe only) are equal, demonstrating that the performance tool can be used in both scenarios.
-% Performance data for the Sedov--Taylor test case on GPU nodes 
-% reported by NVIDIA performance tool (Nsight Systems) for the Sedov--Taylor test case.
 
 \begin{figure}[htp!]
     \begin{center}
         \input{images/sph-nvidia-nodes-scorep.tex}
     \end{center}
-    \caption{Weak scaling profiling results on CPU nodes for SPH-EXA.}
+    \caption{Weak scaling profiling results on AMD EPYC 7A53 CPU nodes for SPH-EXA.}
     \label{fig:sph-weak-scorep}
 \end{figure}
 
 \fig{fig:sph-weak-scorep} shows profiling results for the Sedov--Taylor test case on CPU nodes.
-The performance data was collected with the Score-P\footnote{\url{https://score-p.org}} tool.
+The performance data was collected with the Score-P\footnote{\url{https://score-p.org}} tool (version 8.1).
 The breakdown of the runtime into different regions such as USER, OpenMP and MPI demonstrates that the performance tool can be used in both environments.
 
 % keep for reference: mpip
