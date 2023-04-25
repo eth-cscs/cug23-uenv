@@ -1,17 +1,21 @@
-    \begin{tikzpicture}[scale=1]
-        \begin{axis} [
-            ymin = 0, ymax = 25,
-            ybar, bar width = 16pt, symbolic x coords={1,2,3,4},
-            xtick = data, grid=major, % legend pos=outer north east,
-            xlabel=NVIDIA A100 Nodes,
-            ylabel={Iterations per minute},
-        ]
-            \addplot[fill=green!60] table[x=nodes, y=cpe_its_per_min] {./data/sphexa/gpu/results-a100.tbl};
-            %\addplot[fill=green!60] table[x=cn, y=it_throughput_per_min] {./data/sphexa/gpu/run-report-A100-64M-CPE-cpe2212.tbl};
-            \addlegendentry{cpe/22.12}
+\begin{tikzpicture}[scale=1]
+    \begin{axis} [
+        height=6cm, width=8.5cm,
+        ymin = 0, ymax = 22,
+        ybar, bar width = 10pt,
+        symbolic x coords={1,2,3,4},
+        xtick = data, grid=major,
+        xlabel=Nodes,
+        title=\large \bf A100 GPU,
+        legend style = {at={(0.95,0.05)}, anchor=south east},
+        ylabel={Iterations per minute},
+    ]
+        \addplot[fill=green!60] table[x=nodes, y=cpe_its_per_min] {./data/sphexa/gpu/results-a100.tbl};
+        %\addplot[fill=green!60] table[x=cn, y=it_throughput_per_min] {./data/sphexa/gpu/run-report-A100-64M-CPE-cpe2212.tbl};
+        \addlegendentry{cpe/22.12}
 
-            \addplot[fill=orange!60] table[x=nodes, y=uenv_its_per_min] {./data/sphexa/gpu/results-a100.tbl};
-            %\addplot[fill=orange!60] table[x=cn, y=it_throughput_per_min] {./data/sphexa/gpu/run-report-A100-64M-SQFS-cpe2212.tbl};
-            \addlegendentry{uenv/22.12}
-        \end{axis}
-    \end{tikzpicture}
+        \addplot[fill=orange!60] table[x=nodes, y=uenv_its_per_min] {./data/sphexa/gpu/results-a100.tbl};
+        %\addplot[fill=orange!60] table[x=cn, y=it_throughput_per_min] {./data/sphexa/gpu/run-report-A100-64M-SQFS-cpe2212.tbl};
+        \addlegendentry{uenv/22.12}
+    \end{axis}
+\end{tikzpicture}

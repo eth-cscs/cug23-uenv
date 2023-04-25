@@ -1,11 +1,15 @@
 \begin{tikzpicture}[scale=1]
     \begin{axis} [
-        ymin = 0, % ymax = 6.5,
-        ybar, bar width = 8pt,
+        height=6cm, width=8.5cm,
+        ymin = 0, ymax = 1.7,
+        ybar, bar width = 10pt,
         %x = 0.4cm, % space between bars
         symbolic x coords={1,2,4,8,12},
-        xtick = data, grid=major, legend pos=outer north east,
-        xlabel=AMD EPYC\_7A53 CPU Nodes,
+        xtick = data, grid=major,
+        %legend pos=outer north east,
+        xlabel=Nodes,
+        title=\large \bf AMD EPYC\_7A53 CPU,
+        legend style = {at={(0.95,0.05)}, anchor=south east},
         ylabel={Iterations per minute},
     ]
         \addplot[fill=green!60] table[x=cn, y=it_throughput_per_min] {./data/sphexa/cpu/notool-cpe2212-cpe.tbl};

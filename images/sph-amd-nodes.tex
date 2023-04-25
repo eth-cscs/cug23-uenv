@@ -1,11 +1,15 @@
 \begin{tikzpicture}[scale=1]
     \begin{axis} [
-        ymin = 0, ymax = 6.5,
-        ybar, bar width = 8pt,
+        height=6cm, width=8.5cm,
+        ymin = 0, ymax = 5.5,
+        ybar, bar width = 10pt,
         %x = 0.4cm, % space between bars
         symbolic x coords={1,2,3,4,5,6,7},
-        xtick = data, grid=major, % legend pos=outer north east,
-        xlabel=AMD MI250x Nodes,
+        ytick = {0,1,2,3,4,5},
+        xtick = data, grid=major,
+        xlabel=Nodes,
+        title=\large \bf MI250x GPU,
+        legend style = {at={(0.95,0.05)}, anchor=south east},
         ylabel={Iterations per minute},
     ]
         % \addplot[fill=green!60] table[x=cn, y=it_throughput_per_min] {./data/sphexa/gpu/run-report-MI200-64M-CPE-cpe2212.tbl};
