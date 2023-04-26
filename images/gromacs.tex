@@ -17,10 +17,10 @@
         ]
             \addplot[color=green!40!black,mark=square*,mark options={fill=white}, very thick]
                 table[x=nodes, y=cpe-max] {./data/gromacs/hEGFRDimerPair.tbl};
-            \addlegendentry{cpe/cpu}
+            \addlegendentry{cpe}
             \addplot[color=orange!90!black,mark=*,mark options={fill=white}, very thick]
 		table[x=nodes, y=uenv-max] {./data/gromacs/hEGFRDimerPair.tbl};
-            \addlegendentry{uenv/cpu}
+            \addlegendentry{uenv}
         \end{axis}
     \end{tikzpicture}
 
