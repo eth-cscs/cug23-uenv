@@ -1,4 +1,4 @@
-CSCS is deploying logically isolated, verstile clusters (vClusters) on the \crayex system Alps, to provide services to a wider range of user domains, each with their own software, security, reliability and scaling requirements.
+CSCS is deploying logically isolated, versatile clusters (vClusters) on the \crayex system Alps, to provide services to a wider range of user domains, each with their own software, security, reliability and scaling requirements.
 The vClusters can be customized for each target use case, as an alternative to one large system that offers a ``one size fits all'' programming environment, storage and job scheduler configuration.
 
 CSCS aims to reduce the complexity of the software installed on each vCluster through tailored user environments.
@@ -23,7 +23,7 @@ Indeed, CSCS currently delivers such a one-size-fits-all environment, similarly 
         \textbf{(a)}:
         The ``standard'' HPE-EX software stack, with the Cray OS, drivers, CPE and site-specific software in the system image, site-provided software installed on a shared file system. 
         User-installed software depends on the software layers underneath.
-        The red arrows indicate where changes to one layer have a knock on effect on other software layers, requireing rebuilds or reconfiguration.\newline
+        The red arrows indicate where changes to one layer have a knock on effect on other software layers, requiring rebuilds or reconfiguration.\newline
         \textbf{(b)}:
         The Alps software stack with the programming environment moved out of the base image.
         Multiple programming environments can be deployed on top of this architecture. The CPE, and alternative PEs discussed in~\sect{sec:spack-stacks}, are mounted at runtime in a new mount namespace by users.
@@ -37,10 +37,10 @@ In particular, two issues arise:
     \item No single use-case or domain will use more than a small subset of the features provided by the CPE;
     \item Due to the CPE's quarterly cycle, the lead time between identifying an issue and a fix available and tested on site can be expected to be in the order of 3-6 months;
 \end{itemize}
-By striking a balance between long term stability and providing up-to date software versions, CPE can't fully satisfy use cases that require only one.
+By striking a balance between long term stability and providing up-to-date software versions, CPE cannot fully satisfy use cases that only require either stability or timely fixes.
 
-The work presented in this paper utilizes \spack and SquashFS images to build and deploy software stacks on top of a simplified base image that provides only the neccessarily vendor-specific libraries, for example libfabric, as illustrated in \fig{fig:stacks}(b).
-Such a base image is updated less frequently than CPE, so software stacks have to be rebuilt less frequently than if for stacks that depend on CPE, with fewer system dependencies that could require intervention.
+The work presented in this paper uses \spack and SquashFS images to build and deploy software stacks on top of a simplified base image that provides only the necessary vendor-specific libraries, for example libfabric, as illustrated in \fig{fig:stacks}(b).
+Such a base image changes less frequently than CPE, reducing the need to rebuild software stacks with each CPE update and reducing system dependencies that could require intervention.
 
 The result is compact, testable, reproducible and optimized software environments based on a descriptive recipe that can be updated independently of the CPE release cycle.
 
