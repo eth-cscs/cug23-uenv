@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Squashfs artifacts}
+\subsection{SquashFS artifacts}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Software stacks can be deployed by copying them to a path on a shared file system, for example if the site-policy is to install \lst{/apps/stacks/<env-name>}, the process for building a climate software stack \lst{climate-23.3} would be:
@@ -9,32 +9,30 @@ Software stacks can be deployed by copying them to a path on a shared file syste
     \item Once built, copy \lst{/dev/shm/build/climate-23.3/store/*} to \lst{/apps/stacks/climate-23.3}.
 \end{enumerate}
 
-There are some downsides to the approach of installing software stacks in shared file systems, namely:
+Installing software stacks in shared file systems has some downsides, namely:
 \begin{itemize}
     \item The user-experience is affected by file system performance -- configuration and compilation access many small files which are not well-suited to GPFS and LUSTRE.
-    \item High memory overheads - a software stack with CUDA and NVHPC SDK can use between 30-40 GB of storage.
-    \item Upgrading the version of requires changing the path in all scripts etc.
-    \item if we want to let users build their own stacks, they can't build in \lst{/apps}.
+    \item High storage overheads -- for example, a software stack with CUDA and NVHPC SDK requires at least 30 GB uncompressed.
+    \item Upgrading the version of a stack by installing it in a new path requires changing that path in all downstream user scripts and workflows.
+    \item Users will combine software from different stacks, often by accident, leading to difficult to debug linking and runtime bugs.
 \end{itemize}
 
-Each software stack is a compressed squashfs image of a directory containing the software, Spack configuration, modules and meta-data.
-The squashfs artifacts associated with a programming environment can be versioned, and mounted at the same location using command line utilities or SLURM plugins.
+At CSCS, the software stacks are deployed as a compressed SquashFS image of a directory containing the software, Spack configuration, modules and meta-data.
+Squashfs is an efficient and compressed read-only file system that offers is well-suited for distributing software stacks.
+SquashFS also supports both compression and deduplication, resulting in significantly reduced storage requirements.
+
+It allows for the creation of a single compressed file that includes an entire software stack, making it easy to manage in DevOps pipelines and archives.
+The SquashFS artifacts associated with a programming environment can be versioned, and mounted at the same location using command line utilities or SLURM plugins.
 This significantly simplifies testing and deployment of stacks in CI pipelines compared to the current approach of building software stacks on a shared file system with subdirectories for different clusters, where providing multiple versions of a software stack requires creating a directory with a different name.
 
-Other benefits of using a squashfs for images include:
-\begin{itemize}
-    \item Squashfs images are cached in memory so time to configure and build software is significantly faster than if the tools are on a shared filesystem;
-    \item Multiple users on the same node can load different environments on the same mount point.
-\end{itemize}
+Another benefit of SquashFS images for HPC is that because the whole stack is physically stored in a single file, in combination with file-system caching, we see consistent and reproducable performance for workloads that access many small files.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{CLI Utilities}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\assign{Harmen}
-
-Non-privileged users are able to mount squashfs images at runtime using the \lst{squashfs-mount} command line utility, which is a small \lst{setuid} executable that creates a new mount namespace, mounts the squashfs file through \lst{libmount}, drops privileges and executes a given command.
-This procedure is very similar to squashfs-based HPC container runtimes such as Apptainer and Sarus.
+Non-privileged users are able to mount SquashFS images at runtime using the \lst{squashfs-mount} command line utility, which is a small \lst{setuid} executable that creates a new mount namespace, mounts the SquashFS file through \lst{libmount}, drops privileges and executes a given command.
+This procedure is very similar to SquashFS-based HPC container runtimes such as Apptainer and Sarus.
 
 For example,
 
@@ -58,14 +56,14 @@ Clean up of the mount point and software stack is therefore performed automatica
 The plugin is freely available to the public\footnote{https://github.com/eth-cscs/slurm-uenv-mount}.
 
 We have designed the plugin to be as transparent to a user's workflow as possible.
-This reduces work for users and system administrators, as the plugin and squashfs-based software stack concept can easily be integrated into existing systems and workflows.
+This reduces work for users and system administrators, as the plugin and SquashFS-based software stack concept can easily be integrated into existing systems and workflows.
 In particular, the plugin works with squashfs-mount to detect which software stacks (and their mount points) are active.
 These are taken as default values to the plugin which will make them available on the head and compute nodes.
 A different stack can be specified as a command-line option to any of the SLURM submission commands (e.g., sbatch or srun).
 This flexibility ensures consistency between the login environment and the execution environment, while also allowing the user to use different stacks \emph{within} a script.
 
 The plugin is written in C++ using the SPANK API for SLURM plugins.
-Root-level access is required to mount the squashfs image, which means the namespace creation and mounting code is located in the API function that SLURM runs in privileged mode.
+Root-level access is required to mount the SquashFS image, which means the namespace creation and mounting code is located in the API function that SLURM runs in privileged mode.
 Installation also requires system-administrator privileges.
 
 Examples:

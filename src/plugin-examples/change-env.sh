@@ -7,7 +7,7 @@
 # ...
 
 # Run on head node with a mounted environment
-squashfs-mount compilers.sqfs /user-environments bash <<EOF
+squashfs-mount compilers.sqfs /user-environment bash <<EOF
 srun /user-environments/bin/gcc
 EOF
 
