@@ -1,11 +1,11 @@
-This section introduces a workflow and tooling for building use-case-specific PE stacks on top of a base node image with CrayOS and core dependencies such as libfabric and Slurm, that does not require the CPE.
+This section introduces a workflow and tooling for building use-case-specific programming environment (PE) stacks on top of a base node image with CrayOS and core dependencies such as libfabric and Slurm, that does not require the CPE.
 
 The main tool is \href{https://github.com/eth-cscs/stackinator}{\stackinator}, which uses \spack~\cite{gamblin:sc15} to build a complete PE stack in a directory, which can then be deployed as SquashFS images or as directories on a shared file system.
-\stackinator is an open-source Python application, that is \emph{opinionated}\footnote{minimal changes are required to generate stacks for other systems -- a version that generates stacks for AWS Gravitron 3 clusters was created in a hackathon.} for targeting the vClusters on Alps, in the sense that it:
+\stackinator is an open-source Python application, that is \emph{opinionated} for targeting the vClusters on Alps\footnote{Minimal changes are required to generate stacks for other systems---a version that generates stacks for AWS Gravitron 3 clusters was created in a hackathon.}, in the sense that it:
 \begin{itemize}
     \item makes design decisions that focus on reproducability and performance tuning for the target SlingShot 11 network and node architectures available on Alps;
-    \item provides limited configuration options for compilers -- the tool configures the full compiler spec according to CSCS best practices;
-    \item and provides limited configuration options for MPI -- only cray-mpich is supported fully, and in the future MPICH and OpenMPI will be supported, for which the tool will configure for Slingshot 11 and accelerator compatibility.
+    \item provides limited configuration options for compilers---the tool configures the full compiler specification according to CSCS best practices;
+    \item and provides limited configuration options for MPI---only Cray-MPICH is fully supported (with future support for MPICH and OpenMPI planned) and for which the tool will configure for Slingshot 11 and accelerator compatibility.
 \end{itemize}
 
 The following sections describe the workflow, from recipe to squashfs-images, and the novel and \crayex-specific implementation details.
