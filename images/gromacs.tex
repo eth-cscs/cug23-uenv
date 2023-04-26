@@ -1,7 +1,7 @@
     \begin{tikzpicture}[scale=1]
         \begin{axis} [
             %height=6cm, width=8.5cm,
-            xmin = 4, xmax = 4,
+            xmin = 1, xmax = 4,
             %ymax = 1200, ymin=10,
             %ytick={10,100,1000},
             %yticklabels={10,100,1000},
@@ -16,10 +16,10 @@
             grid=major
         ]
             \addplot[color=green!40!black,mark=square*,mark options={fill=white}, very thick]
-                table[x=nodes, y=cpe] {./data/gromacs.tbl};
+                table[x=nodes, y=cpe-max] {./data/gromacs/glutamine_binding_protein.tbl};
             \addlegendentry{cpe/cpu}
             \addplot[color=orange!90!black,mark=*,mark options={fill=white}, very thick]
-                table[x=nodes, y=uenv] {./data/gromacs.tbl};
+                table[x=nodes, y=uenv-max] {./data/gromacs/glutamine_binding_protein.tbl};
             \addlegendentry{uenv/cpu}
         \end{axis}
     \end{tikzpicture}
