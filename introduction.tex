@@ -1,13 +1,15 @@
-CSCS is deploying isolated clusters (vClusters) on the \crayex system Alps, to provide services to a wider range of user domains, each with their own software, security, reliability and scaling requirements.
-The vClusters can be customized for the target use cases, as an alternative to providing one large system with a ``one size fits all'' programming environment, storage and job scheduler configuration.
+CSCS is deploying logically isolated, verstile clusters (vClusters) on the \crayex system Alps, to provide services to a wider range of user domains, each with their own software, security, reliability and scaling requirements.
+The vClusters can be customized for each target use case, as an alternative to one large system that offers a ``one size fits all'' programming environment, storage and job scheduler configuration.
 
-CSCS aims to reduce the complexity of the software installed on each cluster by providing use case-specific user environments; specifically by providing the smallest possible set of compilers, libraries and tools optimized for each use case's requirements, node architecture and the Slingshot 11 interconnect.
-An obvious use case for the environments is single purpose clusters, for example for the Swiss weather service's production cluster.
-Alternatively, the multiple use-case specific environments can be provided on general-purpose HPC clusters, and loaded according to the user's needs.
+CSCS aims to reduce the complexity of the software installed on each vCluster through tailored user environments.
+These environments will provide the smallest possible set of compilers, libraries and tools optimized for vCluster's requirements, node architecture and the Slingshot 11 interconnect.
+One obvious use case is for single purpose clusters, e.g., the production cluster of the Swiss weather service.
+Alternatively, multiple use-case specific environments can be provided on general-purpose HPC vClusters, and loaded according to a user's individual needs.
 
-This is at odds with the widely-adopted approach to providing software on \crayex systems, namely installing the Cray Programming Environment (CPE), and building use-case specific software not provided by CPE on a shared file system, as illustrated in~\fig{fig:stacks}(a).
-To date CSCS has provided such a one-size-fits-all environment, similarly to other HPC sites, using EasyBuild to provide additional software built and maintained by CSCS~\cite{forai:cug16}.
-
+This approach is at odds with the widely-adopted method to provide software on \crayex systems: installing the Cray Programming Environment (CPE), and building use-case specific software not provided by CPE on a shared file system, as illustrated in~\fig{fig:stacks}(a).
+The CPE provides a wide range of software -- compilers, scientific libraries, communication libraries, debuggers, profiling tools, etc. -- all optimised for the node and network architecture of the system.
+Furthemore, Cray continues to evolve and expand the CPE in response to changing requirements, for example adding software packages for ML/AI, with quarterly releases to address bugs, improve performance and add features.
+Indeed, CSCS currently delivers such a one-size-fits-all environment, similarly to other HPC sites, using EasyBuild to provide additional software built and maintained by CSCS~\cite{forai:cug16}.
 
 \begin{figure*}[htp!]
     \begin{center}
@@ -19,23 +21,23 @@ To date CSCS has provided such a one-size-fits-all environment, similarly to oth
     \end{center}
     \caption{
         \textbf{(a)}:
-        The "standard" HPE-EX software stack, with the Cray OS, drivers, CPE and some site software in the system image, site-provided software installed on a shared file system, and software installed by users that depends can depend on different software layers underneath.
-        The red arrows indicate where changes on one layer, have a knock on effect on other software layers, requireing rebuilds or reconfiguration when they are changed.\newline
+        The ``standard'' HPE-EX software stack, with the Cray OS, drivers, CPE and site-specific software in the system image, site-provided software installed on a shared file system. 
+        User-installed software depends on the software layers underneath.
+        The red arrows indicate where changes to one layer have a knock on effect on other software layers, requireing rebuilds or reconfiguration.\newline
         \textbf{(b)}:
-        The Alps software stack, with the programming environment moved out of the base image.
-        Multiple programming environments can be deployed on top of this architecture, including the CPE and alternative PEs discussed in~\sect{sec:spack-stacks} that are mounted at runtime in a new mount namespace by users.
+        The Alps software stack with the programming environment moved out of the base image.
+        Multiple programming environments can be deployed on top of this architecture. The CPE, and alternative PEs discussed in~\sect{sec:spack-stacks}, are mounted at runtime in a new mount namespace by users.
     }
     \label{fig:stacks}
 \end{figure*}
 
-The CPE provides a very wide range of software -- including compilers, scientific libraries, communication libraries, debuggers and profiling tools -- all optimised for the node and network architecture of the system.
-The CPE continues to evolve and expand in response to changing requirements, for example adding software packages for ML/AI, with quarterly releases to address bugs, improve performance and add features.
-As such, while CPE is a good general purpose environment for users, using it as a layer in HPC software stacks is at odds with our aim of reducing the complexity of software stacks~:
+However, while the CPE is a good general purpose environment for users, using it as a layer in HPC software stacks conflicts with our aim of reducing the complexity of software stacks.
+In particular, two issues arise:
 \begin{itemize}
     \item No single use-case or domain will use more than a small subset of the features provided by the CPE;
     \item Due to the CPE's quarterly cycle, the lead time between identifying an issue and a fix available and tested on site can be expected to be in the order of 3-6 months;
 \end{itemize}
-By striking a balance between long term stability and providing up-to date software versions, CPE can't fully satisfy use cases that require either.
+By striking a balance between long term stability and providing up-to date software versions, CPE can't fully satisfy use cases that require only one.
 
 The work presented in this paper utilizes \spack and SquashFS images to build and deploy software stacks on top of a simplified base image that provides only the neccessarily vendor-specific libraries, for example libfabric, as illustrated in \fig{fig:stacks}(b).
 Such a base image is updated less frequently than CPE, so software stacks have to be rebuilt less frequently than if for stacks that depend on CPE, with fewer system dependencies that could require intervention.
