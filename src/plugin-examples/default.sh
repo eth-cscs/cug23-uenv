@@ -1,5 +1,2 @@
 $ squashfs-mount compilers.sqfs /user-environment bash
-# User is running bash in a new namespace
-$ srun /user-environments/bin/gcc
-$ exit
-# User is back in original namespace
+$ srun /user-environment/bin/gcc test.c
