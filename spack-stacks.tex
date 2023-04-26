@@ -5,7 +5,7 @@ The main tool is \href{https://github.com/eth-cscs/stackinator}{\stackinator}, w
 \begin{itemize}
     \item makes design decisions that focus on reproducability and performance tuning for the target SlingShot 11 network and node architectures available on Alps;
     \item provides limited configuration options for compilers---the tool configures the full compiler specification according to CSCS best practices;
-    \item and provides limited configuration options for MPI---only Cray-MPICH is fully supported (with future support for MPICH and OpenMPI planned) and for which the tool will configure for Slingshot 11 and accelerator compatibility.
+    \item and provides limited configuration options for MPI---only \craympich is fully supported (with future support for MPICH and OpenMPI planned) and for which the tool will configure for Slingshot 11 and accelerator compatibility.
 \end{itemize}
 
 The following sections describe the workflow, from recipe to squashfs-images, and the novel and \crayex-specific implementation details.
@@ -14,8 +14,9 @@ The following sections describe the workflow, from recipe to squashfs-images, an
 \subsection{Stack Specification}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The discussion of the \spack recipes motivated will be motivated by an example stack for development on Cray EX EX235n nodes, with NVIDIA A100 GPUs and AMD Zen3 Epyc CPUs.
-The stack supports development of GPU-aware MPI applications with both GCC and CUDA, and applications with NVIDIA HPC SDK with OpenACC, and is a stripped down version of a software stack that CSCS provides to the Swiss National Weather Service (MeteoSwiss) on Alps, specifically:
+We motivate the discussion of the \spack recipes with an example stack for development on Cray EX EX235n nodes with NVIDIA A100 GPUs and AMD Zen3 Epyc CPUs.
+The stack supports development of GPU-aware MPI applications with both GCC and CUDA, and applications with NVIDIA HPC SDK using OpenACC.
+It is a stripped down version of a software stack that CSCS provides to the Swiss National Weather Service (MeteoSwiss) on Alps, specifically:
 \begin{itemize}
     \item A GCC 11.3 compiler tool chain.
     \item An NVHPC 22.7 compiler tool chain.
@@ -23,25 +24,28 @@ The stack supports development of GPU-aware MPI applications with both GCC and C
     \item An NVHPC programming environment \lst{openac-env} with CUDA-aware \craympich, OSU Benchmarks and CUDA 11.8.
 \end{itemize}
 
-\stackinator stacks are generated from a descriptive YAML file recipe, composed of the following:
+\stackinator generates stacks from a descriptive YAML file recipe, composed of the following files:
 \begin{itemize}
-    \item  \lstinline{config.yaml}:
+    \item  \lstinline{config.yaml} specifies where the image will be installed / mounted (the CSCS default is \emph{/user-environment}), the version of \spack and optional configuration for a \spack build cache. 
         \lstinputlisting[language=yaml]{src/nv-recipe/config.yaml}
-        Used to specify where the image will be installed/mounted (the CSCS default is \emph{/user-environment}), the version of \spack and optional configuration for a \spack build cache. Reproducible builds use a version tag, release branch of a specific commit of \spack. A rolling release can be configured by using the \lst{develop} branch of \spack, which will build with the most up to date \spack recipes.
-    \item \lstinline{compilers.yaml} describes the compiler tool chains that will be provided by the stack:
+        Reproducible builds use a release branch / version tag a specific commit of \spack. A rolling release can be configured by using the \lst{develop} branch of \spack, which will build with the most recent \spack recipes.
+
+    \item \lstinline{compilers.yaml} describes the compiler tool chains that the stack provides:
         \lstinputlisting[language=yaml]{src/nv-recipe/compilers.yaml}
-        The bootstrap version of GCC is built using the system compiler (GCC 7.5 at the time of writing) is not provided as a module or part of the Spack upstream presented to users, instead it is used to build the subsequent GCC compiler toolchains.
+        The bootstrap version of GCC built using the system compiler (GCC 7.5 at the time of writing) is not provided as a module or part of the Spack upstream presented to users, instead it is used to build the subsequent GCC compiler toolchains.
         This step is required to ensure that GCC is built using a compiler that can generate instructions optimised for the target Zen2 and Zen3 micro-architecture CPUs.
-        It is also mandatory to specify at least one version of GCC, in this case GCC 11.3 which is the highest version that is compatible with CUDA 11.
+        It is also mandatory to specify at least one version of GCC, in this case GCC 11.3, which is the highest version compatible with CUDA 11.
         The LLVM tool chains are optional, with support for installing multiple versions of the NVIDIA HPC-SDK and LLVM/Clang.
-    \item \lst{environment.yaml} describes the software packages;
+
+    \item \lst{environment.yaml} describes the software packages:
         \lstinputlisting[language=yaml]{src/nv-recipe/environments.yaml}
-        The software packages are configured as environments, each with built using the compiler tool chains built previously, and configured with a (optional) single implementation of \craympich, that can optionally be configured for CUDA or ROCM support.
-    \item \lst{packages.yaml} and \lst{modules.yaml}
-        for making \spack use packages installed on the system, and generating modules files respectively.
+        The software packages are configured as environments, each built using the compiler tool chains built previously, and configured with a (optional) single implementation of \craympich, that can optionally be configured for CUDA or ROCM support.
+
+    \item \lst{packages.yaml} and \lst{modules.yaml} make \spack use packages installed on the system and generate modules files, respectively.
         These follow the YAML specifications for the \spack configuration files with the same names.
-    \item \lst{repo}
-        is an optional path containing a \href{https://spack.readthedocs.io/en/latest/repositories.html}{\spack repository}, for overriding \spack's implementations or providing support for new packages.
+
+    \item \lst{repo} is an optional path containing a \href{https://spack.readthedocs.io/en/latest/repositories.html}{\spack repository}, for overriding \spack's implementations or providing support for new packages.
+
 \end{itemize}
 
 Under the hood, the software in the stack is built in a set of \spack environments.
@@ -51,7 +55,7 @@ For the example stack, there are five environments, illustrated in~\fig{fig:env-
     \begin{center}
     \input{images/env-dag.tex}
     \end{center}
-    \caption{The dependency graph between the \spack environments that are built to provide a \spack stack that provides GCC 11 and NVHPC 22.7 tool chains, and two environments built with the compilers. The bootstrap compiler is built first using the system GCC 7.5. Then GCC 11 tool chain, followed by the NVHPC tool chain which requires GCC 11. Finally two environments are built: gcc-env with GCC 11, and openacc-env which contains packages built with both GCC 11 and NVHPC 22.7.}
+    \caption{The dependency graph between the \spack environments built to provide a \spack stack that provides GCC 11 and NVHPC 22.7 tool chains, and two environments built with the compilers. The bootstrap compiler is built first using the system GCC 7.5. Then GCC 11 tool chain, followed by the NVHPC tool chain which requires GCC 11. Finally two environments are built: gcc-env with GCC 11, and openacc-env which contains packages built with both GCC 11 and NVHPC 22.7.}
     \label{fig:env-dag}
 \end{figure}
 
