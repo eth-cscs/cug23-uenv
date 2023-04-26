@@ -1,0 +1,26 @@
+    \begin{tikzpicture}[scale=1]
+        \begin{axis} [
+            %height=6cm, width=8.5cm,
+            xmin = 4, xmax = 4,
+            %ymax = 1200, ymin=10,
+            %ytick={10,100,1000},
+            %yticklabels={10,100,1000},
+            xtick={1,2,4},
+            xticklabels={1,2,4},
+            x tick label style={rotate=60,anchor=east},
+            axis line style=very thick,
+            ylabel=Throughput (ns/day),
+            xlabel=Nodes,
+            %title=\large \bf GROMACS through
+            legend style = {at={(0.95,0.05)}, anchor=south east},
+            grid=major
+        ]
+            \addplot[color=green!40!black,mark=square*,mark options={fill=white}, very thick]
+                table[x=nodes, y=cpe] {./data/gromacs.tbl};
+            \addlegendentry{cpe/cpu}
+            \addplot[color=orange!90!black,mark=*,mark options={fill=white}, very thick]
+                table[x=nodes, y=uenv] {./data/gromacs.tbl};
+            \addlegendentry{uenv/cpu}
+        \end{axis}
+    \end{tikzpicture}
+

@@ -172,7 +172,16 @@ The results show that the squashfs-based executables deliver competitive perform
 
 \noindent\textbf{Application Benchmark: GROMACS}
 
-\assign{Theo}
+\begin{figure}[htp!]
+    \begin{center}
+        \input{images/gromacs.tex}
+    \end{center}
+    \caption{GROMACS strong scaling measured in ns/day when built using spack stacks and CPE.}
+    \label{fig:gromacs-strong}
+\end{figure}
+
+The GROMACS strong scaling results, plotted in \fig{fig:gromacs-strong}, show very.
+The results with CPE were between 1\%-1.5\% faster than the Spack-stack.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Tools}
