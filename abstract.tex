@@ -1,8 +1,10 @@
-In this paper we will describe a method for defining, building and deploying alternative programming environments alongside the CPE on HPE Cray EX Alps infrastructure at CSCS.
-We provide compact, testable, optimized software environments based on a descriptive recipe that can be updated independently of the CPE release cycle.
-The environments are defined with a descriptive YAML recipe, and a configuration tool builds the software stack using Spack, generating a squashfs image.
-Cray-MPICH is provided in a custom Spack package, so that it can be provided without a CPE installation.
-Command line tools and a SLURM plugin that facilitate loading environments per user and per job are described, with benchmark results that demonstrate application and micro-benchmark performance that matches CPE.
+We describe a method for defining, building and deploying alternative programming environments alongside the CPE on HPE Cray EX Alps infrastructure at CSCS.
+This addresses an important strategic need at CSCS to deliver tailored environments within our versatile cluster (vCluster) configuration.
+We provide compact, testable, optimized software environments that can be updated independently of the CPE release cycle.
+The environments are defined with a descriptive YAML recipe, which is processed by a novel configuration tool that builds the software stack using Spack and generates a squashfs image.
+Cray-MPICH is provided through a custom Spack package without the need for a CPE installation.
+We describe the command line tools and SLURM plugin that facilitate loading environments per user and per job.
+Through a series of benchmarks we demonstrate application and micro-benchmark performance that matches CPE.
 
 %%% Local Variables:
 %%% TeX-master: "paper"
