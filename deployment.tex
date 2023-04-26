@@ -17,15 +17,27 @@ Installing software stacks in shared file systems has some downsides, namely:
     \item Users will combine software from different stacks, often by accident, leading to difficult to debug linking and runtime bugs.
 \end{itemize}
 
-At CSCS, the software stacks are deployed as a compressed SquashFS image of a directory containing the software, Spack configuration, modules and meta-data.
-Squashfs is an efficient and compressed read-only file system that offers is well-suited for distributing software stacks.
-SquashFS also supports both compression and deduplication, resulting in significantly reduced storage requirements.
+To address these issues, CSCS deploys the software stacks as compressed SquashFS images of the directory containing the software, Spack configuration, modules and meta-data.
+Squashfs is an efficient and compressed read-only file system that offers is well-suited for distributing software stacks, for the following reasons:
+\begin{itemize}
+    \item SquashFS supports both compression and deduplication, resulting in significantly reduced storage requirements.
+    \begin{itemize}
+        \item the software stack for Meteo Swiss requires 34 GB uncompressed, and 13 GB as a compressed SquashFS image.
+    \end{itemize}
 
-It allows for the creation of a single compressed file that includes an entire software stack, making it easy to manage in DevOps pipelines and archives.
-The SquashFS artifacts associated with a programming environment can be versioned, and mounted at the same location using command line utilities or SLURM plugins.
-This significantly simplifies testing and deployment of stacks in CI pipelines compared to the current approach of building software stacks on a shared file system with subdirectories for different clusters, where providing multiple versions of a software stack requires creating a directory with a different name.
-
-Another benefit of SquashFS images for HPC is that because the whole stack is physically stored in a single file, in combination with file-system caching, we see consistent and reproducable performance for workloads that access many small files.
+    \item Each stack is a single compressed file that includes an entire software stack, making it easy to manage in DevOps pipelines and archives:
+    \begin{itemize}
+        \item each CI/CD pipeline generates a single binary artifact;
+        \item artifacts associated with a programming environment can be versioned and archived;
+        \item new stacks can be tested transparently by mounting a pre-release stack at a common mount point.
+    \end{itemize}
+    \item Users can mount stacks on command using command line utilities or SLURM plugins.
+    \begin{itemize}
+        \item Only one stack is mounted at a time -- reducing confusion about which software is being used in a workflow.
+        \item Multiple users on the same login or compute nodes can mount different software stacks without side-effects on other user's environments.
+    \end{itemize}
+    Consistent and reproducable performance for workloads that access many small files by virtue of the whole stack being stored in a single file and file-system caching.
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{CLI Utilities}
