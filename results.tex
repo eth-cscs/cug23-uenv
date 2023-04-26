@@ -50,7 +50,7 @@ First, we look at the time required to compile a single ``hello world'' C and C+
 \lstinputlisting[language=c++]{src/hello.cpp}
 
 As illustrated in~\tbl{tbl:hello-world-compile}, the compilation times are within 1\% when the compiler toolchain is in memory or mounted via SquashFS, and between 4-11\% slower when the toolchain is installed on the Scratch filesystem.
-\begin{table}[hp!]
+\begin{table}[htp!]
     \begin{center}
         \begin{tabular}{l | l l l}
                 & squashfs & scratch & memory \\
@@ -73,7 +73,7 @@ This is broken into two steps:
 To isolate the file system overheads of accessing the stack, the Arbor source code and build path are in \lst{/dev/shm}.
 The results in~\tbl{tbl:arbor-compile} show that the SquashFS mount and in memory are equivalent, which there is a performance penalty of between 8-23\% on Scratch.
 
-\begin{table}[hp!]
+\begin{table}[htp!]
     \begin{center}
         \begin{tabular}{l | l l l}
                         & squashfs & scratch & memory \\
