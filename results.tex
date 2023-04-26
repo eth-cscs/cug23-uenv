@@ -20,7 +20,7 @@ Scenario 2 quantifies the effect of building in memory, and scenarios 3 and 4 il
     \begin{center}
         \input{images/image-build.tex}
     \end{center}
-    \caption{The effect of building in memory and using Spack build caches on the time to build a complete Spack stack.}
+    \caption{Reduction in time to build a complete Spack stack when building in memory and using Spack build caches compared with building on the scratch filesystem.}
     \label{fig:image-build}
 \end{figure}
 
@@ -28,7 +28,7 @@ Scenario 2 quantifies the effect of building in memory, and scenarios 3 and 4 il
 Less than 3 minutes are required when all packages are available in a build cache, and less than 10 minutes to build the full stack when the version of Python in the recipe changed, which required rebuilding over 30 packages, including Python, py-numpy and py-mpi4py, which are non-trivial to build.
 
 The \emph{partial} reflects the most common scenario, because the typical CI/CD and image development process requires rebuilding an image with small changes, so that only some of the packages need to be rebuilt between runs.
-Furthermore, the bootstrap and compiler toolchains are typically identical between different images -- e.g. once GCC 11.3.0 has been built for one stack, it can be reused without change in another.
+Furthermore, the bootstrap and compiler toolchains are typically identical between different images -- e.g., once GCC 11.3.0 has been built for one stack, it can be reused without change in another.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Developer Productivity}
