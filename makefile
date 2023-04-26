@@ -13,10 +13,8 @@ diff :
 	ln -s ../src .; \
 	ln -s ../data .; \
 	ln -s ../paper.bib; \
-	pdflatex paper; \
-	bibtex paper; \
-	pdflatex paper; \
-	pdflatex paper)
+	ln -s ../makefile; \
+	make)
 
 bibup : paper.bib
 	pdflatex paper
