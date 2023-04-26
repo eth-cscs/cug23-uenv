@@ -21,10 +21,7 @@ To address these issues, CSCS deploys the software stacks as compressed SquashFS
 Squashfs is an efficient and compressed read-only file system that offers is well-suited for distributing software stacks, for the following reasons:
 \begin{itemize}
     \item SquashFS supports both compression and deduplication, resulting in significantly reduced storage requirements.
-    \begin{itemize}
-        \item the software stack for Meteo Swiss requires 34 GB uncompressed, and 13 GB as a compressed SquashFS image.
-    \end{itemize}
-
+          The software stack for Meteo Swiss requires 34 GB uncompressed, and 13 GB as a compressed SquashFS image.
     \item Each stack is a single compressed file that includes an entire software stack, making it easy to manage in DevOps pipelines and archives:
     \begin{itemize}
         \item each CI/CD pipeline generates a single binary artifact;
@@ -32,11 +29,9 @@ Squashfs is an efficient and compressed read-only file system that offers is wel
         \item new stacks can be tested transparently by mounting a pre-release stack at a common mount point.
     \end{itemize}
     \item Users can mount stacks on command using command line utilities or SLURM plugins.
-    \begin{itemize}
-        \item Only one stack is mounted at a time -- reducing confusion about which software is being used in a workflow.
-        \item Multiple users on the same login or compute nodes can mount different software stacks without side-effects on other user's environments.
-    \end{itemize}
-    Consistent and reproducable performance for workloads that access many small files by virtue of the whole stack being stored in a single file and file-system caching.
+        Only one stack is mounted at a time -- reducing confusion about which software is being used in a workflow.
+        Multiple users on the same login or compute nodes can mount different software stacks without side-effects on other user's environments.
+    \item Consistent and reproducable performance for workloads that access many small files by virtue of the whole stack being stored in a single file and file-system caching.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -96,23 +91,28 @@ A SLURM submission script:
 \subsection{CI/CD}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\assign{Theofilos and Ben}
+A CI/CD pipeline is under development for the Spack-stacks provided by CSCS to the users of vClusters on Alps.
+Each software stack is maintained as a \stackinator recipe in a public GitHub repository\footnote{\url{https://github.com/eth-cscs/alps-spack-stacks}}.
+The recipes are publicly available, so that user-groups can use them as the basis for building their own software stacks.
 
-Describe the workflow:
+CSCS has a CI/CD service, that can be configured to respond to web hooks from a GitHub repository\footnote{\url{https://gitlab.com/cscs-ci/ci-testing/containerised_ci_doc}}.
+When an authorized user requests that the pipeline for a recipe be run from pull request (PR) on the GitHub recipe repository, a webhook alerts the CSCS CI/CD service.
+Each CI/CD job provides a tuple {\sf (Node-type, Cluster)}, where node-type is currently one of A100, Mi200, Zen2 or Zen3.
+The service launches a build task on the target node type, using the configuration for the target cluster (that configures Spack to use the system compiler, libfabric, Slurm, etc).
+
+The \emph{build stage} performs the following steps:
 \begin{itemize}
-    \item recipes are stored in \href{https://github.com/eth-cscs/alps-spack-stacks}{github repository}.
-    \item CI/CD external service is used
-    \item "build" phase
-    \item "test" phase
-    \item deployed to JFrog artifactory
+    \item Download and install \stackinator.
+    \item Configure the recipe to use a common build-cache for all CI/CD pipelines.
+    \item Run \stackinator \lst{stack-config} to configure a build path in \lst{/dev/shm}.
+    \item Build the stack in parallel.
+    \item Push the squashfs image to a job-specific path in the CSCS JFrog\footnote{\url{https://jfrog.com/artifactory} artifactory.
 \end{itemize}
 
-Demonstrate pulling and running an image manually from JFrog.
-
-The workflow is under development, with the following steps to be completed
+Development of the CI/CD pipeline for images is on-going, with the following stages under development for release in Q3 2023:
 \begin{itemize}
-    \item promote images to a ``production'' repository
-    \item a CLI tool for listing and pulling available images.
+    \item \emph{test stage} use ReFrame to launch tests for correctness and performance.
+    \item \emph{deploy stage}: deploy the image to a production artifactory where it can be accessed by users with a simple CLI interface.
 \end{itemize}
 
 %%% Local Variables:
