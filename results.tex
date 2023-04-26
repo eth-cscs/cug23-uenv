@@ -172,6 +172,21 @@ The results show that the squashfs-based executables deliver competitive perform
 
 \noindent\textbf{Application Benchmark: GROMACS}
 
+The versions of compilers and tools did not match exactly:
+\begin{center}
+    \begin{tabular}{l |c  c }
+                      & CPE   & Spack Stack \\
+          \hline
+        gromacs       & 2021.5   & 2021.5   \\
+        fftw          & 3.3.10   & 3.3.10   \\
+        openblas      & 0.3.21   & 0.3.21   \\
+        cray-mpich    & 8.1.21   & 8.1.24   \\
+        gcc           & 11.2     & 11.3     \\
+    \end{tabular}
+\end{center}
+
+For the strong scaling benchmarks...The number of tasks per node was kept constant at 64. 
+
 \begin{figure}[htp!]
     \begin{center}
         \input{images/gromacs.tex}
