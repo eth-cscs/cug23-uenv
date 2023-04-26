@@ -12,8 +12,10 @@ diff :
 	ln -s ../images .; \
 	ln -s ../src .; \
 	ln -s ../data .; \
+	ln -s ../paper.bib; \
 	pdflatex paper; \
 	bibtex paper; \
+	pdflatex paper; \
 	pdflatex paper)
 
 bibup : paper.bib
