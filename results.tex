@@ -172,7 +172,9 @@ The results show that the squashfs-based executables deliver competitive perform
 
 \noindent\textbf{Application Benchmark: GROMACS}
 
-The versions of compilers and tools did not match exactly:
+GROMACS\footnote{\url{https://www.gromacs.org/}} is free and open-source software suite for high-performance molecular dynamics and output analysis.
+A strong scaling benchmark was carried out to compare the performance between the CPE and Spack-stack.
+The GROMACS version used is 2021.5 in single precision, while the versions of compiler and cray-mpich did not match exactly between the CPE and spack-stack:
 \begin{center}
     \begin{tabular}{l |c  c }
                       & CPE   & Spack Stack \\
@@ -185,7 +187,9 @@ The versions of compilers and tools did not match exactly:
     \end{tabular}
 \end{center}
 
-For the strong scaling benchmarks...The number of tasks per node was kept constant at 64. 
+The simulations have taken place on the vCluster Clariden, on a list of nodes with a single socket AMD Zen3 Milan CPU, and 4 Slingshot 11 NICs.
+For the strong scaling benchmarks, a 1.4-million atom system (a pair of hEGFR Dimers of 1IVO and 1NQL) is used, included in the HECBioSim benchmarks suite\footnote{\url{https://www.hecbiosim.ac.uk/access-hpc/benchmarks}}.
+The number of mpi tasks per node was kept constant at 64 and 1 OpenMP thread per task was used.
 
 \begin{figure}[htp!]
     \begin{center}
@@ -195,8 +199,7 @@ For the strong scaling benchmarks...The number of tasks per node was kept consta
     \label{fig:gromacs-strong}
 \end{figure}
 
-The GROMACS strong scaling results, plotted in \fig{fig:gromacs-strong}, show very.
-The results with CPE were between 1\%-1.5\% faster than the Spack-stack.
+The GROMACS strong scaling results, plotted in \fig{fig:gromacs-strong}, differ in 1\%-1.5\% between the CPE and the Spack-stack with no clear advantage between the two.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Tools}
