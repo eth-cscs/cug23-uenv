@@ -33,14 +33,17 @@ Other benefits of using a squashfs for images include:
 
 \assign{Harmen}
 
-Discuss the command line utility for mounting squashfs images \lst{squashfs-mount}.
+Non-privileged users are able to mount squashfs images at runtime using the \lst{squashfs-mount} command line utility, which is a small \lst{setuid} executable that creates a new mount namespace, mounts the squashfs file through \lst{libmount}, drops privileges and executes a given command.
+This procedure is very similar to squashfs-based HPC container runtimes such as Apptainer and Sarus.
 
-\begin{itemize}
-    \item squashfs-mount implementation
-    \item example of how it is used
-    \item link to GitHub repository
-    \item RPMs are provided ready to install on Cray EX.
-\end{itemize}
+For example,
+
+\lstinputlisting[language=bash]{src/squashfs-mount.sh}
+
+starts a bash shell in which \lst{image.squashfs} is mounted at \lst{/user-environment}.
+Thanks to mount namespaces, the mount is not visible to other processes or users.
+
+The utility is open source, \href{https://github.com/eth-cscs/squashfs-mount}{available on GitHub} and includes RPMs for installation on Cray EX.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{SLURM Integration}
