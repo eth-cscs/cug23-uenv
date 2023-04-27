@@ -1,0 +1,61 @@
+    \begin{tikzpicture}[scale=1]
+        \begin{loglogaxis} [
+            height=6cm, width=17cm,
+            xmin = 1, xmax = 4194304,
+            ymax = 1200, ymin=10,
+            %ytick={10,100,1000,10000},
+            yticklabels={10,100,1000},
+            xtick={1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192, 16384,  32768,  65536,  131072, 262144, 524288, 1048576, 2097152, 4194304},
+            %xticklabels={1,2,4,8,16,32,64,128,256,512,1k,2k,4k,8k,16k,32k,64k,128k,256k,512k,1M,2M,4M},
+            xticklabels={},
+            x tick label style={rotate=60,anchor=east},
+            axis line style=very thick,
+            ylabel=Latency ($\mu$s),
+            %xlabel=Message Size,
+            title=\large \bf osu\_alltoall,
+            legend style = {at={(0.05,0.95)}, anchor=north west},
+            grid=major,
+            name=first plot,
+        ]
+            \addplot[color=green!40!black,mark=square*,mark options={fill opacity=0.0, solid, thick}, thin, densely dotted]
+                table[x=bytes, y=cpe-cpu] {./data/osu/all2all.tbl};
+            \addlegendentry{cpe/cpu - Rome CPU}
+            \addplot[color=orange!90!black,mark=square*,mark options={fill opacity=0.0, solid, thick}, thin, densely dotted]
+                table[x=bytes, y=uenv-cpu] {./data/osu/all2all.tbl};
+            \addlegendentry{uenv/cpu - Rome CPU}
+
+            \addplot[color=green!40!black,mark=*,mark options={fill opacity=0.0, solid}, thin]
+                table[x=bytes, y=cpe-gpu] {./data/osu/all2all.tbl};
+            \addlegendentry{cpe/gpu -- A100 GPU}
+            \addplot[color=orange!90!black,mark=*,mark options={fill opacity=0.0, solid}, thin]
+                table[x=bytes, y=uenv-gpu] {./data/osu/all2all.tbl};
+            \addlegendentry{uenv/gpu -- A100 GPU}
+
+        \end{loglogaxis}
+        \begin{axis} [
+            at=(first plot.south),
+            anchor=north,
+            xmode=log,
+            height=3cm, width=17cm,
+            xmin = 1, xmax = 4194304,
+            %ymax = 2, ymin=-2,
+            %ytick={-2,-1,0,1},
+            xtick={1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192, 16384,  32768,  65536,  131072, 262144, 524288, 1048576, 2097152, 4194304},
+            xticklabels={1,2,4,8,16,32,64,128,256,512,1k,2k,4k,8k,16k,32k,64k,128k,256k,512k,1M,2M,4M},
+            x tick label style={rotate=60,anchor=east},
+            axis line style=very thick,
+            ylabel=\%,
+            xlabel=Message Size,
+            %title=\large \bf osu\_bw,
+            legend style = {at={(0.95,0.05)}, anchor=south east},
+            grid=major
+        ]
+            \addplot[color=black!40!black,mark=square*,mark options={fill opacity=0.0, solid, thick}, thick, densely dotted]
+                table[x=bytes, y expr={((\thisrow{uenv-cpu}/\thisrow{cpe-cpu} - 1) * 100}] {./data/osu/all2all.tbl};
+            %\addlegendentry{uenv/cpe - Rome CPU}
+            \addplot[color=black!90!black,mark=*,mark options={fill=white}, thick, solid]
+                table[x=bytes, y expr={((\thisrow{uenv-gpu}/\thisrow{cpe-gpu} - 1) * 100}] {./data/osu/all2all.tbl};
+            %\addlegendentry{uenv/cpe - A100 GPU}
+
+        \end{axis}
+    \end{tikzpicture}
