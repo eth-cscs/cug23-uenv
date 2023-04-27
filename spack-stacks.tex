@@ -1,6 +1,6 @@
 This section introduces a workflow and tooling for building use-case-specific programming environment (PE) stacks on top of a base node image with CrayOS and core dependencies such as libfabric and Slurm, that does not require the CPE.
 
-The main tool is \href{https://github.com/eth-cscs/stackinator}{\stackinator}, which uses \spack~\cite{gamblin:sc15} to build a complete PE stack in a directory, which can then be deployed as SquashFS images or as directories on a shared file system.
+The main tool is \href{https://github.com/eth-cscs/stackinator}{\stackinator}\footnote{\url{https://github.com/eth-cscs/stackinator}}, which uses \spack~\cite{gamblin:sc15} to build a complete PE stack in a directory, which can then be deployed as SquashFS images or as directories on a shared file system.
 \stackinator is an open-source Python application, that is \emph{opinionated} for targeting the vClusters on Alps\footnote{Minimal changes are required to generate stacks for other systems -- a version that generates stacks for AWS Gravitron 3 clusters was created in a hackathon.}, in the sense that it:
 \begin{itemize}
     \item makes design decisions that focus on reproducability and performance tuning for the target SlingShot 11 network and node architectures available on Alps;
@@ -267,7 +267,9 @@ A single jobserver is used to parallelise the concurrent environment and package
 The \stackinator tool supports building software stacks for installation at mount points where the build process does not have write permissions.
 For example, on Alps the default mount point is \lst{/user-environment}, which is read-only.
 The software stack that is to be installed at \lst{/user-environment} is built in the \lst{store} subdirectory of the build path, where the builder has write permissions.
-The built process uses \href{https://github.com/containers/bubblewrap}{bubblewrap} to mount the \lst{store} path at \lst{/user-environment} for all calls to \spack.
+The built process uses
+\href{https://github.com/containers/bubblewrap}{bubblewrap}\footnote{\url{https://github.com/containers/bubblewrap}}
+to mount the \lst{store} path at \lst{/user-environment} for all calls to \spack.
 In this way, all software is built ``in place'' and no relocation is required.
 
 Build times can be signficantly reduced by creating the build path in memory, for example in \lst{/dev/shm/build}, so that all of the dependencies are built and stored in memory, instead of on a slower shared file system.
