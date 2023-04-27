@@ -88,7 +88,7 @@ The results in~\tbl{tbl:arbor-compile} show that the SquashFS mount and in memor
 \end{table}
 
 
-We note the tests in this section were run when the file system was not in heavy use, and smaller differences were observed when tested on a flash-based Lustre store, so the performance gains of using SquashFS are modest.
+We note the tests in this section were run when the file system was not in heavy use, and smaller differences were observed when tested on a flash-based Lustre store -- so while significant, the performance benefits of using SquashFS over LUSTRE  reported here might not justify using SquashFS.
 However, in our experience performance of workloads that access many files in a SquashFS stack is very consistent, regardless of load on the system, and when the SquashFS image itself is stored in Scratch.
 On the other hand, compilation and configuration times vary greatly for software stacks installed on Lustre or GPFS filesystems -- when the file system is under heavy load compilation can be much slower.
 As such, SquashFS is both faster and more consistent and predictable than installing software on shared file systems, improving the quality of the user experience on our systems.
@@ -108,7 +108,7 @@ The following three selected benchmarks run in both host-host and device-device 
 \begin{itemize}
     \item \textbf{osu\_bw}: Point to Point bandwidth test. The benchmark was run between two ranks on different nodes.
     \item \textbf{osu\_latency}: Point to Point latency test. The benchmark was run between two ranks on different nodes.
-    \item \textbf{osu\_alltoall}: All to all latency test. The benchmark was run between 16 ranks on 4 nodes, with one GPU per rank when running .
+    \item \textbf{osu\_alltoall}: All to all latency test. The benchmark was run between 16 ranks on 4 nodes, with one GPU per rank when running device-device tests.
 \end{itemize}
 
 \begin{figure*}[htp!]
@@ -153,9 +153,10 @@ The OSU benchmark results, plotted in \fig{fig:osu}, illustrate that there is no
 
 The SPH-EXA\footnote{\url{https://github.com/unibas-dmi-hpc/SPH-EXA}} project is a multidisciplinary effort that looks to scale the Smoothed Particle Hydrodynamics (SPH) method to enable exascale hydrodynamics simulations for the fields of Cosmology and Astrophysics. 
 This section focuses on comparing the behavior of the code built with and without the stackinator tool.
-For this, we constructed two base images: one for NVIDIA GPUs and one for AMD GPUs.
-The compiler and libraries included in these images were based on cray-mpich/8.1.21, in addition to gcc/11.x and either cuda/11.8 or hip/5.2.
-Next, we mounted the images to access the compiler and libraries for building our MPI+OpenMP+CUDA and MPI+OpenMP+HIP versions of the code. Finally, we executed the executables and compared the results with those of the same code built with the Cray Programming Environment.
+For this, we built two \Stackinator stacks: one for CUDA and one for ROCM.
+The compiler and libraries included in these images were based on cray-mpich/8.1.21, in addition to gcc/11.x and cuda/11.8 or hip/5.2 for the CUDA and ROCM stacks respectively.
+Next, the stacks were mounted to access the compiler and libraries for building our MPI+OpenMP+CUDA and MPI+OpenMP+HIP versions of the code.
+Finally, we executed the executables and compared the results with those of the same code built with the Cray Programming Environment (CPE).
 
 \begin{figure}[htp!]
     \begin{center}
@@ -169,7 +170,7 @@ Next, we mounted the images to access the compiler and libraries for building ou
 
 \fig{fig:sph-weak} shows the performance obtained for the codes executing the Sedov--Taylor\footnote{\url{https://doi.org/10.48550/arxiv.2202.02840}} blast wave explosion test case with $400^3$ particles per gpu and $40$ time-steps, and for the MPI+OpenMP CPU-only version of the code with $483^3$ particles per compute node.
 
-The results show that the squashfs-based executables deliver competitive performance with that of the CPE based executables on both GPU architectures and multicore.
+The results show that the squashfs-based executables deliver competitive performance with that of the CPE based executables on both GPU architectures and multicore: the Spack-stack was between 4-10\% faster on A100 GPUs, between 0-4\% slower on AMD GPU and the CPU results are within 2\%.
 
 \noindent\textbf{Application Benchmark: GROMACS}
 
