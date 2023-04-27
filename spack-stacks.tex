@@ -266,8 +266,13 @@ A single jobserver is used to parallelise the concurrent environment and package
 
 The \stackinator tool supports building software stacks for installation at mount points where the build process does not have write permissions.
 For example, on Alps the default mount point is \lst{/user-environment}, which is read-only.
-The Makefiles uses \href{https://github.com/containers/bubblewrap}{bubblewrap} to wrap all calls to \spack to mount the build path.
-This can be used to optimise build times by creating the build path in memory, for example in \lst{/dev/shm/$USER/$PROJECTNAME}, so that all of the dependencies are built and stored in memory.
+The software stack that is to be installed at \lst{/user-environment} is built in the \lst{store} subdirectory of the build path, where the builder has write permissions.
+The built process uses \href{https://github.com/containers/bubblewrap}{bubblewrap} to mount the \lst{store} path at \lst{/user-environment} for all calls to \spack.
+In this way, all software is built ``in place'' and no relocation is required.
+
+Build times can be signficantly reduced by creating the build path in memory, for example in \lst{/dev/shm/build}, so that all of the dependencies are built and stored in memory, instead of on a slower shared file system.
+All of the Cray EX nodes on Alps have 512 GB of memory, which is sufficient for building software stacks, though it is important that the memory is cleaned up, preferably via an automated policy.
+See \sect{sec:efficient-deployment} for a comparison between building in memory and on a shared filesystem.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \noindent\textbf{Cache previously built packages}
