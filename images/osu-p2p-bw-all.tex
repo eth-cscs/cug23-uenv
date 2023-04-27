@@ -14,23 +14,36 @@
             %xlabel=Message Size,
             title=\large \bf osu\_bw,
             legend style = {at={(0.95,0.05)}, anchor=south east},
+            legend columns=2,
+            legend style={/tikz/every even column/.append style={column sep=0.5cm}},
             grid=major,
             name=first plot,
         ]
-            \addplot[color=green!40!black,mark=square*,mark options={fill opacity=0.0, solid, thick}, thin, densely dotted]
+            \addplot[color=green!40!black,mark=square*,mark options={fill opacity=0.0, solid, thick}, thin, densely dotted, forget plot]
                 table[x=bytes, y=cpe-cpu-bw] {./data/osu/p2p.tbl};
-            \addlegendentry{cpe/cpu - Rome CPU}
-            \addplot[color=orange!90!black,mark=square*,mark options={fill opacity=0.0, solid, thick}, thin, densely dotted]
+           % \addlegendentry{cpe/cpu - Rome CPU}
+            \addplot[color=orange!90!black,mark=square*,mark options={fill opacity=0.0, solid, thick}, thin, densely dotted, forget plot]
                 table[x=bytes, y=sq-cpu-bw] {./data/osu/p2p.tbl};
-            \addlegendentry{uenv/cpu - Rome CPU}
+           % \addlegendentry{uenv/cpu - Rome CPU}
 
-            \addplot[color=green!40!black,mark=*,mark options={fill opacity=0.0, solid}, thin]
+            \addplot[color=green!40!black,mark=*,mark options={fill opacity=0.0, solid}, thin, forget plot]
                 table[x=bytes, y=cpe-gpu-bw] {./data/osu/p2p.tbl};
-            \addlegendentry{cpe/gpu -- A100 GPU}
-            \addplot[color=orange!90!black,mark=*,mark options={fill opacity=0.0, solid}, thin]
+           % \addlegendentry{cpe/gpu -- A100 GPU}
+            \addplot[color=orange!90!black,mark=*,mark options={fill opacity=0.0, solid}, thin, forget plot]
                 table[x=bytes, y=sq-gpu-bw] {./data/osu/p2p.tbl};
-            \addlegendentry{uenv/gpu -- A100 GPU}
+           % \addlegendentry{uenv/gpu -- A100 GPU}
 
+            \addlegendimage{color=green!40!black, very thick}
+            \addlegendentry{CPE}
+
+            \addlegendimage{only marks, mark=*, mark options={scale=1.8, fill opacity=0.0, solid, thick}, thin}
+            \addlegendentry{A100 GPU}
+
+            \addlegendimage{color=orange!90!black, very thick, solid}
+            \addlegendentry{uenv}
+
+            \addlegendimage{only marks, mark=square*, mark options={scale=1.8, fill opacity=0.0, solid, thick}, thin, densely dotted}
+            \addlegendentry{Rome CPU}
         \end{loglogaxis}
         \begin{axis} [
             at=(first plot.south),
@@ -38,6 +51,7 @@
             xmode=log,
             height=3cm, width=17cm,
             xmin = 1, xmax = 4194304,
+            ymax = 30, ymin=-10,
             %ymax = 2, ymin=-2,
             %ytick={-2,-1,0,1},
             xtick={1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192, 16384,  32768,  65536,  131072, 262144, 524288, 1048576, 2097152, 4194304},
