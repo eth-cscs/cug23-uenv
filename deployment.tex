@@ -4,8 +4,7 @@
 
 Software stacks can be deployed by copying them to a path on a shared file system, for example if the site-policy is to install \lst{/apps/stacks/<env-name>}, the process for building a climate software stack \lst{climate-23.3} would be:
 \begin{enumerate}
-    \item Configure the build with \lst{stack-config} with mount point \lst{/apps/stacks/climate-23.3}, and build in \lst{/dev/shm/build/climate-23.3}.
-        Note that we still build in memory to reduce the build time compared to building in place on the shared file system.
+    \item Configure the build with \lst{stack-config} with mount point \lst{/apps/stacks/climate-23.3}, and build in \lst{/dev/shm/build/climate-23.3}, to reduce the build time compared to building in place on the shared file system.
     \item Once built, copy \lst{/dev/shm/build/climate-23.3/store/*} to \lst{/apps/stacks/climate-23.3}.
 \end{enumerate}
 
@@ -25,10 +24,10 @@ Squashfs is an efficient and compressed read-only file system that offers is wel
     \item Each stack is a single compressed file that includes an entire software stack, making it easy to manage in DevOps pipelines and archives:
     \begin{itemize}
         \item each CI/CD pipeline generates a single binary artifact;
-        \item artifacts associated with a programming environment can be versioned and archived;
+        \item programming environments can be versioned and archived as binary artifacts;
         \item new stacks can be tested transparently by mounting a pre-release stack at a common mount point.
     \end{itemize}
-    \item Users can mount stacks on command using command line utilities or SLURM plugins.
+    \item Users can mount stacks on command using command line utilities or Slurm plugins.
         Only one stack is mounted at a time -- reducing confusion about which software is being used in a workflow.
         Multiple users on the same login or compute nodes can mount different software stacks without side-effects on other user's environments.
     \item Consistent and reproducable performance for workloads that access many small files by virtue of the whole stack being stored in a single file and file-system caching.
@@ -51,13 +50,11 @@ Thanks to mount namespaces, the mount is not visible to other processes or users
 The utility is open source, \href{https://github.com/eth-cscs/squashfs-mount}{available on GitHub} and includes RPMs for installation on Cray EX.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{SLURM Integration}
+\subsection{Slurm Integration}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\assign{Simon and Jonathan}
-
 For a software stack to be available when a job runs, the stack must be mounted in the namespace of the process executing the submission script on the head node and a command launched on the compute nodes.
-To accomplish this we developed a SLURM plugin that mounts a software stack based upon the same namespace mechanism used by the command line utilities discussed earlier.
+To accomplish this we developed a Slurm plugin that mounts a software stack based upon the same namespace mechanism used by the command line utilities discussed earlier.
 As the mount point is not globally visible, nodes can be run multiple jobs with different stacks, either from the same user or different users.
 Clean up of the mount point and software stack is therefore performed automatically once the parent process terminates.
 The plugin is freely available to the public\footnote{https://github.com/eth-cscs/slurm-uenv-mount}.
@@ -66,21 +63,21 @@ The plugin is designed to be as transparent to a user's workflow as possible.
 This reduces work for users and system administrators, as the plugin and SquashFS-based software stack concept can easily be integrated into existing systems and workflows.
 In particular, the plugin works with \lst{squashfs-mount} to detect which software stacks (and their mount points) are active.
 These are taken as default values to the plugin which will make them available on the head and compute nodes.
-A different stack can be specified as a command-line option to any of the SLURM submission commands (e.g., sbatch or srun).
+A different stack can be specified as a command-line option to any of the Slurm submission commands (e.g., sbatch or srun).
 This flexibility ensures consistency between the login environment and the execution environment, while also allowing the user to use different stacks \emph{within} a script.
 
-The plugin is written in C++ using the SPANK API for SLURM plugins.
-Root-level access is required to mount the SquashFS image, which means the namespace creation and mounting code is located in the API function that SLURM runs in privileged mode.
+The plugin is written in C++ using the SPANK API for Slurm plugins.
+Root-level access is required to mount the SquashFS image, which means the namespace creation and mounting code is located in the API function that Slurm runs in privileged mode.
 Installation also requires system-administrator privileges.
-Typically, this means adding the path of the plugin library directly to the SLURM plugin configuration file \lst{/etc/slurm/plugstack.conf} or in a plugin-specific configuration file under \lst{/etc/slurm/plugstack.conf.d/}.
+Typically, this means adding the path of the plugin library directly to the Slurm plugin configuration file \lst{/etc/slurm/plugstack.conf} or in a plugin-specific configuration file under \lst{/etc/slurm/plugstack.conf.d/}.
 
 In the following example the user is on the login node, mounts a user environment using \lst{squashfs-mount}, and starts a \lst{bash} shell. 
 This environment provides \lst{gcc} under \lst{/user-environments/bin}.
-The user can access this version of \lst{gcc} when running on a compute node via \lst{srun} because the SLURM plugin will recognize the mounted user environment and provide it on the compute node as well.
+The user can access this version of \lst{gcc} when running on a compute node via \lst{srun} because the Slurm plugin will recognize the mounted user environment and provide it on the compute node as well.
 
 \lstinputlisting[language=bash]{src/plugin-examples/default.sh}
 
-The next example demonstrates using different environments throughout a SLURM submission script.
+The next example demonstrates using different environments throughout a Slurm submission script.
 When the script executes the plugin will have already mounted the user environment (debuggers.sqfs) mounted at the time the job was submitted.
 The first command runs a bash script with a different user environment (compilers.sqfs) mounted to compile a test program.
 This test program is run through the debugger found in the original user environment.
