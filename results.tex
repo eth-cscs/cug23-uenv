@@ -271,6 +271,30 @@ We plan to provide a mechanism for the command line tools and SLURM plugin to mo
 This would allow users to supply their own images, for example.
 We will discuss collaboration with HPE to provide \craympich and other HPE software packages via spack stacks, and how we plan to deliver software for the large Grace-Hopper scale out in the second half of 2023 at CSCS.
 
+\begin{figure*}[htp!]
+    \begin{center}
+        \input{images/osu-p2p-bw-jc.tex}
+        \hfill
+        \newline
+        \input{images/osu-p2p-lat-jc.tex}
+        \hfill
+        \newline
+        \input{images/osu-a2a-lat-jc.tex}
+        \hfill
+    \end{center}
+    \caption{OSU benchmark results comparing cray-mpich performance when built using CPE and spack-stacks (uenv) for host-host (cpu) and device-device (gpu) configurations.}
+    \label{fig:osu}
+\end{figure*}
+
+\begin{figure*}[htp!]
+    \begin{center}
+        \input{images/gromacs-jc.tex}
+    \end{center}
+    \caption{Relative performance of GROMACS when built using spack stacks and CPE.}
+    \label{fig:osu}
+\end{figure*}
+
+
 %%% Local Variables:
 %%% TeX-master: "paper"
 %%% End:

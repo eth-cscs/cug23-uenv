@@ -1,0 +1,26 @@
+    \begin{tikzpicture}[scale=1]
+        \begin{axis} [
+            xmode=log,
+            height=6cm, width=17cm,
+            xmin = 1, xmax = 4194304,
+            ymax = 30, ymin=-30,
+            ytick={-30,-20,-10,0,10,20,30},
+            xtick={1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192, 16384,  32768,  65536,  131072, 262144, 524288, 1048576, 2097152, 4194304},
+            xticklabels={1,2,4,8,16,32,64,128,256,512,1k,2k,4k,8k,16k,32k,64k,128k,256k,512k,1M,2M,4M},
+            x tick label style={rotate=60,anchor=east},
+            axis line style=very thick,
+            ylabel=Relative Latency (\%),
+            xlabel=Message Size,
+            title=\large \bf osu\_latency Rome,
+            legend style = {at={(0.05,0.95)}, anchor=north west},
+            grid=major
+        ]
+            \addplot[color=green!40!black,mark=square*,mark options={fill=white}, very thick]
+                table[x=bytes, y expr={(\thisrow{sq-cpu-lat}/\thisrow{cpe-cpu-lat} - 1) * 100}] {./data/osu/p2p.tbl};
+            \addlegendentry{uenv/cpu - Rome CPU}
+            \addplot[color=orange!90!black,mark=*,mark options={fill=white}, very thick]
+                table[x=bytes, y expr={(\thisrow{sq-gpu-lat}/\thisrow{cpe-gpu-lat} - 1) * 100}] {./data/osu/p2p.tbl};
+            \addlegendentry{uenv/cpe - A100 GPU}
+
+        \end{axis}
+    \end{tikzpicture}

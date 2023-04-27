@@ -1,0 +1,22 @@
+    \begin{tikzpicture}[scale=1]
+        \begin{axis} [
+            height=6cm, width=17cm,
+            xmin = 1, xmax = 12,
+            ymax = 10, ymin=-10,
+            %ytick={-30,-20,-10,0,10,20,30},
+            xtick={1,2,3,4,5,6,7,8,9,10,11,12},
+            xticklabels={1,2,3,4,5,6,7,8,9,10,11,12},
+            %x tick label style={rotate=60,anchor=east},
+            axis line style=very thick,
+            ylabel=Relative Throughput (\%),
+            xlabel=Nodes,
+            %title=\large \bf GROMACS through
+            legend style = {at={(0.95,0.05)}, anchor=south east},
+            grid=major
+        ]
+            \addplot[color=green!40!black,mark=square*,mark options={fill=white}, very thick]
+                table[x=nodes, y expr={(\thisrow{uenv-max}/\thisrow{cpe-max} - 1) * 100}] {./data/gromacs/hEGFRDimerPair.tbl};
+            \addlegendentry{uenv/cpe}
+        \end{axis}
+    \end{tikzpicture}
+
