@@ -145,9 +145,20 @@ The versions of compilers and tools did not match exactly:
     \end{tabular}
 \end{center}
 
+
 The most recent version of CPE installed on the system was v22.12, and the stack was built using the version of cray-mpich in v23.3. However, earlier benchmarks and tests using other versions of cray-mpich from CPE and \spack stacks gave the same results.
 
-The OSU benchmark results, plotted in \fig{fig:osu}, illustrate that there is no discernable benefit either way of using cray-mpich from CPE or installed via Spack.
+\begin{figure*}[htp!]
+    \begin{center}
+        \input{images/osu-a2a-lat-jc.tex}
+    \end{center}
+    \caption{The relative latency for the osu\_all2all benchmark between cray-mpich in a spack-stacks and in CPE, where zero means equal latency, above zero means spack-stack has higher latency and below zero CPE has higher latency. Results are shown for host-host (Milan) and device-device (A100)}
+    \label{fig:osu-a2a-relative}
+\end{figure*}
+
+The OSU benchmark results, plotted in \fig{fig:osu}, illustrate that there is no discernable benefit either way of using cray-mpich from CPE or installed via Spack for the point-to-point bandwidth and latency results.
+For the all-to-all collective benchmark 
+\todo{discuss in more detail, including reference to \fig{fig:osu-a2a-relative}.}
 
 \noindent\textbf{Application Benchmark: SPH-EXA}
 
@@ -286,28 +297,13 @@ We will discuss collaboration with HPE to provide \craympich and other CPE softw
 
 Finally, while the tools are designed by CSCS and for use on Alps, we would welcome collaboration with other sites.
 
-\begin{figure*}[htp!]
-    \begin{center}
-        \input{images/osu-p2p-bw-jc.tex}
-        \hfill
-        \newline
-        \input{images/osu-p2p-lat-jc.tex}
-        \hfill
-        \newline
-        \input{images/osu-a2a-lat-jc.tex}
-        \hfill
-    \end{center}
-    \caption{OSU benchmark results comparing cray-mpich performance when built using CPE and spack-stacks (uenv) for host-host (cpu) and device-device (gpu) configurations.}
-    \label{fig:osu}
-\end{figure*}
-
-\begin{figure*}[htp!]
-    \begin{center}
-        \input{images/gromacs-jc.tex}
-    \end{center}
-    \caption{Relative performance of GROMACS when built using spack stacks and CPE.}
-    \label{fig:osu}
-\end{figure*}
+%\begin{figure*}[htp!]
+%    \begin{center}
+%        \input{images/gromacs-jc.tex}
+%    \end{center}
+%    \caption{Relative performance of GROMACS when built using spack stacks and CPE.}
+%    \label{fig:osu}
+%\end{figure*}
 
 \begin{figure*}[htp!]
     \begin{center}
