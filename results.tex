@@ -174,8 +174,8 @@ The results show that the squashfs-based executables deliver competitive perform
 
 \noindent\textbf{Application Benchmark: GROMACS}
 
+A strong-scaling GROMACS benchmark was performed using the same version of GROMACS built using the CPE and a Spack-stack.
 GROMACS\footnote{\url{https://www.gromacs.org/}} is free and open-source software suite for high-performance molecular dynamics and output analysis.
-A strong scaling benchmark was carried out to compare the performance between the CPE and Spack-stack.
 The GROMACS version used is 2021.5 in single precision, while the versions of compiler and cray-mpich did not match exactly between the CPE and spack-stack:
 \begin{center}
     \begin{tabular}{l |c  c }
@@ -188,10 +188,11 @@ The GROMACS version used is 2021.5 in single precision, while the versions of co
         gcc           & 11.2     & 11.3     \\
     \end{tabular}
 \end{center}
+Note that when using CPE FFTW and OpenBLAS were built using Spack instead of using the cray-fftw and cray-libsci modules from CPE in order to isolate the impact of cray-mpich.
 
-The simulations have taken place on the vCluster Clariden, on a list of nodes with a single socket AMD Zen3 Milan CPU, and 4 Slingshot 11 NICs.
+The simulations were run on nodes with a single socket AMD Zen3 Milan CPU, and 4 Slingshot 11 NICs.
 For the strong scaling benchmarks, a 1.4-million atom system (a pair of hEGFR Dimers of 1IVO and 1NQL) is used, included in the HECBioSim benchmarks suite\footnote{\url{https://www.hecbiosim.ac.uk/access-hpc/benchmarks}}.
-The number of mpi tasks per node was kept constant at 64 and 1 OpenMP thread per task was used.
+The number of mpi tasks per node was kept constant at 64 with one OpenMPI thread per rank, and the number of nodes was scaled from 1 to 12.
 
 \begin{figure}[htp!]
     \begin{center}
@@ -201,7 +202,7 @@ The number of mpi tasks per node was kept constant at 64 and 1 OpenMP thread per
     \label{fig:gromacs-strong}
 \end{figure}
 
-The GROMACS strong scaling results, plotted in \fig{fig:gromacs-strong}, differ in 1\%-1.5\% between the CPE and the Spack-stack with no clear advantage between the two.
+The benchmark strong scales well, as shown in \fig{fig:gromacs-strong}, with a difference of 1\%-1.5\% between the CPE and the Spack-stack with no clear advantage between the two.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Tools}
@@ -272,9 +273,18 @@ The breakdown of the runtime into different regions such as USER, OpenMP and MPI
 \section{Future work}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We plan to provide a mechanism for the command line tools and SLURM plugin to mount multiple images.
-This would allow users to supply their own images, for example.
-We will discuss collaboration with HPE to provide \craympich and other HPE software packages via spack stacks, and how we plan to deliver software for the large Grace-Hopper scale out in the second half of 2023 at CSCS.
+The user-environmnents on Cray EX systems presented here is currently being used internally by CSCS software development teams, and by the MeteoSwiss in preparation for their next operational weather forecast system.
+The service will be rolled out to external users of vCluster users over 2023, and there will be further development to extend features and provide a robust service.
+
+The CI/CD pipeline is a high priority, with integration with the ReFrame testing framework to ensure that software stacks are corrent and performant.
+
+We plan to provide a mechanism for the command line tools and SLURM plugin to mount multiple images -- for which the main motivating use case is providing debugger and profiler toolchains alongside programming stacks.
+
+A command line tool that provides a singled interface for users to query, download and interact with environments is under development.
+
+We will discuss collaboration with HPE to provide \craympich and other CPE software packages via Spack stacks, as well as extending our current experimental support for other MPI distributions on Cray EX.
+
+Finally, while the tools are designed by CSCS and for use on Alps, we would welcome collaboration with other sites.
 
 \begin{figure*}[htp!]
     \begin{center}
