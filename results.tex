@@ -101,7 +101,9 @@ In this section we present benchmarks compiled with CPE and \spack stacks on the
 The purpose of the benchmarks is not to compare the performance of node types, or evaluate the efficiency of the benchmarks, instead the objective is to demonstrate equivalent performance of the benchmarks when built using the CPE software stack and spack-stacks.
 All of the benchmarks use \craympich, in order to understand whether repackaging \craympich for installation with \spack has any impact on performance.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \noindent\textbf{MicroBenchmark: OSU}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Selected OSU microbenchmarks\footnote{\url{https://mvapich.cse.ohio-state.edu/benchmarks/}} were run on the vCluster Clariden, which has nodes with 4 NVIDIA  A100 GPUs, a single socket AMD Zen3 Milan CPU, and 4 Slingshot 11 NICs.
 The following three selected benchmarks run in both host-host and device-device configurations:
@@ -152,38 +154,21 @@ The most recent version of CPE installed on the system was v22.12, and the stack
     \begin{center}
         \input{images/osu-a2a-lat-jc.tex}
     \end{center}
-    \caption{The relative latency for the osu\_all2all benchmark between cray-mpich in a spack-stacks and in CPE, where zero means equal latency, above zero means spack-stack has higher latency and below zero CPE has higher latency. Results are shown for host-host (Milan) and device-device (A100)}
+    \caption{The relative latency for the osu\_all2all benchmark between cray-mpich in a Spack stacks and in CPE, where zero means equal latency, above zero means Spack stack has higher latency and below zero CPE has higher latency. Results are shown for host-host (Milan) and device-device (A100)}
     \label{fig:osu-a2a-relative}
 \end{figure*}
 
 The OSU benchmark results, plotted in \fig{fig:osu}, illustrate that there is no discernable benefit either way of using cray-mpich from CPE or installed via Spack for the point-to-point bandwidth and latency results.
-For the all-to-all collective benchmark 
-\todo{discuss in more detail, including reference to \fig{fig:osu-a2a-relative}.}
+For the all-to-all collective there were more significant relative differences for messages under 32K in size, as illustrated in \fig{fig:osu-a2a-relative}:
+\begin{itemize}
+    \item messages ($\leq 256$~bytes): CPE had higher latency for host-memory, and Spack stacks had consistently higher latency on the GPU.
+    \item messages ($512$--$16$k~bytes): Spack stacks had between 5-20\% higher latency.
+\end{itemize}
+More testing where we pin down the exact same version of cray-mpich and other dependencies would be required to understand whether the difference is caused by how cray-mpich is installed in Spack stacks.
 
-\noindent\textbf{Application Benchmark: SPH-EXA}
-
-The SPH-EXA\footnote{\url{https://github.com/unibas-dmi-hpc/SPH-EXA}} project is a multidisciplinary effort that looks to scale the Smoothed Particle Hydrodynamics (SPH) method to enable exascale hydrodynamics simulations for the fields of Cosmology and Astrophysics. 
-This section focuses on comparing the behavior of the code built with and without the stackinator tool.
-For this, we built two \stackinator stacks: one for CUDA and one for ROCM.
-The compiler and libraries included in these images were based on cray-mpich/8.1.21, in addition to gcc/11.x and cuda/11.8 or hip/5.2 for the CUDA and ROCM stacks respectively.
-Next, the stacks were mounted to access the compiler and libraries for building our MPI+OpenMP+CUDA and MPI+OpenMP+HIP versions of the code.
-Finally, we executed the executables and compared the results with those of the same code built with the Cray Programming Environment (CPE).
-
-\begin{figure}[htp!]
-    \begin{center}
-        \input{images/sph-nvidia-nodes.tex}
-        \input{images/sph-amd-nodes.tex}
-        \input{images/sph-amdcpu-nodes.tex}
-    \end{center}
-    \caption{Weak scaling results on A100 and Mi250x GPU and AMD CPU nodes for SPH-EXA (higher is better).}
-    \label{fig:sph-weak}
-\end{figure}
-
-\fig{fig:sph-weak} shows the performance obtained for the codes executing the Sedov--Taylor\footnote{\url{https://doi.org/10.48550/arxiv.2202.02840}} blast wave explosion test case with $400^3$ particles per gpu and $40$ time-steps, and for the MPI+OpenMP CPU-only version of the code with $483^3$ particles per compute node.
-
-The results show that the squashfs-based executables deliver competitive performance with that of the CPE based executables on both GPU architectures and multicore: the Spack-stack was between 4-10\% faster on A100 GPUs, between 0-4\% slower on AMD GPU and the CPU results are within 2\%.
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \noindent\textbf{Application Benchmark: GROMACS}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 A strong-scaling GROMACS benchmark was performed using the same version of GROMACS built using the CPE and a Spack-stack.
 GROMACS\footnote{\url{https://www.gromacs.org/}} is free and open-source software suite for high-performance molecular dynamics and output analysis.
@@ -214,6 +199,31 @@ The number of mpi tasks per node was kept constant at 64 with one OpenMPI thread
 \end{figure}
 
 The benchmark strong scales well, as shown in \fig{fig:gromacs-strong}, with a difference of 1\%-1.5\% between the CPE and the Spack-stack with no clear advantage between the two.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent\textbf{Application Benchmark: SPH-EXA}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The SPH-EXA\footnote{\url{https://github.com/unibas-dmi-hpc/SPH-EXA}} project is a multidisciplinary effort that looks to scale the Smoothed Particle Hydrodynamics (SPH) method to enable exascale hydrodynamics simulations for the fields of Cosmology and Astrophysics. 
+This section focuses on comparing the behavior of the code built with and without the stackinator tool.
+For this, we built two \stackinator stacks: one for CUDA and one for ROCM.
+The compiler and libraries included in these images were based on cray-mpich/8.1.21, in addition to gcc/11.x and cuda/11.8 or hip/5.2 for the CUDA and ROCM stacks respectively.
+Next, the stacks were mounted to access the compiler and libraries for building our MPI+OpenMP+CUDA and MPI+OpenMP+HIP versions of the code.
+Finally, we executed the executables and compared the results with those of the same code built with the Cray Programming Environment (CPE).
+
+\fig{fig:sph-weak} shows the performance obtained for the codes executing the Sedov--Taylor\footnote{\url{https://doi.org/10.48550/arxiv.2202.02840}} blast wave explosion test case with $400^3$ particles per gpu and $40$ time-steps, and for the MPI+OpenMP CPU-only version of the code with $483^3$ particles per compute node.
+
+\begin{figure}[htp!]
+    \begin{center}
+        \input{images/sph-nvidia-nodes.tex}
+        \input{images/sph-amd-nodes.tex}
+        \input{images/sph-amdcpu-nodes.tex}
+    \end{center}
+    \caption{Weak scaling results on A100 and Mi250x GPU and AMD CPU nodes for SPH-EXA (higher is better).}
+    \label{fig:sph-weak}
+\end{figure}
+
+The results show that the squashfs-based executables deliver competitive performance with that of the CPE based executables on both GPU architectures and multicore: the Spack-stack was between 4-10\% faster on A100 GPUs, between 0-4\% slower on AMD GPU and the CPU results are within 2\%.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Tools}
@@ -277,8 +287,6 @@ The breakdown of the runtime into different regions such as USER, OpenMP and MPI
 %     \label{table:mpi}
 % \end{table}
 
-% Column break - todo - move to where it will balance the columns on the last page.
-\vfill\eject
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future work}
@@ -296,6 +304,9 @@ A command line tool that provides a singled interface for users to query, downlo
 We will discuss collaboration with HPE to provide \craympich and other CPE software packages via Spack stacks, as well as extending our current experimental support for other MPI distributions on Cray EX.
 
 Finally, while the tools are designed by CSCS and for use on Alps, we would welcome collaboration with other sites.
+
+% Column break - todo - move to where it will balance the columns on the last page.
+\vfill\eject
 
 %\begin{figure*}[htp!]
 %    \begin{center}
