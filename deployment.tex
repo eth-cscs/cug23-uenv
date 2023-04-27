@@ -57,7 +57,7 @@ For a software stack to be available when a job runs, the stack must be mounted 
 To accomplish this we developed a Slurm plugin that mounts a software stack based upon the same namespace mechanism used by the command line utilities discussed earlier.
 As the mount point is not globally visible, nodes can be run multiple jobs with different stacks, either from the same user or different users.
 Clean up of the mount point and software stack is therefore performed automatically once the parent process terminates.
-The plugin is freely available to the public\footnote{https://github.com/eth-cscs/slurm-uenv-mount}.
+The plugin is publicly available on GitHub\footnote{https://github.com/eth-cscs/slurm-uenv-mount}.
 
 The plugin is designed to be as transparent to a user's workflow as possible.
 This reduces work for users and system administrators, as the plugin and SquashFS-based software stack concept can easily be integrated into existing systems and workflows.
