@@ -147,7 +147,6 @@ The versions of compilers and tools did not match exactly:
     \end{tabular}
 \end{center}
 
-
 The most recent version of CPE installed on the system was v22.12, and the stack was built using the version of cray-mpich in v23.3. However, earlier benchmarks and tests using other versions of cray-mpich from CPE and \spack stacks gave the same results.
 
 \begin{figure*}[htp!]
@@ -210,6 +209,7 @@ For this, we built two \stackinator stacks: one for CUDA and one for ROCM.
 The compiler and libraries included in these images were based on cray-mpich/8.1.21, in addition to gcc/11.x and cuda/11.8 or hip/5.2 for the CUDA and ROCM stacks respectively.
 Next, the stacks were mounted to access the compiler and libraries for building our MPI+OpenMP+CUDA and MPI+OpenMP+HIP versions of the code.
 Finally, we executed the executables and compared the results with those of the same code built with the Cray Programming Environment (CPE).
+The primary focus in this context is the runtime behavior of the code rather than the performance of the code itself.
 
 \fig{fig:sph-weak} shows the performance obtained for the codes executing the Sedov--Taylor\footnote{\url{https://doi.org/10.48550/arxiv.2202.02840}} blast wave explosion test case with $400^3$ particles per gpu and $40$ time-steps, and for the MPI+OpenMP CPU-only version of the code with $483^3$ particles per compute node.
 
@@ -226,16 +226,35 @@ Finally, we executed the executables and compared the results with those of the 
 The results show that the squashfs-based executables deliver competitive performance with that of the CPE based executables on both GPU architectures and multicore: the Spack-stack was between 4-10\% faster on A100 GPUs, between 0-4\% slower on AMD GPU and the CPU results are within 2\%.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Tools}
+\subsection{Analysis Tools}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\assign{JG}
+% \assign{JG}
+% -------------------------------
+\subsubsection{Debugging tools}
 
-\begin{itemize}
-    \item demonstrate DDT
-    \item demonstrate a profiler?
-\end{itemize}
+This section focuses on showing the usage of the \href{https://www.linaroforge.com}{Forge DDT} debugger in a user-environment. 
+% to help identifying bugs in MPI, OpenMP and Cuda/HIP codes.
+In a classic workflow, users build a debug version of their code with the -g and -G compilation flags and submit a job with the sbatch slurm command.
+For example, the \lst{native.slurm} script~:
+%
+\lstinputlisting[language=bash]{src/ddt/native.slurm}
+%
+will load the Cray Programming Environment (CPE) and launch the debugger with the \lst{ddt --connect} command.
+As the job starts, the users can use the remote client installed on their local machine to debug the code.
 
+When running in a user-environment, it is required to manually launch the debugger.
+For example, the \lst{uenv.slurm} script~:
+%
+\lstinputlisting[language=bash]{src/ddt/uenv.slurm}
+%
+will mount the uenv-file, load the User Environment and launch the debugger with the \lst{forge-client} command.
+Similarly to the previous case, users can debug the code when the job starts.
+
+\fig{fig:sph-ddt-uenv} shows the Forge DDT remote client connected to a job running the SPH-EXA code.
+DDT can be used to debug parallel programs in both scenarios.
+
+% -------------------------------
 \subsubsection{Performance tools}
 
 \begin{table}[htp!]
@@ -331,6 +350,15 @@ Finally, while the tools are designed by CSCS and for use on Alps, we would welc
     \caption{OSU benchmark results comparing cray-mpich performance when built using CPE and spack-stacks (uenv) for host-host (cpu) and device-device (gpu) configurations.}
     \label{fig:osu}
 \end{figure*}
+
+\vfill\eject
+\begin{figure}[htp!]
+    \begin{center}
+        \includegraphics[width=\textwidth]{./images/sph-ddt-uenv.png}
+    \end{center}
+    \caption{Debugging SPH-EXA with Forge DDT.}
+    \label{fig:sph-ddt-uenv}
+\end{figure}
 
 %%% Local Variables:
 %%% TeX-master: "paper"
