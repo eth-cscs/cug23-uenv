@@ -187,7 +187,7 @@ Note that when using CPE FFTW and OpenBLAS were built using Spack instead of usi
 
 The simulations were run on nodes with a single socket AMD Zen3 Milan CPU, and 4 Slingshot 11 NICs.
 For the strong scaling benchmarks, a 1.4-million atom system (a pair of hEGFR Dimers of 1IVO and 1NQL) is used, included in the HECBioSim benchmarks suite\footnote{\url{https://www.hecbiosim.ac.uk/access-hpc/benchmarks}}.
-The number of mpi tasks per node was kept constant at 64 with one OpenMPI thread per rank, and the number of nodes was scaled from 1 to 12.
+The number of MPI tasks per node was kept constant at 64 with one OpenMP thread per rank, and the number of nodes was scaled from 1 to 12.
 
 \begin{figure}[htp!]
     \begin{center}
@@ -214,7 +214,7 @@ The benchmark strong scales well, as shown in \fig{fig:gromacs-strong}, with a d
 \end{figure}
 
 The SPH-EXA\footnote{\url{https://github.com/unibas-dmi-hpc/SPH-EXA}} project is a multidisciplinary effort that looks to scale the Smoothed Particle Hydrodynamics (SPH) method to enable exascale hydrodynamics simulations for the fields of Cosmology and Astrophysics. 
-This section focuses on comparing the behavior of the code built with and without the stackinator tool.
+This section focuses on comparing the behavior of the code built with and without the \stackinator tool.
 For this, we built two \stackinator stacks: one for CUDA and one for ROCM.
 The compiler and libraries included in these images were based on cray-mpich/8.1.21, in addition to gcc/11.x and cuda/11.8 or hip/5.2 for the CUDA and ROCM stacks respectively.
 Next, the stacks were mounted to access the compiler and libraries for building our MPI+OpenMP+CUDA and MPI+OpenMP+HIP versions of the code.
@@ -244,7 +244,7 @@ The results show that the squashfs-based executables deliver competitive perform
 This section focuses on showing the usage of the \href{https://www.linaroforge.com}{Forge DDT} debugger in a user-environment. 
 % to help identifying bugs in MPI, OpenMP and Cuda/HIP codes.
 In a classic workflow, users build a debug version of their code with the -g and -G compilation flags and submit a job with the sbatch slurm command.
-For example, the \lst{native.slurm} script~:
+For example, the \lst{native.slurm} script:
 %
 \lstinputlisting[language=bash]{src/ddt/native.slurm}
 %
@@ -252,7 +252,7 @@ will load the Cray Programming Environment (CPE) and launch the debugger with th
 As the job starts, the users can use the remote client installed on their local machine to debug the code.
 
 When running in a user-environment, it is required to manually launch the debugger.
-For example, the \lst{uenv.slurm} script~:
+For example, the \lst{uenv.slurm} script:
 %
 \lstinputlisting[language=bash]{src/ddt/uenv.slurm}
 %
