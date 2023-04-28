@@ -20,14 +20,14 @@
             name=first plot,
         ]
 
-            \addplot[color=green!40!black, very thick, densely dotted, forget plot, opacity=0.5]
+            \addplot[color=green!40!black, very thick, densely dotted, forget plot]
                 table[x=bytes, y=cpe-cpu-lat] {./data/osu/p2p.tbl};
-            \addplot[color=orange!90!black, very thick, densely dotted, forget plot, opacity=0.5]
+            \addplot[color=orange!90!black, very thick, densely dotted, forget plot]
                 table[x=bytes, y=sq-cpu-lat] {./data/osu/p2p.tbl};
 
-            \addplot[color=green!40!black, very thick, forget plot, opacity=0.5]
+            \addplot[color=green!40!black, very thick, forget plot]
                 table[x=bytes, y=cpe-gpu-lat] {./data/osu/p2p.tbl};
-            \addplot[color=orange!90!black, very thick, forget plot, opacity=0.5]
+            \addplot[color=orange!90!black, very thick, forget plot]
                 table[x=bytes, y=sq-gpu-lat] {./data/osu/p2p.tbl};
 
             \addlegendimage{color=green!40!black, line width=5pt}
