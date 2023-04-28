@@ -1,5 +1,4 @@
 TEXFILES=abstract.tex  deployment.tex  introduction.tex  paper.tex  results.tex  spack-stacks.tex listing-spec.tex
-#IMAGEFILES=data/*.tex data/*.tbl
 
 REV=
 

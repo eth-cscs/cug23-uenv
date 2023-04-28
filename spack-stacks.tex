@@ -44,7 +44,7 @@ It is a stripped down version of a software stack that CSCS provides to the Swis
     \item \lst{packages.yaml} and \lst{modules.yaml} make \spack use packages installed on the system and generate modules files, respectively.
         These follow the YAML specifications for the \spack configuration files with the same names.
 
-    \item \lst{repo} is an optional path containing a \href{https://spack.readthedocs.io/en/latest/repositories.html}{\spack repository}, for overriding \spack's implementations or providing support for new packages.
+    \item \lst{repo} is an optional path containing a \href{https://spack.readthedocs.io/en/latest/repositories.html}{\spack repository}\footnote{\url{https://spack.readthedocs.io/en/latest/repositories.html}}, for overriding \spack's implementations or providing support for new packages.
 
 \end{itemize}
 
@@ -233,7 +233,7 @@ that are set by \spack when they are installed:
 \noindent\textbf{Step 3: Create a \spack package}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The tar balls are stored in a \href{https://jfrog.com/artifactory/}{JFrog Artifactory} -- a self-hosted artifact store accessible only on the CSCS network that can only be accessed on CSCS systems.
+The repackaged \craympich tar balls are stored in a \href{https://jfrog.com/artifactory/}{JFrog Artifactory}\footnote{\url{https://jfrog.com/artifactory/}} -- a self-hosted artifact store accessible only on the CSCS network that can only be accessed on CSCS systems.
 A custom \spack package that installs cray-mpich from the tar balls is distributed with \stackinator\footnote{See \lst{stackinator/repos} in the repository \url{https://github.com/eth-cscs/stackinator}.}, but can only be run on Alps due to this restriction.
 To use this process at another site, one would have to create the tar balls, and update the \spack package accordingly.
 
