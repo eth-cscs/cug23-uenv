@@ -109,17 +109,17 @@ The environment is built using the top-level Makefile, which executes the follow
     \end{enumerate}
     \item Call \lst{environments/Makefile}:
     \begin{enumerate}
-        \item Concretize gcc-env and nvhpc-env \emph{concurrently}
-        \item Build gcc-env and nvhpc-env\emph{concurrently}
+        \item Concretize prgenv-gcc and prgenv-openacc \emph{concurrently}
+        \item Build prgenv-gcc and prgenv-openacc\emph{concurrently}
     \end{enumerate}
     \item Generate \lst{store/config}.
     \item (optional) generate \lst{store/modules}.
     \item Generate SquashFS image of \lst{store}.
 \end{enumerate}
 
-The \lstinline{compilers.yaml}, \lstinline{packages.yaml} and \lstinline{Makefile} for each of the \spack environments are generated in the Makefile using \spack. The commands used generate the respective files required to build the "gcc-env" are summarised:
+The \lstinline{compilers.yaml}, \lstinline{packages.yaml} and \lstinline{Makefile} for each of the \spack environments are generated in the Makefile using \spack. The commands used generate the respective files required to build the "prgenv-gcc" are summarised:
 \begin{itemize}
-    \item \lst{gcc-env/compilers.yaml}:
+    \item \lst{prgenv-gcc/compilers.yaml}:
         \begin{lstlisting}
 > gcc_prefix= spack -e ../compilers/gcc \
         find --format '{prefix}' gcc@11
@@ -127,15 +127,15 @@ The \lstinline{compilers.yaml}, \lstinline{packages.yaml} and \lstinline{Makefil
         $(compiler_bin_dirs $gcc_prefix) \end{lstlisting}
         Where the function \lst{compiler_bin_dirs} is a function that returns \lst{bin} path of the compiler, omitted for brevity.
 
-    \item \lst{gcc-env/packages.yaml}:
+    \item \lst{prgenv-gcc/packages.yaml}:
         \begin{lstlisting}
 > spack external find --not-buildable --scope=user  perl diffutils gettext \end{lstlisting}
 
-    \item \lst{gcc-env/Makefile}:
+    \item \lst{prgenv-gcc/Makefile}:
         \begin{lstlisting}
-> spack -e gcc-env/ concretize -f
-> spack -e gcc-env/ env depfile \
-        -o gcc-env/Makefile \end{lstlisting}
+> spack -e prgenv-gcc/ concretize -f
+> spack -e prgenv-gcc/ env depfile \
+        -o prgenv-gcc/Makefile \end{lstlisting}
         First, the environment is concretized (\spack generates the full set of packages and their dependencies for the environment), then a Makefile that facilitates building packages in parallel is generated.
 \end{itemize}
 
