@@ -243,6 +243,12 @@ The results show that the squashfs-based executables deliver competitive perform
 
 This section focuses on showing the usage of the \href{https://www.linaroforge.com}{Forge DDT} debugger in a user-environment. 
 % to help identifying bugs in MPI, OpenMP and Cuda/HIP codes.
+
+Forge DDT can be launched using Express Launch (\lst{ddt srun myexe}), Reverse Connect (\lst{ddt --connect srun myexe}) or Offline mode (\lst{ddt --offline srun myexe}). 
+Express Launch requires a good X11 connection hence it is recommended to use the Reverse Connect method, which uses the Remote Client to debug remote jobs while running the user interface on a local machine.
+In addition, Forge DDT can be configured to integrate with queuing systems, allowing for the submission of jobs directly from the user interface.
+The debugger can also open and debug one or more core files after an application terminates or attach to running programs.
+
 In a classic workflow, users build a debug version of their code with the -g and -G compilation flags and submit a job with the sbatch slurm command.
 For example, the \lst{native.slurm} script:
 %
@@ -258,9 +264,9 @@ For example, the \lst{uenv.slurm} script:
 %
 will mount the uenv-file, load the User Environment and launch the debugger with the \lst{forge-client} command.
 Similarly to the previous case, users can debug the code when the job starts.
-
 \fig{fig:sph-ddt-uenv} shows the Forge DDT remote client connected to a job running the SPH-EXA code.
 DDT can be used to debug parallel programs in both scenarios.
+Attaching to running programs with Forge DDT in a user environment requires additional testing as the process running the application and the Forge DDT process are not necessarily in the same namespace.
 
 % -------------------------------
 \subsubsection{Performance tools}
