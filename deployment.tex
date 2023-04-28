@@ -71,7 +71,7 @@ Root-level access is required to mount the SquashFS image, which means the names
 Installation also requires system-administrator privileges.
 Typically, this means adding the path of the plugin library directly to the Slurm plugin configuration file \lst{/etc/slurm/plugstack.conf} or in a plugin-specific configuration file under \lst{/etc/slurm/plugstack.conf.d/}.
 
-In the following example the user is on the login node, mounts a user environment using \lst{squashfs-mount}, and starts a \lst{bash} shell. 
+In the following example the user is on the login node, mounts a user environment using \lst{squashfs-mount}, and starts a \lst{bash} shell.
 This environment provides \lst{gcc} under \lst{/user-environments/bin}.
 The user can access this version of \lst{gcc} when running on a compute node via \lst{srun} because the Slurm plugin will recognize the mounted user environment and provide it on the compute node as well.
 
@@ -110,7 +110,8 @@ The \emph{build stage} performs the following steps:
 
 Development of the CI/CD pipeline for images is on-going, with the following stages under development for release in Q3 2023:
 \begin{itemize}
-    \item \emph{test stage} use ReFrame\footnote{\url{https://github.com/reframe-hpc/reframe}}~\cite{software:reframe} to launch tests for correctness and performance.
+     \item \emph{test stage}: ReFrame\footnote{\url{https://github.com/reframe-hpc/reframe}}~\cite{software:reframe} inspects the uenv metadata listing the features offered by each programming environment.
+    It then launches a list of checks to ensure that the provided features are working correctly and the performance is optimal.
     \item \emph{deploy stage}: deploy the image to a production artifactory where it can be accessed by users with a simple CLI interface.
 \end{itemize}
 
