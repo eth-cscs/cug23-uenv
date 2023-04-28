@@ -203,16 +203,6 @@ The benchmark strong scales well, as shown in \fig{fig:gromacs-strong}, with a d
 \noindent\textbf{Application Benchmark: SPH-EXA}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The SPH-EXA\footnote{\url{https://github.com/unibas-dmi-hpc/SPH-EXA}} project is a multidisciplinary effort that looks to scale the Smoothed Particle Hydrodynamics (SPH) method to enable exascale hydrodynamics simulations for the fields of Cosmology and Astrophysics. 
-This section focuses on comparing the behavior of the code built with and without the stackinator tool.
-For this, we built two \stackinator stacks: one for CUDA and one for ROCM.
-The compiler and libraries included in these images were based on cray-mpich/8.1.21, in addition to gcc/11.x and cuda/11.8 or hip/5.2 for the CUDA and ROCM stacks respectively.
-Next, the stacks were mounted to access the compiler and libraries for building our MPI+OpenMP+CUDA and MPI+OpenMP+HIP versions of the code.
-Finally, we executed the executables and compared the results with those of the same code built with the Cray Programming Environment (CPE).
-The primary focus in this context is the runtime behavior of the code rather than the performance of the code itself.
-
-\fig{fig:sph-weak} shows the performance obtained for the codes executing the Sedov--Taylor\footnote{\url{https://doi.org/10.48550/arxiv.2202.02840}} blast wave explosion test case with $400^3$ particles per gpu and $40$ time-steps, and for the MPI+OpenMP CPU-only version of the code with $483^3$ particles per compute node.
-
 \begin{figure}[htp!]
     \begin{center}
         \input{images/sph-nvidia-nodes.tex}
@@ -223,6 +213,16 @@ The primary focus in this context is the runtime behavior of the code rather tha
     \label{fig:sph-weak}
 \end{figure}
 
+The SPH-EXA\footnote{\url{https://github.com/unibas-dmi-hpc/SPH-EXA}} project is a multidisciplinary effort that looks to scale the Smoothed Particle Hydrodynamics (SPH) method to enable exascale hydrodynamics simulations for the fields of Cosmology and Astrophysics. 
+This section focuses on comparing the behavior of the code built with and without the stackinator tool.
+For this, we built two \stackinator stacks: one for CUDA and one for ROCM.
+The compiler and libraries included in these images were based on cray-mpich/8.1.21, in addition to gcc/11.x and cuda/11.8 or hip/5.2 for the CUDA and ROCM stacks respectively.
+Next, the stacks were mounted to access the compiler and libraries for building our MPI+OpenMP+CUDA and MPI+OpenMP+HIP versions of the code.
+Finally, we executed the executables and compared the results with those of the same code built with the Cray Programming Environment (CPE).
+The primary focus in this context is the runtime behavior of the code rather than the performance of the code itself.
+
+\fig{fig:sph-weak} shows the performance obtained for the codes executing the Sedov--Taylor\footnote{\url{https://doi.org/10.48550/arxiv.2202.02840}} blast wave explosion test case with $400^3$ particles per gpu and $40$ time-steps, and for the MPI+OpenMP CPU-only version of the code with $483^3$ particles per compute node.
+
 The results show that the squashfs-based executables deliver competitive performance with that of the CPE based executables on both GPU architectures and multicore: the Spack-stack was between 4-10\% faster on A100 GPUs, between 0-4\% slower on AMD GPU and the CPU results are within 2\%.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -232,6 +232,14 @@ The results show that the squashfs-based executables deliver competitive perform
 % \assign{JG}
 % -------------------------------
 \subsubsection{Debugging tools}
+
+\begin{figure*}[htp!]
+    \begin{center}
+        \includegraphics[width=\textwidth]{./images/sph-ddt-uenv.png}
+    \end{center}
+    \caption{Debugging SPH-EXA with Forge DDT.}
+    \label{fig:sph-ddt-uenv}
+\end{figure*}
 
 This section focuses on showing the usage of the \href{https://www.linaroforge.com}{Forge DDT} debugger in a user-environment. 
 % to help identifying bugs in MPI, OpenMP and Cuda/HIP codes.
@@ -318,14 +326,15 @@ The CI/CD pipeline is a high priority, with integration with the ReFrame testing
 
 We plan to provide a mechanism for the command line tools and SLURM plugin to mount multiple images -- for which the main motivating use case is providing debugger and profiler toolchains alongside programming stacks.
 
+% Column break - todo - move to where it will balance the columns on the last page.
+\vfill\eject
+
 A command line tool that provides a singled interface for users to query, download and interact with environments is under development.
 
 We will discuss collaboration with HPE to provide \craympich and other CPE software packages via Spack stacks, as well as extending our current experimental support for other MPI distributions on Cray EX.
 
 Finally, while the tools are designed by CSCS and for use on Alps, we would welcome collaboration with other sites.
 
-% Column break - todo - move to where it will balance the columns on the last page.
-\vfill\eject
 
 %\begin{figure*}[htp!]
 %    \begin{center}
@@ -350,15 +359,6 @@ Finally, while the tools are designed by CSCS and for use on Alps, we would welc
     \caption{OSU benchmark results comparing cray-mpich performance when built using CPE and spack-stacks (uenv) for host-host (cpu) and device-device (gpu) configurations.}
     \label{fig:osu}
 \end{figure*}
-
-\vfill\eject
-\begin{figure}[htp!]
-    \begin{center}
-        \includegraphics[width=\textwidth]{./images/sph-ddt-uenv.png}
-    \end{center}
-    \caption{Debugging SPH-EXA with Forge DDT.}
-    \label{fig:sph-ddt-uenv}
-\end{figure}
 
 %%% Local Variables:
 %%% TeX-master: "paper"
