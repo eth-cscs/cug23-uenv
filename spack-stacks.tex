@@ -28,6 +28,10 @@ It is a stripped down version of a software stack that CSCS provides to the Swis
 The \stackinator recipe is composed of the following files, stored in a common path:
 \begin{itemize}
     \item  \lstinline{config.yaml} specifies where the image will be installed / mounted (the CSCS default is \emph{/user-environment}), the version of \spack and optional configuration for a \spack build cache. 
+
+% Column break: part of final balancing
+\vfill\eject
+
         \lstinputlisting[language=yaml]{src/nv-recipe/config.yaml}
         Reproducible builds use a release branch / version tag a specific commit of \spack. A rolling release can be configured by using the \lst{develop} branch of \spack, which will build with the most recent \spack recipes.
 
@@ -229,6 +233,9 @@ that are set by \spack when they are installed:
           \item this fixes the common runtime error ``MPIDI\_CRAY\_init: GPU\_SUPPORT\_ENABLED'' is requested, but GTL library is not linked.
     \end{itemize}
 \end{itemize}
+
+% Column break: part of final balancing
+\vfill\eject
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \noindent\textbf{Step 3: Create a \spack package}
