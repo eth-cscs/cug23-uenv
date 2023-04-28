@@ -55,8 +55,9 @@ The utility is open source, \href{https://github.com/eth-cscs/squashfs-mount}{av
 
 For a software stack to be available when a job runs, the stack must be mounted in the namespace of the process executing the submission script and any commands launched on other compute nodes.
 To accomplish this we developed a Slurm plugin that mounts a software stack based upon the same namespace mechanism used by the command line utilities discussed earlier.
-As the mount point is not globally visible, nodes can be run multiple jobs with different stacks, either from the same user or different users.
-Clean up of the mount point and software stack is therefore performed automatically once the parent process terminates.
+As the mount point is not globally visible, nodes can run multiple jobs with different stacks, either from the same user or different users.
+Crucially, only one image is mounted per node not per parallel task.
+Clean up of the mount point and software stack is performed automatically once the parent process terminates.
 The plugin is publicly available on GitHub\footnote{https://github.com/eth-cscs/slurm-uenv-mount}.
 
 The plugin is designed to be as transparent to a user's workflow as possible.
