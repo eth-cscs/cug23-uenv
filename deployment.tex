@@ -53,7 +53,7 @@ The utility is open source, \href{https://github.com/eth-cscs/squashfs-mount}{av
 \subsection{Slurm Integration}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-For a software stack to be available when a job runs, the stack must be mounted in the namespace of the process executing the submission script on the head node and a command launched on the compute nodes.
+For a software stack to be available when a job runs, the stack must be mounted in the namespace of the process executing the submission script and any commands launched on other compute nodes.
 To accomplish this we developed a Slurm plugin that mounts a software stack based upon the same namespace mechanism used by the command line utilities discussed earlier.
 As the mount point is not globally visible, nodes can be run multiple jobs with different stacks, either from the same user or different users.
 Clean up of the mount point and software stack is therefore performed automatically once the parent process terminates.
@@ -62,7 +62,7 @@ The plugin is publicly available on GitHub\footnote{https://github.com/eth-cscs/
 The plugin is designed to be as transparent to a user's workflow as possible.
 This reduces work for users and system administrators, as the plugin and SquashFS-based software stack concept can easily be integrated into existing systems and workflows.
 In particular, the plugin works with \lst{squashfs-mount} to detect which software stacks (and their mount points) are active.
-These are taken as default values to the plugin which will make them available on the head and compute nodes.
+These are taken as default values to the plugin which will make them available on the compute nodes.
 A different stack can be specified as a command-line option to any of the Slurm submission commands (e.g., sbatch or srun).
 This flexibility ensures consistency between the login environment and the execution environment, while also allowing the user to use different stacks \emph{within} a script.
 
