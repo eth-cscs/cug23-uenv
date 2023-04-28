@@ -14,17 +14,18 @@ The following sections describe the workflow, from recipe to squashfs-images, an
 \subsection{Stack Specification}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We motivate the discussion of the \spack recipes with an example stack for development on Cray EX EX235n nodes with NVIDIA A100 GPUs and AMD Zen3 Epyc CPUs.
+\stackinator generates stacks from a descriptive YAML file recipe.
+To explain \spack recipes, we will work with an example stack for development on Cray EX EX235n nodes with NVIDIA A100 GPUs and AMD Zen3 Epyc CPUs.
 The stack supports development of GPU-aware MPI applications with both GCC and CUDA, and applications with NVIDIA HPC SDK using OpenACC.
 It is a stripped down version of a software stack that CSCS provides to the Swiss National Weather Service (MeteoSwiss) on Alps, specifically:
 \begin{itemize}
     \item A GCC 11.3 compiler tool chain.
     \item An NVHPC 22.7 compiler tool chain.
-    \item A GCC programming environment \lst{gcc-env} with CUDA-aware \craympich, OSU Benchmarks, OpenBLAS and CUDA 11.8.
-    \item An NVHPC programming environment \lst{openac-env} with CUDA-aware \craympich, OSU Benchmarks and CUDA 11.8.
+    \item A GCC programming environment \lst{prgenv-gcc} with CUDA-aware \craympich, OSU Benchmarks, OpenBLAS and CUDA 11.8.
+    \item An NVHPC programming environment \lst{prgenv-openacc} with CUDA-aware \craympich, OSU Benchmarks and CUDA 11.8.
 \end{itemize}
 
-\stackinator generates stacks from a descriptive YAML file recipe, composed of the following files:
+The \stackinator recipe is composed of the following files, stored in a common path:
 \begin{itemize}
     \item  \lstinline{config.yaml} specifies where the image will be installed / mounted (the CSCS default is \emph{/user-environment}), the version of \spack and optional configuration for a \spack build cache. 
         \lstinputlisting[language=yaml]{src/nv-recipe/config.yaml}
@@ -55,7 +56,7 @@ For the example stack, there are five environments, illustrated in~\fig{fig:env-
     \begin{center}
     \input{images/env-dag.tex}
     \end{center}
-    \caption{The dependency graph between the \spack environments built to provide a \spack stack that provides GCC 11 and NVHPC 22.7 tool chains, and two environments built with the compilers. The bootstrap compiler is built first using the system GCC 7.5. Then GCC 11 tool chain, followed by the NVHPC tool chain which requires GCC 11. Finally two environments are built: gcc-env with GCC 11, and openacc-env which contains packages built with both GCC 11 and NVHPC 22.7.}
+    \caption{The dependency graph for the \spack environments that are generated internally by \stackinator to build the example \spack stack. The blue boxes are environments used to build and provide compiler toolchains, and the green boxes show the software environments that are built using the compilers. The red boxes show the compiler toolchain that is used to build the downstream packages.\newline The bootstrap compiler is built first using the system GCC 7.5, followed by the gcc tool chain, then the llvm tool chain which requires GCC 11. Finally two environments are built: prgenv-gcc with GCC 11, and prgenv-openacc which contains packages built with both GCC 11 and NVHPC 22.7.}
     \label{fig:env-dag}
 \end{figure}
 
