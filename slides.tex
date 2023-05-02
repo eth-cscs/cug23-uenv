@@ -1,0 +1,161 @@
+\documentclass[aspectratio=43]{beamer}
+% Theme works only with a 4:3 aspect ratio
+\usetheme{CSCS}
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usetikzlibrary{pgfplots.groupplots,spy,patterns}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{positioning}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{tcolorbox}
+\usepackage{anyfontsize}
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{pifont}
+
+% define footer text
+\newcommand{\footlinetext}{Alps User Environments}
+
+% Select the image for the title page
+\newcommand{\picturetitle}{slide-images/image5.pdf}
+
+% fonts for maths
+\usefonttheme{professionalfonts}
+\usefonttheme{serif}
+
+% source code listing
+\newcommand\TS{\rule{0pt}{2.6ex}}       % Top strut
+\newcommand\BS{\rule[-1.2ex]{0pt}{0pt}} % Bottom strut
+\newcommand{\hl}[1]{\textbf{\textcolor{blue}{#1}}} % for hilighting optimal entries in tables
+\newcommand{\rl}[1]{\textbf{\textcolor{red}{#1}}} % for hilighting sub-optimal entries in tables
+\newcommand{\img}[1]{{\Large \textbf{IMAGE {#1}}}}
+\newcommand{\hilight}[1]{\textcolor{blue!20!orange}{#1}}
+\newcommand{\alps}[0]{Alps\xspace}
+\newcommand{\stackinator}[0]{Stackinator\xspace}
+
+% set indent to a more reasonable level (so that itemize can be used in columns)
+\setlength{\leftmargini}{20pt}
+
+\DeclareTextFontCommand{\emph}{\color{blue!85!black}}
+
+\author{\textbf{Ben Cumming}, ....}
+\title{Alps stuff.}
+\subtitle{CUG23 -- Helsinki}
+%\subtitle{CNS*2020 Workshop \emph{Tools and resources for developing and sharing models in computational neuroscience} \date{} }
+
+\begin{document}
+
+% TITLE SLIDE
+\cscstitle
+
+%-------------------------------------------
+%\begin{frame}[fragile]{Overview}
+%   Big Arbor logo
+
+%   Overview of talk
+%   \begin{enumerate}
+%       \item What is \arbor and its motivation
+%       \item Portability (performance)
+%       \item Portability (model descriptions)
+%       \item Allen model
+%   \end{enumerate}
+%end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{HPC Requires Portability}
+    HPC is required to meet ambitious modeling aims.
+    \\ \vspace{15pt}
+    All major HPC systems coming online in the next few years will be GPU based:
+    \begin{itemize}
+        \item Piz Daint @ CSCS (since 2015);
+        \item Marconi100 @ Cineca (May 2020);
+        \item EuroHPC pre-exascale systems (late 2021);
+        \item US ECP pre-exascale and exascale systems (2021-2023)
+    \end{itemize}
+    \vspace{15pt}
+    Tools and models they consume will have to be portable.
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{Region and locset examples}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            %\includegraphics[width=\textwidth]{images/ls_term.png}
+            Graphics
+
+            \vspace{10pt}
+
+            \begin{lstlisting}[style=arblang]
+(restrict (terminal) (tag 3))
+            \end{lstlisting}
+
+            The tips (terminals) of the dendritic arbor (tag 3).
+
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            graphics!
+            %\includegraphics[width=\textwidth]{images/reg_radle5.png}
+
+            \vspace{10pt}
+
+            \begin{lstlisting}[style=arblang]
+(radius_le (all) 0.5)
+            \end{lstlisting}
+            All parts of the cell with radius less than or equal to 0.5 $\mu$m.
+
+        \end{column}
+    \end{columns}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{Step 3: Build a cell and decorate}
+    \begin{lstlisting}[style=talkpython]
+import arbor as arb
+
+# Create a cable_cell description
+labels = {...}
+morph = arb.swc_import('purkinje.swc')
+cell = arb.cable_cell(morph, labels)
+
+# Bind mechanisms to regions and synapses to locsets
+cell.paint('soma', 'hh')
+cell.paint('dend', 'pas')
+cell.paint('axon', 'pas/g=0.0012')
+cell.place('inhib', 'expsyn')
+
+# Attach spike detector and a current clamp
+cell.place('(root)', arb.spike_detector(thresh=-10))
+cell.place('stim',   arb.i_clamp(delay=10, duration=10, amplitude=0.4))
+    \end{lstlisting}
+\end{frame}
+%-------------------------------------------
+
+\cscschapter{A chapter}
+
+
+%-------------------------------------------
+\begin{frame}[fragile]{Allen SDK: results}
+    \vfill
+    Results from running the model with Python 3.8 on a 2018 Macbook:
+    \begin{itemize}
+        \item foo v7.7 (pip): 118s.
+        \item bar v0.3.dev (cmake): 14s.
+    \end{itemize}
+
+    \vspace{-15pt}
+
+    \begin{center}
+%    \includegraphics[width=0.75\textwidth]{images/allen-vs-arbor-no-sphere-here.png}
+    Graphics went here
+    \end{center}
+
+\end{frame}
+%-------------------------------------------
+
+\end{document}

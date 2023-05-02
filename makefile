@@ -15,6 +15,9 @@ diff :
 	ln -s ../makefile; \
 	make)
 
+slides:
+	pdflatex slides.tex
+
 bibup : paper.bib
 	pdflatex paper
 	bibtex paper
@@ -29,7 +32,13 @@ clean :
 	rm -f paper.bbl
 	rm -f *.blg
 	rm -f paper.pdf
+	rm -f slides.pdf
 	rm -f *.aux
+	rm -f *.nav
+	rm -f *.out
+	rm -f *.snm
+	rm -f *.vrb
+	rm -f *.toc
 	rm -rf diff/
 
 .PHONY: bibup diff force clean
