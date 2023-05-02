@@ -41,48 +41,134 @@
 
 \DeclareTextFontCommand{\emph}{\color{blue!85!black}}
 
-\author{\textbf{Ben Cumming}, ....}
-\title{Alps stuff.}
+\author{
+    \textbf{B.~Cumming},
+    J.~Coles,
+    T-I.~Manitaras,
+    J-G.~Piccinali,
+    S.~Pintarelli,
+    H.~Stoppels}
+\title{\centering Deploying Alternative User Environments on Alps}
 \subtitle{CUG23 -- Helsinki}
-%\subtitle{CNS*2020 Workshop \emph{Tools and resources for developing and sharing models in computational neuroscience} \date{} }
 
 \begin{document}
+
+\setlength\labelsep   {\dimexpr\labelsep - 0.2em\relax}
+\setlength\leftmargini{\dimexpr\leftmargini - 1.0em\relax}
 
 % TITLE SLIDE
 \cscstitle
 
-%-------------------------------------------
-%\begin{frame}[fragile]{Overview}
-%   Big Arbor logo
-
-%   Overview of talk
-%   \begin{enumerate}
-%       \item What is \arbor and its motivation
-%       \item Portability (performance)
-%       \item Portability (model descriptions)
-%       \item Allen model
-%   \end{enumerate}
-%end{frame}
-%-------------------------------------------
+\cscschapter{Setting the scene: motivation}
 
 %-------------------------------------------
-\begin{frame}[fragile]{HPC Requires Portability}
-    HPC is required to meet ambitious modeling aims.
-    \\ \vspace{15pt}
-    All major HPC systems coming online in the next few years will be GPU based:
-    \begin{itemize}
-        \item Piz Daint @ CSCS (since 2015);
-        \item Marconi100 @ Cineca (May 2020);
-        \item EuroHPC pre-exascale systems (late 2021);
-        \item US ECP pre-exascale and exascale systems (2021-2023)
-    \end{itemize}
-    \vspace{15pt}
-    Tools and models they consume will have to be portable.
+\begin{frame}[fragile]{Alps}
+    Alps is the new Cray EX-based system at CSCS.
+
+    \vspace{20pt}
+
+    Borrow slide from Maxime's presentation showing the different vClusters
+
+    \vspace{20pt}
+
+    Consolidate disparate clusters onto a single Cray EX system
+
+    \vspace{20pt}
+
+    using CSM underneath -- each vCluster is depoloyed with its own software environment, scheduler, storage and network isolation
+
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}[fragile]{Region and locset examples}
+\begin{frame}[fragile]{Monolithic Software Stacks}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \includegraphics[width=\textwidth]{images/stack-old.png}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+
+            \small
+
+            Sites build software for users using compilers and libraries from CPE
+            % point out presentations past and present
+            \begin{itemize}
+                \item install all the software for all the users on a shared file system.
+                \item modules alongside CPE modules
+            \end{itemize}
+
+            Is CPE a solid foundation when:
+            \begin{itemize}
+                \item it changes every 3 months
+                \item it exposes a large surface area
+                \item bugs will take 3-6 months minimum for fixes to be available
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{Bespoke SW stacks}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+
+            Build use case and workflow specific software stacks:
+            \begin{itemize}
+                \item only packages that are needed
+                \item deployed independently of one-another
+                \item deployed independently of one-another
+            \end{itemize}
+
+            Build them on a simple foundation:
+            \begin{itemize}
+                \item CrayOS + libfabric + Slurm + xpmemm
+                \item \emph{no CPE}
+                \item infrequent changes
+                \item small surface area
+            \end{itemize}
+
+
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \includegraphics[width=\textwidth]{images/stack-new.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{Objectives}
+    Software environments have the following objectives that make them DevOps compatible:
+    \begin{itemize}
+        \item reproducable from simple recipes
+        \item versionable with git
+        \item support easy roll back
+        \item adapt to changes in the underlying system without modifying the recipe
+        \item testable
+    \end{itemize}
+\end{frame}
+%-------------------------------------------
+
+\cscschapter{The stackinator: building environments}
+
+\cscschapter{Deploying spack-stacks}
+
+\cscschapter{Results}
+
+\cscschapter{Wrapping up}
+
+%-------------------------------------------
+\begin{frame}[fragile]{Template}
+    hello
+    \begin{itemize}
+        \item world
+    \end{itemize}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{Dual Column Example}
     \begin{columns}[T]
         \begin{column}{0.5\textwidth}
             %\includegraphics[width=\textwidth]{images/ls_term.png}
@@ -114,7 +200,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}[fragile]{Step 3: Build a cell and decorate}
+\begin{frame}[fragile]{Python code example}
     \begin{lstlisting}[style=talkpython]
 import arbor as arb
 
@@ -122,40 +208,11 @@ import arbor as arb
 labels = {...}
 morph = arb.swc_import('purkinje.swc')
 cell = arb.cable_cell(morph, labels)
-
-# Bind mechanisms to regions and synapses to locsets
-cell.paint('soma', 'hh')
-cell.paint('dend', 'pas')
-cell.paint('axon', 'pas/g=0.0012')
-cell.place('inhib', 'expsyn')
-
-# Attach spike detector and a current clamp
-cell.place('(root)', arb.spike_detector(thresh=-10))
-cell.place('stim',   arb.i_clamp(delay=10, duration=10, amplitude=0.4))
     \end{lstlisting}
 \end{frame}
 %-------------------------------------------
 
 \cscschapter{A chapter}
 
-
-%-------------------------------------------
-\begin{frame}[fragile]{Allen SDK: results}
-    \vfill
-    Results from running the model with Python 3.8 on a 2018 Macbook:
-    \begin{itemize}
-        \item foo v7.7 (pip): 118s.
-        \item bar v0.3.dev (cmake): 14s.
-    \end{itemize}
-
-    \vspace{-15pt}
-
-    \begin{center}
-%    \includegraphics[width=0.75\textwidth]{images/allen-vs-arbor-no-sphere-here.png}
-    Graphics went here
-    \end{center}
-
-\end{frame}
-%-------------------------------------------
 
 \end{document}
