@@ -3,6 +3,7 @@
 \usetheme{CSCS}
 
 \usepackage{tikz}
+
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \usetikzlibrary{pgfplots.groupplots,spy,patterns}
@@ -24,7 +25,9 @@
 
 % fonts for maths
 \usefonttheme{professionalfonts}
-\usefonttheme{serif}
+%\usefonttheme{serif}
+
+\input{listing-spec.tex}
 
 % source code listing
 \newcommand\TS{\rule{0pt}{2.6ex}}       % Top strut
@@ -35,6 +38,11 @@
 \newcommand{\hilight}[1]{\textcolor{blue!20!orange}{#1}}
 \newcommand{\alps}[0]{Alps\xspace}
 \newcommand{\stackinator}[0]{Stackinator\xspace}
+\newcommand{\stackboxwidth}[0]{5cm}
+\newcommand{\stackboxheight}[0]{1cm}
+\newcommand{\stacksystemcolor}[0]{blue!10}
+\newcommand{\stackbootstrapcolor}[0]{green!10}
+\newcommand{\stackcolor}[0]{orange!10}
 
 % set indent to a more reasonable level (so that itemize can be used in columns)
 \setlength{\leftmargini}{20pt}
@@ -152,67 +160,303 @@
 
 \cscschapter{The stackinator: building environments}
 
-\cscschapter{Deploying spack-stacks}
+%-------------------------------------------
+\begin{frame}[fragile]{Stackinator}
+    A tool ``stackinator'' is used to configure the software stack on the target system:
 
-\cscschapter{Results}
+            \begin{lstlisting}[style=talkbash]
+            stack-config --recipe $recipe_path \
+             --system $CLUSTERNAME \
+             --build /dev/shm/build
+            \end{lstlisting}
 
-\cscschapter{Wrapping up}
+    \begin{itemize}
+        \item \emph{recipe}: YAML files that describe compilers, software packages, and tests for software stack
+        \item \emph{system}: System config for few libraries (gcc, libfabric, xpmem, slurm, rdma-core)
+        \item \emph{mount}: The installation path of the be installed (in the recipe)
+        \item \emph{build}: Where the build will be performed.
+    \end{itemize}
+
+    \url{https://github.com/eth-cscs/stackinator}
+\end{frame}
 
 %-------------------------------------------
-\begin{frame}[fragile]{Template}
-    hello
+\begin{frame}[fragile]{System Configurations}
+    A Spack configuration for the target vCluster that describes the handful of system dependencies.
+
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+        \begin{codecolumn}{packages.yaml}
+            \begin{lstlisting}[style=talkyaml]
+packages:
+ libfabric:
+  buildable: false
+  externals:
+  - spec: libfabric@1.15.2.0
+    prefix: /opt/cray/libfabric/1.15.2.0/
+ slurm:
+  buildable: false
+  externals:
+  - spec: slurm@22-5-2
+    prefix: /usr
+ xpmem: ...
+ rdma-core: ...
+            \end{lstlisting}
+        \end{codecolumn}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+        \begin{codecolumn}{compilers.yaml}
+            \begin{lstlisting}[style=talkyaml]
+compilers:
+- compiler:
+ spec: gcc@7.5.0
+  paths:
+   cc: /usr/bin/gcc
+   cxx: /usr/bin/g++
+   f77: /usr/bin/gfortran
+   fc: /usr/bin/gfortran
+  flags: {}
+  operating_system: sles15
+  target: x86_64
+            \end{lstlisting}
+        \end{codecolumn}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+%-------------------------------------------
+\begin{frame}[fragile]{Recipe: general configuration}
+
+Name, mount point, default system (deprecate), the version of Spack to use and mirror configuration.
+
+\begin{code}{\lstinline{config.yaml}}
+\lstinputlisting[style=talkyaml]{src/nv-recipe/config.yaml}
+\end{code}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{Recipe: compiler toolchains}
+
+todo
+
+\begin{code}{\lstinline{compilers.yaml}}
+\lstinputlisting[style=talkyaml]{src/nv-recipe/compilers.yaml}
+\end{code}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{Recipe: environments}
+
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+        \begin{codecolumn}{environments.yaml}
+\lstinputlisting[style=talkyaml, firstline=1, lastline=16]{src/nv-recipe/environments.yaml}
+        \end{codecolumn}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+        \begin{codecolumnnotitle}{}
+\lstinputlisting[style=talkyaml, firstline=17]{src/nv-recipe/environments.yaml}
+        \end{codecolumnnotitle}
+        \end{column}
+    \end{columns}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{Stacks}
+    A ``Spack Stack'' is built in layers on top of a handful of external system dependencies.
+    \begin{center}
+        \input{images/stack.tex}
+    \end{center}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{Optimising Build Times}
+    Building stacks is resource intensive: 30~min -- 3~hours with 64-cores
+
     \begin{itemize}
-        \item world
+        \item \emph{parallelise the build}:
+        \item \emph{build in memory}:
+        \item \emph{cache previous builds}:
     \end{itemize}
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}[fragile]{Dual Column Example}
-    \begin{columns}[T]
-        \begin{column}{0.5\textwidth}
-            %\includegraphics[width=\textwidth]{images/ls_term.png}
-            Graphics
-
-            \vspace{10pt}
-
-            \begin{lstlisting}[style=arblang]
-(restrict (terminal) (tag 3))
-            \end{lstlisting}
-
-            The tips (terminals) of the dendritic arbor (tag 3).
-
-        \end{column}
-        \begin{column}{0.5\textwidth}
-            graphics!
-            %\includegraphics[width=\textwidth]{images/reg_radle5.png}
-
-            \vspace{10pt}
-
-            \begin{lstlisting}[style=arblang]
-(radius_le (all) 0.5)
-            \end{lstlisting}
-            All parts of the cell with radius less than or equal to 0.5 $\mu$m.
-
-        \end{column}
-    \end{columns}
+\begin{frame}[fragile]{Parallelising builds}
+    Build environments simultaneously where possible
+    \begin{center}
+        \input{images/env-dag.tex}
+    \end{center}
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}[fragile]{Python code example}
-    \begin{lstlisting}[style=talkpython]
-import arbor as arb
-
-# Create a cable_cell description
-labels = {...}
-morph = arb.swc_import('purkinje.swc')
-cell = arb.cable_cell(morph, labels)
-    \end{lstlisting}
+\begin{frame}[fragile]{Optimising Build Times}
+    \begin{center}
+        \input{images/image-build.tex}
+    \end{center}
 \end{frame}
 %-------------------------------------------
 
-\cscschapter{A chapter}
+
+\cscschapter{Deploying spack-stacks}
+
+%-------------------------------------------
+\begin{frame}[fragile]{SquashFS}
+    The images can be copied to a shared file system
+
+    At CSCS they are compressed as SquashFS images:
+    \begin{itemize}
+        \item memory!
+        \item performance! (don't bother with plots - just mention to save space)
+        \item DevOps!
+    \end{itemize}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{CLI Utilities}
+    Non-privileged users are able to mount SquashFS images at runtime using the \emph{squashfs-mount} CLI setuid utility that:
+    \begin{enumerate}
+    \item creates a new mount namespace
+    \item mounts the SquashFS file through \emph{libmount}
+    \item drops privileges and executes a given command.
+    \end{enumerate}
+
+    \begin{code}{mounting a squashfs image}
+\lstinputlisting[style=talkyaml]{src/squashfs-mount.sh}
+    \end{code}
+
+    \begin{center}
+        \textbf{The image is mounted in the new process -- processes (users) on the same node can mount different images.}
+    \end{center}
+
+    \vspace{10pt}
+
+    Open Source on GitHub with RPMs for Cray EX.\\\url{https://github.com/eth-cscs/squashfs-mount}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{SLURM}
+    A Slurm plugin manages mounting environmnents on compute nodes.
+    \begin{code}{Launch with explicit flags}
+            \begin{lstlisting}[style=talkbash]
+% srun --uenv-mount=/user-environment \
+       --uenv-file=img.squashfs \
+       -n2 -N2 osu_bw
+            \end{lstlisting}
+    \end{code}
+    \begin{code}{Inherit the environment from the login node}
+            \begin{lstlisting}[style=talkbash]
+% squashfs-mount img.squashfs /user-environment bash
+% srun -n2 -N2 osu_bw
+            \end{lstlisting}
+    \end{code}
+
+    Also works intuitively for \emph{sbatch} -- user can set a default image that, and individual \emph{srun} in the script can use different environments.
+
+    Open Source on GitHub with RPMs for Cray EX.\\\url{https://github.com/eth-cscs/slurm-uenv-mount/}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{CI/CD}
+    \begin{center}
+    CI/CD pipelines \emph{from recipe to deployed SquashFS image} is a work in progress.
+    \end{center}
+
+    \vspace{10pt}
+
+    Recipes are stored in a GitHub repository -- Pull requests and merges trigger a pipeline:
+    \begin{enumerate}
+        \item \emph{\sc Build Stage}: launch a Slurm job on the target cluster+architecture that uses stackinator to configure then build the image.
+        \item push the generated image to a JFrog artifactory
+        \item \emph{\sc Test Stage}: pull the image and run a Slurm job that executes ReFrame tests.
+        \item post status to GitHub
+        \item \emph{\sc Deploy Stage}: promote artifact to deployment artifactory (manual).
+    \end{enumerate}
+\end{frame}
+%-------------------------------------------
+
+\cscschapter{Results}
+
+%-------------------------------------------
+\begin{frame}[fragile]{OSU}
+    We run OSU benchmarks compiled using CPE and Spack Stacks to understand the effect of packaging cray-mpich outside CPE.
+\begin{center}
+    \begin{tabular}{l |c  c }
+                      & CPE   & Spack Stack \\
+          \hline
+        osu-benchmark & 5.9   & 5.9       \\
+        cray-mpich    & 8.1.21& 8.1.24    \\
+        gcc           & 11.2  & 11.3      \\
+        cuda          & 11.6  & 11.8      \\
+    \end{tabular}
+\end{center}
+
+    The benchmarks are run on \emph{Clariden}, a vCluster with \emph{64-core EPYC CPU} and  \emph{4 A100-80 GPUs} -- similar to Perlmutter.
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{OSU - P2P Bandwidth}
+    \begin{center}
+        \input{images/osu-p2p-bw-slides.tex}
+    \end{center}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{OSU - P2P Latency}
+    \begin{center}
+        \input{images/osu-p2p-lat-slides.tex}
+    \end{center}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{GROMACS}
+    A GROMACSD strong scaling benchmarks: a 1.4-million atom system (a pair of hEGFR Dimers of 1IVO and 1NQL) from the HECBioSim benchmarks suite.
+\begin{center}
+    \begin{tabular}{|l |c  c| }
+        \cline{2-3}
+\multicolumn{1}{c|}{} & CPE   & Spack Stack \\
+        \hline
+        gromacs       & 2021.5   & 2021.5   \\
+        fftw          & 3.3.10   & 3.3.10   \\
+        openblas      & 0.3.21   & 0.3.21   \\
+        cray-mpich    & 8.1.21   & 8.1.24   \\
+        gcc           & 11.2     & 11.3     \\
+          \hline
+    \end{tabular}
+\end{center}
+
+    Run on \emph{Clariden}, a vCluster with \emph{64-core EPYC CPU} and  \emph{4 Mi250x GPUs} -- identical to LUMI/Frontier/Setonix.
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{GROMACS - Strong Scaling}
+    A difference of maximum $\pm$1.5\% between the CPE and the Spack-stack.
+    \begin{center}
+        \input{images/gromacs-slides.tex}
+    \end{center}
+\end{frame}
+%-------------------------------------------
+
+\cscschapter{Wrapping up}
+
+\cscschapter{Thank you -- any questions?}
+
 
 
 \end{document}

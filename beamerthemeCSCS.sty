@@ -56,7 +56,7 @@ title={#1}]}{\end{tcolorbox}}
 \setbeamercolor{block title}{}%
 \begin{tcolorbox}[
 colback=white,
-colbacktitle=white!85!blue,
+colbacktitle=white!95!blue,
 colframe=black,
 coltitle=black,
 toptitle=1mm,
@@ -93,8 +93,8 @@ title={#1}]}{\end{tcolorbox}}
 \newenvironment<>{codecolumn}[1]{%
 \setbeamercolor{block title}{}%
 \begin{tcolorbox}[
-colback=white!10!black,
-colbacktitle=white!85!blue,
+colback=white,
+colbacktitle=white!95!blue,
 colframe=black,
 coltitle=black,
 toptitle=1mm,
@@ -110,6 +110,26 @@ boxsep=0mm,
 grow to left by=3mm,
 grow to right by=3mm,
 title=\footnotesize {#1}]}{\end{tcolorbox}}
+
+\newenvironment<>{codecolumnnotitle}[1]{%
+\setbeamercolor{block title}{}%
+\begin{tcolorbox}[
+colback=white,
+colbacktitle=white!95!blue,
+colframe=black,
+coltitle=black,
+toptitle=1mm,
+bottomtitle=1mm,
+lefttitle=3mm,
+leftupper=1mm,
+leftlower=1mm,
+rightupper=1mm,
+rightlower=1mm,
+top=-1mm,
+bottom=-1mm,
+boxsep=0mm,
+grow to left by=3mm,
+grow to right by=3mm]}{\end{tcolorbox}}
 
 \newenvironment<>{black0block}[1]{%
 \setbeamercolor{block title}{}%
@@ -265,8 +285,34 @@ title=\footnotesize {#1}]}{\end{tcolorbox}}
     breaklines=true
 }
 
+\lstdefinestyle{talkyaml}{
+    language=yaml,
+    showstringspaces=false,
+    backgroundcolor=\color{white},
+    basicstyle=\lstfont{black},
+    identifierstyle=\lstfont{blue!20!black},
+    keywordstyle=\lstfont{magenta!40!black},
+    numberstyle=\lstfont{black},
+    stringstyle=\lstfont{blue},
+    commentstyle=\lstfont{yellow!30!white},
+    emphstyle={\lstfont{green!60!white}},
+    breaklines=true
+}
 \lstdefinestyle{talkcpp}{
     language=[ANSI]C++,
+    showstringspaces=false,
+    backgroundcolor=\color{white},
+    basicstyle=\lstfont{black},
+    identifierstyle=\lstfont{blue!20!black},
+    keywordstyle=\lstfont{magenta!40!black},
+    numberstyle=\lstfont{black},
+    stringstyle=\lstfont{blue},
+    commentstyle=\lstfont{yellow!30!white},
+    emphstyle={\lstfont{green!60!white}},
+    breaklines=true
+}
+\lstdefinestyle{talkbash}{
+    language=bash,
     showstringspaces=false,
     backgroundcolor=\color{white},
     basicstyle=\lstfont{black},

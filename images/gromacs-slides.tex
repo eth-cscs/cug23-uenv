@@ -1,0 +1,26 @@
+    \begin{tikzpicture}[scale=1]
+        \begin{axis} [
+            height=7cm, width=11cm,
+            xmin = 1, xmax = 12,
+            ymax = 40, ymin=0,
+            ytick={5,10,15,20,25,30,35,40},
+            %yticklabels={10,100,1000},
+            xtick={1,2,3,4,5,6,7,8,9,10,11,12},
+            xticklabels={1,2,3,4,5,6,7,8,9,10,11,12},
+            %x tick label style={rotate=60,anchor=east},
+            axis line style=very thick,
+            ylabel=Throughput (ns/day),
+            xlabel=Nodes,
+            %title=\large \bf GROMACS through
+            legend style = {at={(0.95,0.05)}, anchor=south east},
+            grid=major
+        ]
+            \addplot[color=green!40!black,mark=square*,mark options={fill=white}, very thick]
+                table[x=nodes, y=cpe-max] {./data/gromacs/hEGFRDimerPair.tbl};
+            \addlegendentry{cpe}
+            \addplot[color=orange!90!black,mark=*,mark options={fill=white}, very thick]
+        table[x=nodes, y=uenv-max] {./data/gromacs/hEGFRDimerPair.tbl};
+            \addlegendentry{uenv}
+        \end{axis}
+    \end{tikzpicture}
+

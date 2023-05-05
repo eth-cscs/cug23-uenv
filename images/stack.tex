@@ -1,0 +1,38 @@
+\begin{tikzpicture}
+    \node[rectangle, draw=black, fill=\stacksystemcolor, minimum width=1.95cm, minimum height=1cm]
+        (system_gcc) {\small gcc};
+    \node[rectangle, draw=black, fill=\stacksystemcolor, minimum width=1.95cm, minimum height=1cm,
+        right=0.1cm of system_gcc]
+        (libfabric) {\small libbfabric};
+    \node[rectangle, draw=black, fill=\stacksystemcolor, minimum width=1.95cm, minimum height=1cm,
+        right=0.1cm of libfabric]
+        (xpmem) {\small xpmem};
+    \node[rectangle, draw=black, fill=\stacksystemcolor, minimum width=1.95cm, minimum height=1cm,
+        right=0.1cm of xpmem]
+        (slurm) {\small Slurm};
+    \node[rectangle, draw=blue, fill=blue!5, minimum width=3cm, minimum height=1cm,
+        right=0.5cm of slurm]
+        (sysconfig) {\small system config};
+    \node[rectangle, draw=black, fill=\stackbootstrapcolor, minimum width=8.1cm, minimum height=1cm,
+        above=0.1cm of system_gcc.north west, anchor=south west]
+        (bootstrap) {bootstrap gcc 11.3};
+    \node[rectangle, draw=orange, fill=orange!5, minimum width=3cm, minimum height=4.5cm,
+        above=0.1cm of sysconfig]
+        (slurm) {\small recipe};
+    \node[rectangle, draw=black, fill=\stackcolor, minimum width=8.1cm, minimum height=1cm,
+        above=0.1cm of bootstrap]
+        (gcc) {toolchain gcc 11.3};
+    \node[rectangle, draw=black, fill=\stackcolor, minimum width=8.1cm, minimum height=1cm,
+        above=0.1cm of gcc]
+        (nvhpc) {toolchain nvhpc 23.3};
+    \node[rectangle, draw=black, fill=\stackcolor, minimum width=8.1cm, minimum height=1cm,
+        above=0.1cm of nvhpc]
+        (software) {libraries, applications, tools};
+   %\node[rectangle, draw=black, fill=\stackcolor, minimum width=4cm, minimum height=1.5cm,
+   %    above=0.1cm of nvhpc.north west, anchor=south west]
+   %    (env-gnu) {prgenv-gnu};
+   %\node[rectangle, draw=black, fill=\stackcolor, minimum width=4cm, minimum height=1.5cm,
+   %    right=0.1cm of env-gnu]
+   %    (env-openacc) {prgenv-openacc};
+\end{tikzpicture}
+
