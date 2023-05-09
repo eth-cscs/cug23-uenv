@@ -25,14 +25,14 @@
     \node[rectangle, draw=black, fill=\stackcolor, minimum width=8.1cm, minimum height=1cm,
         above=0.1cm of gcc]
         (nvhpc) {toolchain nvhpc 23.3};
-    \node[rectangle, draw=black, fill=\stackcolor, minimum width=8.1cm, minimum height=1cm,
-        above=0.1cm of nvhpc]
-        (software) {libraries, applications, tools};
-   %\node[rectangle, draw=black, fill=\stackcolor, minimum width=4cm, minimum height=1.5cm,
-   %    above=0.1cm of nvhpc.north west, anchor=south west]
-   %    (env-gnu) {prgenv-gnu};
-   %\node[rectangle, draw=black, fill=\stackcolor, minimum width=4cm, minimum height=1.5cm,
-   %    right=0.1cm of env-gnu]
-   %    (env-openacc) {prgenv-openacc};
+   %\node[rectangle, draw=black, fill=\stackcolor, minimum width=8.1cm, minimum height=1cm,
+   %    above=0.1cm of nvhpc]
+   %    (software) {libraries, applications, tools};
+    \node[rectangle, draw=black, fill=\stackcolor, minimum width=4cm, minimum height=1.0cm,
+        above=0.1cm of nvhpc.north west, anchor=south west]
+        (env-gnu) {prgenv-gnu};
+    \node[rectangle, draw=black, fill=\stackcolor, minimum width=4cm, minimum height=1.0cm,
+        right=0.1cm of env-gnu]
+        (env-openacc) {prgenv-openacc};
 \end{tikzpicture}
 

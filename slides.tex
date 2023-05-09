@@ -155,7 +155,7 @@
 
 %-------------------------------------------
 \begin{frame}[fragile]{Objectives}
-    Software environments have the following objectives that make them DevOps compatible:
+    We have the following objectives for our software stacks:
     \begin{itemize}
         \item Reproducable from simple recipes:
         \begin{itemize}
@@ -176,13 +176,38 @@
 \cscschapter{The stackinator: building environments}
 
 %-------------------------------------------
+\begin{frame}[fragile]{Stackinator is Opinionated}
+    \begin{center}
+        Self containted software stacks/environments are built through a workflow codified in \emph{Stackinator}.
+
+    \vspace{10pt}
+
+        Each stack exposes a spack upstream interface, and optional modules and environment views.
+
+    \vspace{10pt}
+
+        \textbf{provide the inputs}: \emph{YAML recipe} and \emph{system configuration} \dots
+
+    \vspace{10pt}
+
+        \textbf{perform the steps}: \emph{stack-config} then \emph{make} \dots
+
+    \vspace{10pt}
+
+     \dots too build a software stack following the best-practices and HPE Cray EX-specific methods that CSCS have developed to deliver software stacks.
+    \end{center}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
 \begin{frame}[fragile]{Stackinator}
-    A tool ``stackinator'' is used to configure the software stack on the target system:
+    Stackinator provides a CLI tool to configure the software stack on the target system:
 
             \begin{lstlisting}[style=talkbash]
-            stack-config --recipe $recipe_path \
-             --system $CLUSTERNAME \
-             --build /dev/shm/build
+> stack-config --recipe $recipe_path \
+    --system $CLUSTERNAME --build /dev/shm/build
+> cd /dev/shm/build
+> env --ignore-environment PATH=/usr/bin:/bin:`pwd`/spack/bin make store.squashfs -j64
             \end{lstlisting}
 
     \begin{itemize}
@@ -194,6 +219,16 @@
 
     \url{https://github.com/eth-cscs/stackinator}
 \end{frame}
+
+%-------------------------------------------
+\begin{frame}[fragile]{Stacks}
+    A ``Spack Stack'' is built in layers on top of a handful of external system dependencies.
+    \begin{center}
+        \input{images/stack.tex}
+    \end{center}
+\end{frame}
+%-------------------------------------------
+
 
 %-------------------------------------------
 \begin{frame}[fragile]{System Configurations}
@@ -271,7 +306,6 @@ Compilers are built in three stages
 \end{enumerate}
 
 
-
 \begin{code}{\lstinline{compilers.yaml}}
 \lstinputlisting[style=talkyaml]{src/nv-recipe/compilers-annotated.yaml}
 \end{code}
@@ -299,30 +333,24 @@ Compilers are built in three stages
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}[fragile]{Stacks}
-    A ``Spack Stack'' is built in layers on top of a handful of external system dependencies.
-    \begin{center}
-        \input{images/stack.tex}
-    \end{center}
-    \todo{move higher and interleave}
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-\begin{frame}[fragile]{build}
+\begin{frame}[fragile]{Building}
     \begin{columns}[T]
-        \begin{column}{0.5\textwidth}
-            Print the stack-config command.
-
+        \begin{column}{0.6\textwidth}
+            stack-config generates a build path with a hierarchy of Makefiles that build the stack as a DAG of Spack environments.
             \begin{itemize}
                 \item build path is in /dev/shm -- build in memory
-                \item Bubblewrap (bwrap) is used to mount final build point
-                \item ...
+                \item Bubblewrap (bwrap) is used to mount the \emph{store} path at the destination during builds
             \end{itemize}
+            %\begin{center}
+                \hspace{1.5cm}\input{images/env-dag-small.tex}
+            %\end{center}
         \end{column}
-        \begin{column}{0.5\textwidth}
+
+
+        \begin{column}{0.4\textwidth}
             {
             \setlength{\DTbaselineskip}{5pt}
+            \footnotesize
             \input{src/build-path.tex}
             }
         \end{column}
@@ -349,6 +377,7 @@ Compilers are built in three stages
                 \item Store as tar-balls CSCS-private artifactory.
                 \item The Spack package uses patchelf on libraries and string-substitution on compiler wrappers.
             \end{itemize}
+            \emph{It takes an engineer an hour to create the binary package for each new CPE release.}
         \end{column}
         \hspace{-40pt}
         \begin{column}{0.4\textwidth}
@@ -359,6 +388,7 @@ Compilers are built in three stages
             }
         \end{column}
     \end{columns}
+
 \end{frame}
 %-------------------------------------------
 
@@ -419,20 +449,14 @@ def fixup_compiler_paths(self):
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}[fragile]{Configuration of mpicc}
-\begin{code}{bin/mpicc}
-    \begin{lstlisting}[style=talkbash]
-prefix="/user-environment/linux-sles15-zen3/gcc-11.3.0/cray-mpich-8.1.18.4-gcc-... long hash ..."
-CC="${prefix}/bin/gcc"
-$CC ${final_cppflags} ${final_cflags} ${final_ldflags} "${allargs[@]}" -I$includedir -L$libdir -Wl,-rpath,$libdir -lmpi -lmpi_gtl_cuda ${final_libs} \end{lstlisting}
-\end{code}
-
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
 \begin{frame}[fragile]{Optimising Build Times}
-    Building stacks is resource intensive: 30~min -- 3~hours with 64-cores
+    Building stacks is resource intensive: 30~min -- 3~hours with 64-cores.
+
+    \vspace{10pt}
+
+    Build times are the main pain point for developers.
+
+    \vspace{10pt}
 
     \begin{itemize}
         \item \emph{parallelise the build}: build Spack environments in parallel
@@ -460,18 +484,6 @@ $CC ${final_cppflags} ${final_cflags} ${final_ldflags} "${allargs[@]}" -I$includ
     \end{center}
 \end{frame}
 %-------------------------------------------
-\begin{frame}[fragile]{Stackinator is Opinionated}
-    \begin{center}
-        \textbf{provide the inputs}: \emph{YAML recipe} and \emph{system configuration} \dots
-
-    \vspace{20pt}
-
-        \textbf{perform the steps}: \emph{stack-config} then \emph{make} \dots
-
-    \vspace{20pt}
-     too build a software stack following the best-practices and HPE Cray EX-specific methods that CSCS have developed to deliver software stacks.
-    \end{center}
-\end{frame}
 
 
 \cscschapter{Deploying spack-stacks}
@@ -629,6 +641,28 @@ $CC ${final_cppflags} ${final_cflags} ${final_ldflags} "${allargs[@]}" -I$includ
 \end{frame}
 %-------------------------------------------
 
+\cscschapter{Wrapping up}
+
+%-------------------------------------------
+\begin{frame}[fragile]{An opinionated appeal}
+    \begin{center}
+    Integration of other CPE products -- libsci, cce, etc -- would be great.
+
+    \vspace{20pt}
+
+    Spack compatibility means one thing and one thing only:
+
+    \vspace{20pt}
+
+    \emph{CPE packages can be installed individually outside of CPE, without environment variables or modules, like normal software}.
+
+    \vspace{20pt}
+
+    \emph{There is nothing special about HPC software that necesitates magical wrappers}.
+    \end{center}
+\end{frame}
+%-------------------------------------------
+
 \cscschapter{Thank you}
 
 \cscschapter{Backup}
@@ -663,5 +697,18 @@ $CC ${final_cppflags} ${final_cflags} ${final_ldflags} "${allargs[@]}" -I$includ
         \includegraphics[width=\textwidth]{images/sph-ddt-uenv.png}
     \end{center}
 \end{frame}
+
+%-------------------------------------------
+\begin{frame}[fragile]{Configuration of mpicc}
+\begin{code}{bin/mpicc}
+    \begin{lstlisting}[style=talkbash]
+prefix="/user-environment/linux-sles15-zen3/gcc-11.3.0/cray-mpich-8.1.18.4-gcc-... long hash ..."
+CC="${prefix}/bin/gcc"
+$CC ${final_cppflags} ${final_cflags} ${final_ldflags} "${allargs[@]}" -I$includedir -L$libdir -Wl,-rpath,$libdir -lmpi -lmpi_gtl_cuda ${final_libs} \end{lstlisting}
+\end{code}
+
+\end{frame}
+%-------------------------------------------
+
 
 \end{document}
