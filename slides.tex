@@ -11,6 +11,7 @@
 \usetikzlibrary{positioning}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{dirtree}
 \usepackage{tcolorbox}
 \usepackage{anyfontsize}
 \usepackage{xspace}
@@ -67,23 +68,27 @@
 % TITLE SLIDE
 \cscstitle
 
-\cscschapter{Setting the scene: motivation}
-
 %-------------------------------------------
-\begin{frame}[fragile]{Alps}
-    Alps is the new Cray EX-based system at CSCS.
+\begin{frame}[fragile]{}
+    \vspace{-60pt}
+    \begin{center}
+    \includegraphics[width=\textwidth]{images/alps.png}
 
-    \vspace{20pt}
+    Alps is the new Cray EX-based infrastructure at CSCS.
 
-    Borrow slide from Maxime's presentation showing the different vClusters
-
-    \vspace{20pt}
+    \vspace{15pt}
 
     Consolidate disparate clusters onto a single Cray EX system
 
-    \vspace{20pt}
+    \vspace{15pt}
 
-    using CSM underneath -- each vCluster is depoloyed with its own software environment, scheduler, storage and network isolation
+    vClusters have workload specific software environment, scheduler, storage and network isolation.
+
+    \vspace{15pt}
+
+    Many node types  Rome CPU, NVIDA A100, AMD Mi250x, GraceHopper, \dots deploying software stacks and environments will be fun if we use our current model for deploying software stacks \dots
+
+    \end{center}
 
 \end{frame}
 %-------------------------------------------
@@ -98,18 +103,18 @@
 
             \small
 
-            Sites build software for users using compilers and libraries from CPE
+            Sites provide CPE -- then provide software built on top:
             % point out presentations past and present
             \begin{itemize}
-                \item install all the software for all the users on a shared file system.
-                \item modules alongside CPE modules
+                \item install \emph{all the software for all the users} on a shared file system;
+                \item use CPE modules + site modules for environment customisation.
             \end{itemize}
 
-            Is CPE a solid foundation when:
+            CPE presents challenges as a software stack foundation:
             \begin{itemize}
-                \item it changes every 3 months
-                \item it exposes a large surface area
-                \item bugs will take 3-6 months minimum for fixes to be available
+                \item changes every 3 months 
+                \item has a large surface area of possible bugs and regressions.
+                \item deploying fixes takes minimum 3-6 months.
             \end{itemize}
         \end{column}
     \end{columns}
@@ -119,22 +124,25 @@
 %-------------------------------------------
 \begin{frame}[fragile]{Bespoke SW stacks}
     \begin{columns}[T]
-        \begin{column}{0.5\textwidth}
-
-            Build use case and workflow specific software stacks:
+        \begin{column}{0.6\textwidth}
+            Start with a simpler foundation:
             \begin{itemize}
-                \item only packages that are needed
-                \item deployed independently of one-another
-                \item deployed independently of one-another
-            \end{itemize}
-
-            Build them on a simple foundation:
-            \begin{itemize}
-                \item CrayOS + libfabric + Slurm + xpmemm
                 \item \emph{no CPE}
-                \item infrequent changes
-                \item small surface area
+                \item CrayOS + libfabric + Slurm;
+                \item less frequent changes over a smaller area.
             \end{itemize}
+
+            Provide workflow-specific software stacks:
+            \begin{itemize}
+                \item only packages that are needed;
+                \item deployed independently;
+                \item built using Spack.
+            \end{itemize}
+
+            \begin{center}
+            \emph{``You can create environments without modules using Spack. ''}\\
+            \emph{``It is tricky to configure Spack. ''}
+            \end{center}
 
 
         \end{column}
@@ -149,11 +157,18 @@
 \begin{frame}[fragile]{Objectives}
     Software environments have the following objectives that make them DevOps compatible:
     \begin{itemize}
-        \item reproducable from simple recipes
-        \item versionable with git
-        \item support easy roll back
-        \item adapt to changes in the underlying system without modifying the recipe
-        \item testable
+        \item Reproducable from simple recipes:
+        \begin{itemize}
+            \item versionable with git;
+            \item descriptive: what not how.
+        \end{itemize}
+        \item Separate system-specific configuration from recipe, so that the recipe does not need modification to
+        \begin{itemize}
+            \item rebuild when a system is updated.
+            \item build for different systems.
+        \end{itemize}
+        \item Easy roll back.
+        \item Testable.
     \end{itemize}
 \end{frame}
 %-------------------------------------------
@@ -171,9 +186,9 @@
             \end{lstlisting}
 
     \begin{itemize}
-        \item \emph{recipe}: YAML files that describe compilers, software packages, and tests for software stack
-        \item \emph{system}: System config for few libraries (gcc, libfabric, xpmem, slurm, rdma-core)
-        \item \emph{mount}: The installation path of the be installed (in the recipe)
+        \item \emph{recipe}: YAML files that describe compilers, software packages, and tests for software stack.
+        \item \emph{system}: System config for few libraries (gcc, libfabric, xpmem, slurm, rdma-core).
+        \item \emph{mount}: The installation path (in the recipe).
         \item \emph{build}: Where the build will be performed.
     \end{itemize}
 
@@ -239,10 +254,26 @@ Name, mount point, default system (deprecate), the version of Spack to use and m
 %-------------------------------------------
 \begin{frame}[fragile]{Recipe: compiler toolchains}
 
-todo
+Compilers are built in three stages
+\begin{enumerate}
+\item \emph{bootstrap}: gcc built using the system compiler (gcc 4.7.5).
+%    * `gcc:specs`: single spec of the form `gcc@version`.
+%    * no Fortran, not optimised
+%    * The selected version should have full support for the target architecture in order to build optimised gcc toolchains in step 2.
+%    * tabes 2.5 minutes to build
+\item \emph{gcc}: Optimised gcc version(s) provided by the stack.
+%    * `gcc:specs`: A list of _at least one_ of the specs of the form `gcc@version`.
+%    * includes Fortran, tuned.
+%    * takes 25 minutes to build
+\item \emph{llvm}: (optional) nvhpc and/or llvm toolchains buil with gcc from step 2.
+%    * `llvm:specs`: a list of specs of the form `nvhpc@version` or `llvm@version`.
+%    * `llvm:requires`: the version of gcc from step 2 that is used to build the llvm compilers.
+\end{enumerate}
+
+
 
 \begin{code}{\lstinline{compilers.yaml}}
-\lstinputlisting[style=talkyaml]{src/nv-recipe/compilers.yaml}
+\lstinputlisting[style=talkyaml]{src/nv-recipe/compilers-annotated.yaml}
 \end{code}
 
 \end{frame}
@@ -273,6 +304,129 @@ todo
     \begin{center}
         \input{images/stack.tex}
     \end{center}
+    \todo{move higher and interleave}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{build}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            Print the stack-config command.
+
+            \begin{itemize}
+                \item build path is in /dev/shm -- build in memory
+                \item Bubblewrap (bwrap) is used to mount final build point
+                \item ...
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            {
+            \setlength{\DTbaselineskip}{5pt}
+            \input{src/build-path.tex}
+            }
+        \end{column}
+    \end{columns}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{Wait! What about MPI?}
+    \begin{columns}[T]
+        \begin{column}{0.65\textwidth}
+            Cray-mpich is the only robust MPI for SS11 as of May 2023.
+            \begin{itemize}
+                \item We used OpenMPI+ucx on SS10
+            \end{itemize}
+                % (early version of the stack used OpenMPI on SS10)
+                % (OpenMPI and MPICH would be very welcome)
+
+            \vspace{10pt}
+
+            Stackinator uses a custom Spack package for cray-mpich for installation in Spack stacks.
+            \begin{itemize}
+                \item Repackage headers, libs, compiler wrappers from RPMs.
+                \item Store as tar-balls CSCS-private artifactory.
+                \item The Spack package uses patchelf on libraries and string-substitution on compiler wrappers.
+            \end{itemize}
+        \end{column}
+        \hspace{-40pt}
+        \begin{column}{0.4\textwidth}
+            {
+            \setlength{\DTbaselineskip}{5pt}
+            \footnotesize
+            \input{src/cray-mpich-tree-short.txt}
+            }
+        \end{column}
+    \end{columns}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{MPI Configuration in recipes}
+
+\begin{code}{environments.yaml: "I want cray-mpich"}
+    \begin{lstlisting}[style=talkyaml]
+myenv:
+    compiler:
+    - toolchain: gcc
+      spec: gcc@11
+    mpi:
+      spec: cray-mpich@8.1.18.4
+      gpu: cuda \end{lstlisting}
+\end{code}
+
+\begin{code}{Generated Spack specs in spack.yaml}
+    \begin{lstlisting}[style=talkyaml]
+# cray-mpich specs are "simple"
+specs:
+- cray-mpich@8.1.18.4 +cuda
+
+# If a recipe requests OpenMPI on SS10, the tool can fill in the blanks:
+specs:
+- openmpi@4.0:4 +cuda +cxx +pmi schedulers=slurm fabrics=ucx
+- ucx +rdmacm +cma +verbs +xpmem +ib_hw_tm +mlx5_dv +dc +ud +rc +dm +optimizations +gdrcopy ~assertions ~debug \end{lstlisting}
+\end{code}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{Spack package}
+
+\begin{code}{repo/packages/cray-mpich/package.py}
+    \begin{lstlisting}[style=talkbash]
+@run_after("install")
+def fixup_binaries(self):
+  for root, _, files in os.walk(self.prefix):
+    for f in [os.path.join(root, name) for name in files]
+      if not self.should_patch(f): continue
+      patchelf("--force-rpath", "--set-rpath", rpath, f)
+      if "libmpi_gtl_cuda.so" in str(f):
+        patchelf("--add-needed", "libstdc++.so", f)
+
+@run_after("install")
+def fixup_compiler_paths(self):
+  filter("@@CC@@", self.compiler.cc,self.prefix.bin.mpicc)
+  filter("@@PREFIX@@", self.prefix, self.prefix.bin.mpicc)
+  if   "+cuda" in self.spec:gtl_library = "-lmpi_gtl_cuda"
+  elif "+rocm" in self.spec:gtl_library = "-lmpi_gtl_hsa"
+  else:                     gtl_library = ""
+  filter("@@GTL@@", gtl_library, self.prefix.bin.mpicc) \end{lstlisting}
+\end{code}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{Configuration of mpicc}
+\begin{code}{bin/mpicc}
+    \begin{lstlisting}[style=talkbash]
+prefix="/user-environment/linux-sles15-zen3/gcc-11.3.0/cray-mpich-8.1.18.4-gcc-... long hash ..."
+CC="${prefix}/bin/gcc"
+$CC ${final_cppflags} ${final_cflags} ${final_ldflags} "${allargs[@]}" -I$includedir -L$libdir -Wl,-rpath,$libdir -lmpi -lmpi_gtl_cuda ${final_libs} \end{lstlisting}
+\end{code}
+
 \end{frame}
 %-------------------------------------------
 
@@ -281,19 +435,21 @@ todo
     Building stacks is resource intensive: 30~min -- 3~hours with 64-cores
 
     \begin{itemize}
-        \item \emph{parallelise the build}:
+        \item \emph{parallelise the build}: build Spack environments in parallel
+        \begin{itemize}
+            \item Take every step to build packages.
+        \end{itemize}
         \item \emph{build in memory}:
+        \begin{itemize}
+            \item build in /dev/shm
+            \item use Bubblewrap (bwrap) to bind to the target installation path.
+        \end{itemize}
         \item \emph{cache previous builds}:
+        \begin{itemize}
+            \item only built packages once.
+            \item use Spack binary build caches.
+        \end{itemize}
     \end{itemize}
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-\begin{frame}[fragile]{Parallelising builds}
-    Build environments simultaneously where possible
-    \begin{center}
-        \input{images/env-dag.tex}
-    \end{center}
 \end{frame}
 %-------------------------------------------
 
@@ -304,20 +460,40 @@ todo
     \end{center}
 \end{frame}
 %-------------------------------------------
+\begin{frame}[fragile]{Stackinator is Opinionated}
+    \begin{center}
+        \textbf{provide the inputs}: \emph{YAML recipe} and \emph{system configuration} \dots
+
+    \vspace{20pt}
+
+        \textbf{perform the steps}: \emph{stack-config} then \emph{make} \dots
+
+    \vspace{20pt}
+     too build a software stack following the best-practices and HPE Cray EX-specific methods that CSCS have developed to deliver software stacks.
+    \end{center}
+\end{frame}
 
 
 \cscschapter{Deploying spack-stacks}
 
 %-------------------------------------------
 \begin{frame}[fragile]{SquashFS}
-    The images can be copied to a shared file system
+    The software stack can be copied to a shared file system once built.
 
-    At CSCS they are compressed as SquashFS images:
+    \vspace{20pt}
+
+    At CSCS they are deployed as SquashFS images:
     \begin{itemize}
-        \item memory!
-        \item performance! (don't bother with plots - just mention to save space)
-        \item DevOps!
+        \item consistent performance - always faster than a shared file system;
+        \item reduced storage requiremenets - compression and deduplication.
+        \item each stack is a single binary artifact - easy to version, roll back and manage in CI/CD pipelines.
     \end{itemize}
+
+    \vspace{20pt}
+
+    \begin{center}
+    \emph{SquashFS requires some additional tooling...}
+    \end{center}
 \end{frame}
 %-------------------------------------------
 
@@ -425,7 +601,7 @@ todo
 
 %-------------------------------------------
 \begin{frame}[fragile]{GROMACS}
-    A GROMACSD strong scaling benchmarks: a 1.4-million atom system (a pair of hEGFR Dimers of 1IVO and 1NQL) from the HECBioSim benchmarks suite.
+    A GROMACS strong scaling benchmarks: a 1.4-million atom system (a pair of hEGFR Dimers of 1IVO and 1NQL) from the HECBioSim benchmarks suite.
 \begin{center}
     \begin{tabular}{|l |c  c| }
         \cline{2-3}
@@ -453,10 +629,39 @@ todo
 \end{frame}
 %-------------------------------------------
 
-\cscschapter{Wrapping up}
+\cscschapter{Thank you}
 
-\cscschapter{Thank you -- any questions?}
+\cscschapter{Backup}
 
+%-------------------------------------------
+\begin{frame}[fragile]{Parallelising builds}
+    Build environments simultaneously where possible
+    \begin{center}
+        \input{images/env-dag.tex}
+    \end{center}
+\end{frame}
+%-------------------------------------------
 
+%-------------------------------------------
+\begin{frame}[fragile]{The only way to spacktify CPE packages}
+    \begin{center}
+    Integration of other CPE products - libsci, cce, etc
+
+    \vspace{20pt}
+
+    Spack compatibility for CPE means one thing and one thing only:
+
+    \vspace{20pt}
+
+    \emph{CPE packages can be installed individually outside of CPE}
+
+    \end{center}
+\end{frame}
+%-------------------------------------------
+\begin{frame}[fragile]{DDT}
+    \begin{center}
+        \includegraphics[width=\textwidth]{images/sph-ddt-uenv.png}
+    \end{center}
+\end{frame}
 
 \end{document}

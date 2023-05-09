@@ -1,0 +1,13 @@
+bootstrap:
+  spec: gcc@11
+# gcc@11 languages=c,c++ build_type=Release ~bootstrap +strip
+gcc:
+  specs:
+  - gcc@11.3
+# gcc@11 build_type=Release +strip
+llvm:
+  requires: gcc@11.3
+  specs:
+  - nvhpc@22.7
+# nvhpc@22.7~mpi~blas~lapack
+
