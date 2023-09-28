@@ -510,6 +510,23 @@ def fixup_compiler_paths(self):
 %-------------------------------------------
 
 %-------------------------------------------
+\begin{frame}[fragile]{CLI Utilities}
+    A CLI tool \emph{uenv} is under development.
+    \begin{enumerate}
+    \item for listing, starting, stopping user-environments
+    \end{enumerate}
+
+    \begin{code}{mounting a squashfs image}
+\lstinputlisting[style=talkyaml]{src/uenv.sh}
+    \end{code}
+
+    \vspace{10pt}
+
+    Open Source on GitHub.\\\url{https://github.com/eth-cscs/uenv}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
 \begin{frame}[fragile]{SLURM}
     A Slurm plugin manages mounting environmnents on compute nodes.
     \begin{code}{Launch with explicit flags}
@@ -548,6 +565,8 @@ def fixup_compiler_paths(self):
         \item post status to GitHub
         \item \emph{\sc Deploy Stage}: promote artifact to deployment artifactory (manual).
     \end{enumerate}
+
+    \url{https://github.com/eth-cscs/alps-spack-stacks}
 \end{frame}
 %-------------------------------------------
 
