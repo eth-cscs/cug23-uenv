@@ -1,8 +1,6 @@
-name: arbor-dev
+name: nvidia-dev
 store: /user-environment
-system: hohgant
+system: clariden
 spack:
   repo: https://github.com/spack/spack.git
-  commit: releases/v0.19
-mirror:
-  enable: false
+  commit: releases/v0.21
