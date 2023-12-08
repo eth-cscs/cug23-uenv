@@ -4,6 +4,7 @@
 
 \usepackage{tikz}
 
+\usepackage[normalem]{ulem}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \usetikzlibrary{pgfplots.groupplots,spy,patterns}
@@ -20,6 +21,8 @@
 
 % define footer text
 \newcommand{\footlinetext}{Alps User Environments}
+
+\newcommand{\lstt}[1]{\lstinline{#1}\xspace}   % shorthand for inline listing
 
 % Select the image for the title page
 \newcommand{\picturetitle}{slide-images/image5.pdf}
@@ -58,7 +61,7 @@
     S.~Pintarelli,
     H.~Stoppels}
 \title{\centering Deploying Alternative User Environments on Alps}
-\subtitle{CUG23 -- Helsinki}
+\subtitle{ADAC Portability Sustainability \& Integration}
 
 \begin{document}
 
@@ -70,6 +73,26 @@
 
 %-------------------------------------------
 \begin{frame}[fragile]{}
+    \begin{center}
+    \vspace{15pt}
+
+    The work presented here was for HPE Cray EX clusters.
+
+    \vspace{15pt}
+
+    Many folk listening in deploy similar clusters.
+
+    \vspace{15pt}
+
+    For those who don't, that's okay, because what we are trying to do applies to all HPC clusters.
+
+    \end{center}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{}
     \vspace{-60pt}
     \begin{center}
     \includegraphics[width=\textwidth]{images/alps.png}
@@ -78,7 +101,7 @@
 
     \vspace{15pt}
 
-        Consolidate separate service-specific clusters onto a single infrastructure -- versatile software-defined clusters (\emph{vClusters}) with workload-specific software environment, scheduler, storage and network isolation.
+    Consolidate separate service-specific clusters onto a single infrastructure -- versatile software-defined clusters (\emph{vClusters}) with workload-specific software environment, scheduler, storage and network isolation.
 
     \vspace{15pt}
 
@@ -339,7 +362,7 @@ Compilers are built in three stages
 \begin{frame}[fragile]{Wait! What about MPI?}
     \begin{columns}[T]
         \begin{column}{0.65\textwidth}
-            Cray-mpich is the only robust MPI for SS11 as of May 2023.
+            Cray-mpich is the only robust MPI for SS11 as of \sout{May} December 2023.
             \begin{itemize}
                 \item We used OpenMPI+ucx on SS10
             \end{itemize}
@@ -370,6 +393,25 @@ Compilers are built in three stages
 %-------------------------------------------
 
 %-------------------------------------------
+\begin{frame}[fragile]{MPI Future Plans}
+    Packaging \lstt{libpals}, \lstt{libpmi2} and \lstt{lib\_gtl\_\{cuda/hsa\}} together with \lstt{cray-mpich} doesn't scale
+    \begin{itemize}
+        \item vClusters with different versions of COS and Slurm require different combinations of each package.
+        \item Support for aarch64 for 
+    \end{itemize}
+    We 
+
+    \vspace{10pt}
+
+    At the same time we are collaborating with HPE to get access to nightly builds of these components to integrate into our CI/CD pipelines.
+    \begin{itemize}
+        \item Long term aim: integrate libfabric, and build components from source.
+    \end{itemize}
+    \emph{The engineer formalised the extraction process to a set of scripts that can be automated -- and CI will warn us early of braking changes.}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
 \begin{frame}[fragile]{MPI Configuration is Opinionated}
 
 \begin{code}{environments.yaml: "The user requests cray-mpich"}
@@ -379,7 +421,7 @@ myenv:
     - toolchain: gcc
       spec: gcc@11
     mpi:
-      spec: cray-mpich@8.1.18.4
+      spec: cray-mpich@8.1.26
       gpu: cuda \end{lstlisting}
 \end{code}
 
